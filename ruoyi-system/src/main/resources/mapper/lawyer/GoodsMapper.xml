@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.GoodsMapper">
+
+    <resultMap type="Goods" id="GoodsResult">
+        <id     property="id"      column="id"      />
+        <result property="name"    column="name"    />
+        <result property="type"     column="type"     />
+        <result property="sImage"     column="s_image"     />
+        <result property="money"     column="money"     />
+        <result property="info"     column="info"     />
+        <result property="notice"     column="notice"     />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="list" parameterType="Goods" resultMap="GoodsResult">
+        select id,
+        `name`,
+        `type`,
+        s_image,
+        money,
+        create_by,create_time,
+        update_by,update_time
+        from lawyer_goods
+        where 1=1
+        <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
+        <if test="type != null and type != '' ">and `type` = #{type}</if>
+    </select>
+    <select id="item" parameterType="Goods" resultMap="GoodsResult">
+        select id,
+        `name`,
+        `type`,
+        s_image,
+        money,
+        info,
+        notice,
+        create_by,create_time,
+        update_by,update_time
+        from lawyer_goods
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+    </select>
+    <insert id="add" parameterType="Goods">
+        insert into lawyer_goods (
+        <if test="name != null and name != '' ">`name`,</if>
+        <if test="type != null and type != '' ">`type`,</if>
+        <if test="sImage != null and sImage != '' ">s_image,</if>
+        <if test="money != null and money != '' ">money,</if>
+        <if test="info != null and info != '' ">info,</if>
+        <if test="notice != null and notice != '' ">notice,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="name != null and name != '' ">#{name},</if>
+        <if test="type != null and type != '' ">#{type},</if>
+        <if test="sImage != null and sImage != '' ">#{sImage},</if>
+        <if test="money != null and money != '' ">#{money},</if>
+        <if test="info != null and info != '' ">#{info},</if>
+        <if test="notice != null and notice != '' ">#{notice},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="edit" parameterType="Goods">
+        update lawyer_goods
+        <set>
+            <if test="name != null and name != '' ">`name` = #{name},</if>
+            <if test="type != null and type != '' ">`type` = #{type},</if>
+            <if test="sImage != null and sImage != '' ">s_image = #{sImage},</if>
+            <if test="money != null and money != '' ">money = #{money},</if>
+            <if test="info != null and info != '' ">info = #{info},</if>
+            <if test="notice != null and notice != '' ">notice = #{notice},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="del" parameterType="Long">
+        delete from lawyer_goods where id = #{id}
+    </delete>
+
+
+</mapper>

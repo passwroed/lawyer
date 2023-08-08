@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.AgencyMapper">
+
+    <resultMap type="Agency" id="AgencyResult">
+        <id     property="id"      column="id"      />
+        <result property="name"    column="name"    />
+        <result property="phone"     column="phone"     />
+        <result property="inviter"     column="inviter"     />
+        <result property="office"     column="office"     />
+        <result property="area"     column="area"     />
+        <result property="areaCode"     column="area_code"     />
+        <result property="areaInfo"     column="area_info"     />
+        <result property="status"     column="status"     />
+        <result property="role"     column="role"     />
+        <result property="followStatus"     column="follow_status"     />
+        <result property="feedback"     column="feedback"     />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="list" parameterType="Agency" resultMap="AgencyResult">
+        select id,
+        `name`,
+        phone,
+        inviter,
+        office,
+        area,
+        area_code,
+        area_info,
+        status,
+        `role`,
+        follow_status,
+        feedback,create_by,create_time
+               ,update_by,update_time
+        from lawyer_agency
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+    </select>
+    <insert id="add" parameterType="Agency">
+        insert into lawyer_agency (
+        <if test="name != null and name != '' ">`name`,</if>
+        <if test="phone != null and phone != '' ">phone,</if>
+        <if test="inviter != null and inviter != '' ">inviter,</if>
+        <if test="office != null and office != '' ">office,</if>
+        <if test="area != null and area != '' ">area,</if>
+        <if test="areaCode != null and areaCode != '' ">area_code,</if>
+        <if test="areaInfo != null and areaInfo != ''">area_info,</if>
+        <if test="status != null and status != ''">status,</if>
+        <if test="role != null and role != ''">`role`,</if>
+        <if test="followStatus != null and followStatus != ''">follow_status,</if>
+        <if test="feedback != null and feedback != ''">feedback,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="name != null and name != '' ">#{name},</if>
+        <if test="phone != null and phone != '' ">#{phone},</if>
+        <if test="inviter != null and inviter != '' ">#{inviter},</if>
+        <if test="office != null and office != '' ">#{office},</if>
+        <if test="area != null and area != '' ">#{area},</if>
+        <if test="areaCode != null and areaCode != '' ">#{areaCode},</if>
+        <if test="areaInfo != null and areaInfo != ''">#{areaInfo},</if>
+        <if test="status != null and status != ''">#{status},</if>
+        <if test="role != null and role != ''">#{role},</if>
+        <if test="followStatus != null and followStatus != ''">#{followStatus},</if>
+        <if test="feedback != null and feedback != ''">#{feedback},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="edit" parameterType="Agency">
+        update lawyer_agency
+        <set>
+            <if test="followStatus != null and followStatus != ''">follow_status = #{followStatus},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="del" parameterType="Long">
+        delete from lawyer_agency where id = #{id}
+    </delete>
+
+
+</mapper>

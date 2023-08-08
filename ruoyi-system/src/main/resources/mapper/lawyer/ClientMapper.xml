@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.ClientMapper">
+
+    <resultMap type="Client" id="ClientResult">
+        <id     property="id"      column="id"      />
+        <result property="name"    column="name"    />
+        <result property="phone"     column="phone"     />
+        <result property="nickName"     column="nick_name"     />
+        <result property="area"     column="area"     />
+        <result property="areaCode"     column="area_code"     />
+        <result property="areaInfo"     column="area_info"     />
+        <result property="pid"     column="pid"     />
+        <result property="pname"     column="pname"     />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="list" parameterType="Client" resultMap="ClientResult">
+        select id,
+        `name`,
+        phone,
+        nick_name,
+        area,
+        area_code,
+        area_info,
+        pid,
+        pname,
+        create_by,create_time,
+        update_by,update_time
+        from lawyer_client
+        where 1=1
+        <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
+        <if test="phone != null and phone != '' ">and phone like concat('%', #{phone}, '%')</if>
+        <if test="pid != null and pid != '' ">and pid = #{pid}</if>
+    </select>
+    <select id="item" parameterType="Client" resultMap="ClientResult">
+        select id,
+        `name`,
+        phone,
+        nick_name,
+        area,
+        area_code,
+        area_info,
+        pid,
+        pname,
+        create_by,create_time,
+        update_by,update_time
+        from lawyer_client
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+    </select>
+    <insert id="add" parameterType="Client" useGeneratedKeys="true" keyProperty="id">
+        insert into lawyer_client (
+        <if test="name != null and name != '' ">`name`,</if>
+        <if test="phone != null and phone != '' ">phone,</if>
+        <if test="nickName != null and nickName != '' ">nick_name,</if>
+        <if test="area != null and area != '' ">area,</if>
+        <if test="areaCode != null and areaCode != '' ">area_code,</if>
+        <if test="areaInfo != null and areaInfo != '' ">area_info,</if>
+        <if test="pid != null and pid != '' ">pid,</if>
+        <if test="pname != null and pname != '' ">pname,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="name != null and name != '' ">#{name},</if>
+        <if test="phone != null and phone != '' ">#{phone},</if>
+        <if test="nickName != null and nickName != '' ">#{nickName},</if>
+        <if test="area != null and area != '' ">#{area},</if>
+        <if test="areaCode != null and areaCode != '' ">#{areaCode},</if>
+        <if test="areaInfo != null and areaInfo != '' ">#{areaInfo},</if>
+        <if test="pid != null and pid != '' ">#{pid},</if>
+        <if test="pname != null and pname != '' ">#{pname},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <insert id="headAdd" parameterType="Client" useGeneratedKeys="true" keyProperty="id">
+        insert into lawyer_client (
+        <if test="name != null and name != '' ">`name`,</if>
+        <if test="phone != null and phone != '' ">phone,</if>
+        <if test="nickName != null and nickName != '' ">nick_name,</if>
+        <if test="area != null and area != '' ">area,</if>
+        <if test="areaCode != null and areaCode != '' ">area_code,</if>
+        <if test="areaInfo != null and areaInfo != '' ">area_info,</if>
+        <if test="pid != null and pid != '' ">pid,</if>
+        <if test="pname != null and pname != '' ">pname,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="name != null and name != '' ">#{name},</if>
+        <if test="phone != null and phone != '' ">#{phone},</if>
+        <if test="nickName != null and nickName != '' ">#{nickName},</if>
+        <if test="area != null and area != '' ">#{area},</if>
+        <if test="areaCode != null and areaCode != '' ">#{areaCode},</if>
+        <if test="areaInfo != null and areaInfo != '' ">#{areaInfo},</if>
+        <if test="pid != null and pid != '' ">#{pid},</if>
+        <if test="pname != null and pname != '' ">#{pname},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="edit" parameterType="Client">
+        update lawyer_client
+        <set>
+            <if test="name != null and name != '' ">`name` = #{name},</if>
+            <if test="phone != null and phone != '' ">phone = #{phone},</if>
+            <if test="nickName != null and nickName != '' ">nick_name = #{nickName},</if>
+            <if test="area != null and area != '' ">area = #{area},</if>
+            <if test="areaCode != null and areaCode != '' ">area_code = #{areaCode},</if>
+            <if test="areaInfo != null and areaInfo != '' ">area_info = #{areaInfo},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="del" parameterType="Long">
+        delete from lawyer_client where id = #{id}
+    </delete>
+
+
+</mapper>

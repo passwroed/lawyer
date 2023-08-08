@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.AreaMapper">
+
+    <resultMap type="Area" id="AreaResult">
+        <id     property="id"      column="id"      />
+        <result property="pid"    column="pid"    />
+        <result property="name"     column="name"     />
+    </resultMap>
+
+    <select id="list" parameterType="Area" resultMap="AreaResult">
+        select id,pid,`name`
+        from lawyer_area
+        where 1=1
+        <if test="pid &gt; 0 and id &lt;= 0">and pid = #{pid}</if>
+        <if test="id &gt; 0">and id = #{id}</if>
+    </select>
+    <select id="pArea" parameterType="Long" resultMap="AreaResult">
+        select id,pid,`name`
+        from lawyer_area
+        where 1=1
+        <if test="pid &gt; 0">and id = #{pid}</if>
+    </select>
+    <select id="iDArea" parameterType="Long" resultMap="AreaResult">
+        select id,pid,`name`
+        from lawyer_area
+        where 1=1
+        <if test="id &gt; 0">and id = #{id}</if>
+    </select>
+    <insert id="add" parameterType="Area">
+        insert into lawyer_area (
+        <if test="id != null and id != '' ">id,</if>
+        <if test="pid != null and pid != '' ">pid,</if>
+        <if test="name != null and name != ''">`name`</if>
+        )values(
+        <if test="id != null and id != '' ">#{id},</if>
+        <if test="pid != null and pid != '' ">#{pid},</if>
+        <if test="name != null and name != ''">#{name}</if>
+        )
+    </insert>
+
+
+
+</mapper>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.LawyerMapper">
+
+    <resultMap type="Lawyer" id="LawyerResult">
+        <id     property="id"      column="id"      />
+        <result property="smallIcon"    column="small_icon"    />
+        <result property="name"     column="name"     />
+        <result property="phone"     column="phone"      />
+        <result property="area"     column="area"      />
+        <result property="areaCode"     column="area_code"      />
+        <result property="status"     column="status"      />
+        <result property="officeName"     column="office_name"      />
+        <result property="officeId"     column="office_id"      />
+        <result property="feedBack"     column="feed_back"      />
+        <result property="sex"     column="sex"      />
+        <result property="merit"     column="merit"      />
+        <result property="licenseNum"     column="license_num"      />
+        <result property="lincensStartTime"     column="lincens_start_time"      />
+        <result property="lincensEndTime"     column="lincens_end_time"      />
+        <result property="taskMax"     column="task_max"      />
+        <result property="info"     column="info"      />
+        <result property="headImg"     column="head_img"      />
+        <result property="lincensImg"     column="lincens_img"      />
+        <result property="idUpImg"     column="id_up_img"      />
+        <result property="idDownImg"     column="id_down_img"      />
+        <result property="type"     column="type"      />
+        <result property="userId"     column="user_id"      />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="list" parameterType="Lawyer" resultMap="LawyerResult">
+        select id,
+        `name`,
+        phone,
+        area,
+        area_code,
+        office_name,
+        merit,
+        office_id,
+        status,
+        feed_back,
+        sex,
+        license_num,
+        lincens_start_time,
+        lincens_end_time,
+        task_max,
+        head_img,
+        lincens_img,
+        id_up_img,
+        id_down_img,
+        `type`,
+        user_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        <if test="id != null and id != '' ">,info</if>
+        from lawyer_lawyer
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+        <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
+        <if test="areaCode != null and areaCode != '' ">and area_code = #{areaCode}</if>
+        <if test="phone != null and phone != '' ">and phone = #{phone}</if>
+    </select>
+    <select id="list" parameterType="Lawyer" resultMap="LawyerResult">
+        select id,
+        `name`,
+        phone,
+        area,
+        area_code,
+        office_name,
+        office_id,
+        `type`,
+        user_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        <if test="id != null and id != '' ">,info</if>
+        from lawyer_lawyer
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+        <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
+        <if test="areaCode != null and areaCode != '' ">and area_code = #{areaCode}</if>
+        <if test="phone != null and phone != '' ">and phone = #{phone}</if>
+    </select>
+    <select id="item" parameterType="Long" resultMap="LawyerResult">
+        select id,
+        `name`,
+        phone,
+        area,
+        area_code,
+        office_name,
+        merit,
+        office_id,
+        status,
+        feed_back,
+        sex,
+        license_num,
+        lincens_start_time,
+        lincens_end_time,
+        task_max,
+        head_img,
+        lincens_img,
+        id_up_img,
+        id_down_img,
+        `type`,
+        user_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark,
+        info
+        from lawyer_lawyer
+        where  id = #{id}
+    </select>
+    <select id="selectUserId" parameterType="Lawyer" resultMap="LawyerResult">
+        select id,
+        `name`,
+        phone,
+        `type`,
+        user_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        from lawyer_lawyer
+        where status >= 1
+        <if test="userId != null and userId != '' ">and user_id = #{userId}</if>
+        <if test="type != null">and `type` = #{type}</if>
+    </select>
+    <insert id="add" parameterType="Lawyer">
+        insert into lawyer_lawyer (
+        <if test="name != null and name != '' ">`name`,</if>
+        <if test="phone != null and phone != '' "> phone,</if>
+        <if test="area != null and area != '' ">area,</if>
+        <if test="areaCode != null and areaCode != '' ">area_code,</if>
+        <if test="officeName != null and officeName != '' ">office_name,</if>
+        <if test="officeId != null and officeId != '' ">office_id,</if>
+        <if test="merit != null and merit != '' ">merit,</if>
+        <if test="sex != null and sex &gt;= 0">sex,</if>
+        <if test="licenseNum != null and licenseNum != ''">license_num,</if>
+        <if test="lincensStartTime != null ">lincens_start_time,</if>
+        <if test="lincensEndTime != null ">lincens_end_time,</if>
+        <if test="taskMax != null and taskMax &gt;= 0 ">task_max,</if>
+        <if test="info != null and info != '' ">info,</if>
+        <if test="headImg != null and headImg != '' ">head_img,</if>
+        <if test="lincensImg != null and lincensImg != '' ">lincens_img,</if>
+        <if test="idUpImg != null and idUpImg != '' ">id_up_img,</if>
+        <if test="idDownImg != null and idDownImg != '' ">id_down_img,</if>
+        <if test="type != null">`type`,</if>
+        <if test="userId != null and userId != '' ">user_id,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="name != null and name != '' ">#{name},</if>
+        <if test="phone != null and phone != '' ">#{phone},</if>
+        <if test="area != null and area != '' ">#{area},</if>
+        <if test="areaCode != null and areaCode != '' ">#{areaCode},</if>
+        <if test="officeName != null and officeName != '' ">#{officeName},</if>
+        <if test="merit != null and merit != '' ">#{merit},</if>
+        <if test="officeId != null and officeId != '' ">#{officeId},</if>
+        <if test="sex != null and sex &gt;= 0 ">#{sex},</if>
+        <if test="licenseNum != null and licenseNum != '' ">#{licenseNum},</if>
+        <if test="lincensStartTime != null">#{lincensStartTime},</if>
+        <if test="lincensEndTime != null ">#{lincensEndTime},</if>
+        <if test="taskMax != null and taskMax &gt;= 0 ">#{taskMax},</if>
+        <if test="info != null and info != '' ">#{info},</if>
+        <if test="headImg != null and headImg != '' ">#{headImg},</if>
+        <if test="lincensImg != null and lincensImg != '' ">#{lincensImg},</if>
+        <if test="idUpImg != null and idUpImg != '' ">#{idUpImg},</if>
+        <if test="idDownImg != null and idDownImg != '' ">#{idDownImg},</if>
+        <if test="type != null">#{type},</if>
+        <if test="userId != null and userId != '' ">#{userId},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="edit" parameterType="Lawyer">
+        update lawyer_lawyer
+        <set>
+            <if test="name != null and name != '' ">`name` = #{name},</if>
+            <if test="phone != null and phone != '' "> phone = #{phone},</if>
+            <if test="area != null and area != '' ">area = #{area},</if>
+            <if test="areaCode != null and areaCode != '' ">area_code = #{areaCode},</if>
+            <if test="officeName != null and officeName != '' ">office_name = #{officeName},</if>
+            <if test="merit != null and merit != '' ">merit = #{merit},</if>
+            <if test="officeId != null and officeId != '' ">office_id = #{officeId},</if>
+            <if test="sex != null and sex &gt;= 0 ">sex = #{sex},</if>
+            <if test="licenseNum != null and licenseNum != '' ">license_num = #{licenseNum},</if>
+            <if test="lincensStartTime != null  ">lincens_start_time = #{lincensStartTime},</if>
+            <if test="lincensEndTime != null ">lincens_end_time = #{lincensEndTime},</if>
+            <if test="taskMax != null and taskMax &gt;= 0 ">task_max = #{taskMax},</if>
+            <if test="info != null and info != '' ">info = #{info},</if>
+            <if test="headImg != null and headImg != '' ">head_img = #{headImg},</if>
+            <if test="lincensImg != null and lincensImg != '' ">lincens_img = #{lincensImg},</if>
+            <if test="idUpImg != null and idUpImg != '' ">id_up_img = #{idUpImg},</if>
+            <if test="idDownImg != null and idDownImg != '' ">id_down_img = #{idDownImg},</if>
+            <if test="type != null">`type` = #{type},</if>
+            <if test="userId != null and userId != '' ">user_id = #{userId},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="status" parameterType="Lawyer">
+        update lawyer_lawyer
+        <set>
+            <if test="status != null and status != '' ">status = #{status},</if>
+            <if test="feedBack != null and feedBack != '' ">feed_back = #{feedBack},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="del" parameterType="Long">
+        delete from lawyer_lawyer where id = #{id}
+    </delete>
+
+
+</mapper>
