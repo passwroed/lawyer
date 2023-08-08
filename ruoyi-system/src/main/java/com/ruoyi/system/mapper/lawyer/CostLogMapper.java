@@ -15,6 +15,7 @@ public interface CostLogMapper {
     public List<Lawyer> list(Lawyer lawyer);
     //详情
     public Lawyer item(Long id);
+
     //新增
     public int add(Lawyer lawyer);
     //编辑
