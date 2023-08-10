@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Html;
 import com.ruoyi.system.mapper.lawyer.HelpMapper;
 import com.ruoyi.system.mapper.lawyer.HtmlMapper;
@@ -22,6 +24,9 @@ public class HtmlServiceImpl implements HtmlService {
     private HtmlMapper htmlMapper;
     @Override
     public List<Html> list(Html html) {
+        if (StringUtils.isNotNull(html.getPageNum()) && StringUtils.isNotNull(html.getPageSize())) {
+            PageHelper.startPage(html.getPageNum(), html.getPageSize());
+        }
         return htmlMapper.list(html);
     }
 

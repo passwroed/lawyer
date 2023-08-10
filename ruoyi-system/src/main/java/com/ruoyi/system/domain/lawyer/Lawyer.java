@@ -3,6 +3,8 @@ package com.ruoyi.system.domain.lawyer;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -13,11 +15,16 @@ import java.util.Date;
  */
 public class Lawyer extends BaseEntity {
     private Long id;
+    @NotBlank(message = "姓名不能为空")
     private String name;
+    @NotBlank(message = "手机号不能为空")
     private String phone;
     private String area;
+    @NotNull(message = "区划不能为空")
     private Integer areaCode;
+    @NotBlank(message = "律所名称不能为空")
     private String officeName;
+    @NotBlank(message = "擅长不能为空")
     private String merit;
     private Long officeId;
     private Integer status;
@@ -32,6 +39,7 @@ public class Lawyer extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date lincensEndTime;
     private Integer taskMax;
+    @NotBlank(message = "简介不能为空")
     private String info;
     private String headImg;
     private String lincensImg;

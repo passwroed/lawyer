@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Agency;
 import com.ruoyi.system.domain.lawyer.Area;
 import com.ruoyi.system.mapper.lawyer.AgencyMapper;
@@ -24,6 +26,9 @@ public class AgencyServiceImpl implements AgencyService {
     private AreaMapper areaMapper;
     @Override
     public List<Agency> list(Agency agency) {
+        if (StringUtils.isNotNull(agency.getPageNum()) && StringUtils.isNotNull(agency.getPageSize())) {
+            PageHelper.startPage(agency.getPageNum(), agency.getPageSize());
+        }
         return agencyMapper.list(agency);
     }
 

@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.PageUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Area;
 import com.ruoyi.system.domain.lawyer.Lawyer;
@@ -30,18 +32,34 @@ public class LawyerServiceImpl implements LawyerService {
     private AreaService areaService;
     @Override
     public List<Lawyer> list(Lawyer lawyer) {
-
+        if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
+            PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }
         return lawyerMapper.list(lawyer);
     }
 
     @Override
     public List<Lawyer> typeList(Lawyer lawyer) {
+        if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
+            PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }
         return lawyerMapper.typeList(lawyer);
     }
 
     @Override
     public List<Lawyer> selectUserId(Lawyer lawyer) {
+        if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
+            PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }
         return lawyerMapper.selectUserId(lawyer);
+    }
+
+    @Override
+    public List<Lawyer> listAndCost(Lawyer lawyer) {
+        if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
+            PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }
+        return lawyerMapper.listAndCost(lawyer);
     }
 
     @Override

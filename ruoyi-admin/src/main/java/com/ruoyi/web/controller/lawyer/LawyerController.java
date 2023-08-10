@@ -53,7 +53,7 @@ public class LawyerController extends BaseController {
     public TableDataInfo costList(@RequestBody Lawyer lawyer)
     {
         startPage();
-        List<Lawyer> list = lawyerService.list(lawyer);
+        List<Lawyer> list = lawyerService.listAndCost(lawyer);
         return getDataTable(list);
     }
     //新增

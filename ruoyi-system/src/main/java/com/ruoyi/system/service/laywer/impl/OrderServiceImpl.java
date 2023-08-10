@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Order;
 import com.ruoyi.system.mapper.lawyer.OrderMapper;
 import com.ruoyi.system.service.laywer.OrderService;
@@ -22,6 +24,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
     @Override
     public List<Order> list(Order order) {
+        if (StringUtils.isNotNull(order.getPageNum()) && StringUtils.isNotNull(order.getPageSize())) {
+            PageHelper.startPage(order.getPageNum(), order.getPageSize());
+        }
         return orderMapper.list(order);
     }
 

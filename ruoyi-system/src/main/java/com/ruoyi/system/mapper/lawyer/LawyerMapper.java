@@ -7,8 +7,8 @@ import com.ruoyi.system.domain.lawyer.Order;
 import java.util.List;
 
 /**
- * @ClassName : NewsMapper
- * @Description : 新闻
+ * @ClassName : LawyerMapper
+ * @Description : 律师
  * @Author : WANGKE
  * @Date: 2023-07-11 17:45
  */
@@ -18,6 +18,7 @@ public interface LawyerMapper {
     //详情
     public Lawyer item(Long id);
     public List<Lawyer> selectUserId(Lawyer lawyer);
+    public List<Lawyer> listAndCost(Lawyer lawyer);
     public List<Lawyer> typeList(Lawyer lawyer);
     //新增
     public int add(Lawyer lawyer);

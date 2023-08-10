@@ -1,5 +1,9 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.core.page.PageDomain;
+import com.ruoyi.common.core.page.TableSupport;
+import com.ruoyi.common.utils.PageUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Area;
 import com.ruoyi.system.domain.lawyer.Office;
@@ -25,6 +29,9 @@ public class OfficeServiceImpl implements OfficeService {
     private AreaMapper areaMapper;
     @Override
     public List<Office> list(Office office) {
+        if (StringUtils.isNotNull(office.getPageNum()) && StringUtils.isNotNull(office.getPageSize())) {
+            PageHelper.startPage(office.getPageNum(), office.getPageSize());
+        }
         return officeMapper.list(office);
     }
 

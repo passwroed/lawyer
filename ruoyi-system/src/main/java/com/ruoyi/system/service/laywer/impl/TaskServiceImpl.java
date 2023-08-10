@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Area;
 import com.ruoyi.system.domain.lawyer.Client;
@@ -39,6 +40,9 @@ public class TaskServiceImpl implements TaskService {
     private AreaMapper areaMapper;
     @Override
     public List<Task> list(Task task) {
+        if (StringUtils.isNotNull(task.getPageNum()) && StringUtils.isNotNull(task.getPageSize())) {
+            PageHelper.startPage(task.getPageNum(), task.getPageSize());
+        }
         return taskMapper.list(task);
     }
 

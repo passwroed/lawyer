@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Area;
 import com.ruoyi.system.domain.lawyer.Client;
 import com.ruoyi.system.mapper.lawyer.AreaMapper;
@@ -25,6 +27,9 @@ public class ClinetServiceImpl implements ClientService {
     private AreaMapper areaMapper;
     @Override
     public List<Client> list(Client client) {
+        if (StringUtils.isNotNull(client.getPageNum()) && StringUtils.isNotNull(client.getPageSize())) {
+            PageHelper.startPage(client.getPageNum(), client.getPageSize());
+        }
         return clientMapper.list(client);
     }
 

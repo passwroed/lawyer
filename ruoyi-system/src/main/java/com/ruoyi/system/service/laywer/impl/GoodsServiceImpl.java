@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Area;
 import com.ruoyi.system.domain.lawyer.Goods;
 import com.ruoyi.system.mapper.lawyer.AreaMapper;
@@ -23,6 +25,9 @@ public class GoodsServiceImpl implements GoodsService {
     private GoodsMapper goodsMapper;
     @Override
     public List<Goods> list(Goods goods) {
+        if (StringUtils.isNotNull(goods.getPageNum()) && StringUtils.isNotNull(goods.getPageSize())) {
+            PageHelper.startPage(goods.getPageNum(), goods.getPageSize());
+        }
         return goodsMapper.list(goods);
     }
 

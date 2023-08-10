@@ -2,6 +2,8 @@ package com.ruoyi.system.domain.lawyer;
 
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @ClassName : CostLog
  * @Description : 积分日志
@@ -10,10 +12,12 @@ import com.ruoyi.common.core.domain.BaseEntity;
  */
 public class CostLog extends BaseEntity {
     private Long id;
+    @NotNull(message = "积分不能为空")
     private Double cost;
     private Double sum;
     private Long taskId;
     private Long lawyerId;
+    @NotNull(message = "消费类型不能为空")
     private Integer type;
 
     public Long getId() {

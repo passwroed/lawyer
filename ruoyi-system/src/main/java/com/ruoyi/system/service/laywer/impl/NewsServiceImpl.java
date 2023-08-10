@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.News;
 import com.ruoyi.system.mapper.lawyer.NewsMapper;
 import com.ruoyi.system.service.laywer.NewsService;
@@ -20,6 +22,9 @@ public class NewsServiceImpl implements NewsService {
     private NewsMapper newsMapper;
     @Override
     public List<News> list(News news) {
+        if (StringUtils.isNotNull(news.getPageNum()) && StringUtils.isNotNull(news.getPageSize())) {
+            PageHelper.startPage(news.getPageNum(), news.getPageSize());
+        }
         return newsMapper.list(news);
     }
 

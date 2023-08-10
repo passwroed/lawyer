@@ -2,14 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.lawyer.Co">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.CostLogMapper">
 
     <resultMap type="CostLog" id="CostLogResult">
         <id     property="id"      column="id"      />
         <result property="cost"    column="cost"    />
         <result property="sum"     column="sum"     />
-        <result property="task_id"   column="task_id"   />
-        <result property="lawyer_id"    column="lawyer_id"    />
+        <result property="taskId"   column="task_id"   />
+        <result property="lawyerId"    column="lawyer_id"    />
         <result property="type"    column="type"    />
         <result property="createBy"      column="create_by"      />
         <result property="createTime"    column="create_time"    />
@@ -31,7 +31,21 @@
         where 1=1
         <if test="lawyerId != null">and lawyer_id = #{lawyerId}</if>
     </select>
-    <select id="item" parameterType="Task" resultMap="TaskResult">
+    <select id="newCostLog" parameterType="Long" resultMap="CostLogResult">
+        select id,
+        cost,
+        `sum`,
+        task_id,
+        lawyer_id,
+        `type`,
+        create_by,create_time
+        ,update_by,update_time
+        from lawyer_cost_log
+        where 1=1
+        <if test="lawyerId != null">and lawyer_id = #{id}</if>
+        ORDER BY create_time DESC LIMIT 1
+    </select>
+    <select id="item" parameterType="CostLog" resultMap="CostLogResult">
         select id,
         cost,
         `sum`,
@@ -46,20 +60,20 @@
     </select>
     <insert id="add" parameterType="CostLog">
         insert into lawyer_cost_log (
-        <if test="cost != null and cost != '' ">cost,</if>
-        <if test="sum != null and sum != '' ">sum,</if>
+        <if test="cost != null">cost,</if>
+        <if test="sum != null">sum,</if>
         <if test="taskId != null and taskId != '' ">task_id,</if>
         <if test="lawyerId != null and lawyerId != '' ">lawyer_id,</if>
-        <if test="type != null and type != '' ">type,</if>
+        <if test="type != null">type,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
         create_time
         )values(
-        <if test="cost != null and cost != '' ">#{cost},</if>
-        <if test="sum != null and sum != '' ">#{sum},</if>
+        <if test="cost != null">#{cost},</if>
+        <if test="sum != null">#{sum},</if>
         <if test="taskId != null and taskId != '' ">#{taskId},</if>
         <if test="lawyerId != null and lawyerId != '' ">#{lawyerId},</if>
-        <if test="type != null and type != '' ">#{type},</if>
+        <if test="type != null">#{type},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         sysdate()
@@ -69,11 +83,11 @@
     <update id="edit" parameterType="CostLog">
         update lawyer_cost_log
         <set>
-            <if test="cost != null and cost != '' ">cost = #{cost},</if>
-            <if test="sum != null and sum != '' ">sum = #{sum},</if>
+            <if test="cost != null">cost = #{cost},</if>
+            <if test="sum != null">sum = #{sum},</if>
             <if test="taskId != null and taskId != '' ">task_id = #{taskId},</if>
             <if test="lawyerId != null and lawyerId != '' ">lawyer_id = #{lawyerId},</if>
-            <if test="type != null and type != '' ">type =#{type},</if>
+            <if test="type != null">type =#{type},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()

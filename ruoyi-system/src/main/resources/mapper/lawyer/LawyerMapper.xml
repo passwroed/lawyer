@@ -15,6 +15,7 @@
         <result property="officeName"     column="office_name"      />
         <result property="officeId"     column="office_id"      />
         <result property="feedBack"     column="feed_back"      />
+        <result property="sunCost"     column="sunCost"      />
         <result property="sex"     column="sex"      />
         <result property="merit"     column="merit"      />
         <result property="licenseNum"     column="license_num"      />
@@ -67,31 +68,18 @@
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>
         <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
-        <if test="areaCode != null and areaCode != '' ">and area_code = #{areaCode}</if>
+        <if test="areaCode != null">and area_code = #{areaCode}</if>
+        <if test="params.areaCode != null">and CAST(area_code AS char) like concat('%', #{name}, '%')</if>
         <if test="phone != null and phone != '' ">and phone = #{phone}</if>
+        <if test="merit != null and merit != '' ">and merit like concat('%', #{merit}, '%')}</if>
     </select>
-    <select id="list" parameterType="Lawyer" resultMap="LawyerResult">
-        select id,
-        `name`,
-        phone,
-        area,
-        area_code,
-        office_name,
-        office_id,
-        `type`,
-        user_id,
-        create_by,
-        create_time,
-        update_by,
-        update_time,
-        remark
-        <if test="id != null and id != '' ">,info</if>
-        from lawyer_lawyer
-        where 1=1
-        <if test="id != null and id != '' ">and id = #{id}</if>
-        <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
-        <if test="areaCode != null and areaCode != '' ">and area_code = #{areaCode}</if>
-        <if test="phone != null and phone != '' ">and phone = #{phone}</if>
+    <select id="listAndCost" parameterType="Lawyer" resultMap="LawyerResult">
+        SELECT zb.*,glb.sum as sunCost FROM lawyer_lawyer zb
+        left join lawyer_cost_log glb on glb.id=(
+        select id from lawyer_cost_log t where t.lawyer_id=zb.id
+        order by t.create_time desc limit 1
+        ) WHERE 1=1
+        <if test="name != null and name != '' ">and zb.`name` like concat('%', #{name}, '%')</if>
     </select>
     <select id="item" parameterType="Long" resultMap="LawyerResult">
         select id,
