@@ -87,11 +87,12 @@ public class LawyerController extends BaseController {
     //编辑状态
 //    @PreAuthorize("@ss.hasPermi('lawyer:lawyer:edit')")
     @PostMapping("/status")
-    public AjaxResult status(@Validated @RequestBody Lawyer lawyer)
+    public AjaxResult status(@RequestBody Lawyer lawyer)
     {
         if (StringUtils.isNull(lawyer)||StringUtils.isNull(lawyer.getId())){
             return error("参数错误！");
         }
+
         lawyer.setUpdateBy(getUsername());
         if (lawyerService.status(lawyer) == 0){
             return error("状态变更失败，请联系管理员！");

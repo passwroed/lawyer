@@ -28,6 +28,8 @@ public class AgencyServiceImpl implements AgencyService {
     public List<Agency> list(Agency agency) {
         if (StringUtils.isNotNull(agency.getPageNum()) && StringUtils.isNotNull(agency.getPageSize())) {
             PageHelper.startPage(agency.getPageNum(), agency.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return agencyMapper.list(agency);
     }

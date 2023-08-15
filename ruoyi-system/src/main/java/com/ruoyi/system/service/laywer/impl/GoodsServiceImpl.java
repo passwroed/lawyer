@@ -27,6 +27,8 @@ public class GoodsServiceImpl implements GoodsService {
     public List<Goods> list(Goods goods) {
         if (StringUtils.isNotNull(goods.getPageNum()) && StringUtils.isNotNull(goods.getPageSize())) {
             PageHelper.startPage(goods.getPageNum(), goods.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return goodsMapper.list(goods);
     }

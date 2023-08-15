@@ -24,6 +24,8 @@ public class HelpServiceImpl implements HelpService {
     public List<Help> list(Help help) {
         if (StringUtils.isNotNull(help.getPageNum()) && StringUtils.isNotNull(help.getPageSize())) {
             PageHelper.startPage(help.getPageNum(), help.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return helpMapper.list(help);
     }

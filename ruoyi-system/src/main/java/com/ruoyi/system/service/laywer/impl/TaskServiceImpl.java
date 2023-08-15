@@ -42,6 +42,8 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> list(Task task) {
         if (StringUtils.isNotNull(task.getPageNum()) && StringUtils.isNotNull(task.getPageSize())) {
             PageHelper.startPage(task.getPageNum(), task.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return taskMapper.list(task);
     }

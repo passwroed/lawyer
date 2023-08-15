@@ -24,6 +24,8 @@ public class CostLogServiceImpl implements CostLogService {
     public List<CostLog> list(CostLog costLog) {
         if (StringUtils.isNotNull(costLog.getPageNum()) && StringUtils.isNotNull(costLog.getPageSize())) {
             PageHelper.startPage(costLog.getPageNum(), costLog.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return costLogMapper.list(costLog);
     }

@@ -24,6 +24,8 @@ public class NewsServiceImpl implements NewsService {
     public List<News> list(News news) {
         if (StringUtils.isNotNull(news.getPageNum()) && StringUtils.isNotNull(news.getPageSize())) {
             PageHelper.startPage(news.getPageNum(), news.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return newsMapper.list(news);
     }

@@ -1,14 +1,15 @@
 package com.ruoyi.system.service.laywer.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.utils.PageUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.lawyer.Area;
-import com.ruoyi.system.domain.lawyer.Lawyer;
-import com.ruoyi.system.domain.lawyer.Office;
-import com.ruoyi.system.domain.lawyer.Task;
+import com.ruoyi.system.domain.lawyer.*;
+import com.ruoyi.system.mapper.SysDictDataMapper;
+import com.ruoyi.system.mapper.lawyer.CostLogMapper;
 import com.ruoyi.system.mapper.lawyer.LawyerMapper;
 import com.ruoyi.system.service.laywer.AreaService;
+import com.ruoyi.system.service.laywer.CostLogService;
 import com.ruoyi.system.service.laywer.LawyerService;
 import com.ruoyi.system.service.laywer.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,16 @@ public class LawyerServiceImpl implements LawyerService {
     private OfficeService officeService;
     @Autowired
     private AreaService areaService;
+    @Autowired
+    private SysDictDataMapper sysDictDataMapper;
+    @Autowired
+    private CostLogMapper costLogMapper;
     @Override
     public List<Lawyer> list(Lawyer lawyer) {
         if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
             PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return lawyerMapper.list(lawyer);
     }
@@ -42,6 +49,8 @@ public class LawyerServiceImpl implements LawyerService {
     public List<Lawyer> typeList(Lawyer lawyer) {
         if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
             PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return lawyerMapper.typeList(lawyer);
     }
@@ -50,6 +59,8 @@ public class LawyerServiceImpl implements LawyerService {
     public List<Lawyer> selectUserId(Lawyer lawyer) {
         if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
             PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return lawyerMapper.selectUserId(lawyer);
     }
@@ -58,6 +69,8 @@ public class LawyerServiceImpl implements LawyerService {
     public List<Lawyer> listAndCost(Lawyer lawyer) {
         if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
             PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return lawyerMapper.listAndCost(lawyer);
     }
@@ -135,10 +148,27 @@ public class LawyerServiceImpl implements LawyerService {
         if (list.size() == 1){
             lawyer = list.get(0);
 
-            if (lawyer.getStatus()<1 && status<= 1){
+            if (lawyer.getStatus()<1 && status< 1){
                 lawyer.setStatus(status);
                 lawyer.setFeedBack(fb);
-            } else if (lawyer.getStatus()>=1 && status >1) {
+            }else if (lawyer.getStatus()<1 && status ==1) {
+                //如果原始状态-1，0,提交是1加积分
+                SysDictData q = sysDictDataMapper.selectDictDataById(43L);
+                if (StringUtils.isNull(q)){
+                    return 0;
+                }
+                CostLog costLog = new CostLog();
+                costLog.setLawyerId(lawyer.getId());
+                costLog.setCost(Double.valueOf(q.getDictValue()));
+                costLog.setType(0);
+                costLog.setSum(Double.valueOf(q.getDictValue()));
+                costLog.setRemark("新律所福利积分");
+                if (costLogMapper.add(costLog) == 0){
+                    return 0;
+                }
+                lawyer.setStatus(status);
+                lawyer.setFeedBack(fb);
+            }else if (lawyer.getStatus()>=1 && status >1) {
                 lawyer.setStatus(status);
             } else {
                 return 0;

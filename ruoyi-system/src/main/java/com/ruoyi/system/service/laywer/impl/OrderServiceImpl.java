@@ -26,6 +26,8 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> list(Order order) {
         if (StringUtils.isNotNull(order.getPageNum()) && StringUtils.isNotNull(order.getPageSize())) {
             PageHelper.startPage(order.getPageNum(), order.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return orderMapper.list(order);
     }

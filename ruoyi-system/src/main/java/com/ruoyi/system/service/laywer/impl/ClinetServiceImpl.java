@@ -29,6 +29,8 @@ public class ClinetServiceImpl implements ClientService {
     public List<Client> list(Client client) {
         if (StringUtils.isNotNull(client.getPageNum()) && StringUtils.isNotNull(client.getPageSize())) {
             PageHelper.startPage(client.getPageNum(), client.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return clientMapper.list(client);
     }

@@ -26,6 +26,8 @@ public class HtmlServiceImpl implements HtmlService {
     public List<Html> list(Html html) {
         if (StringUtils.isNotNull(html.getPageNum()) && StringUtils.isNotNull(html.getPageSize())) {
             PageHelper.startPage(html.getPageNum(), html.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return htmlMapper.list(html);
     }

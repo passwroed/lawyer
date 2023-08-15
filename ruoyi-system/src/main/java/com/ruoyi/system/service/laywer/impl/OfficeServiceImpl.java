@@ -31,6 +31,8 @@ public class OfficeServiceImpl implements OfficeService {
     public List<Office> list(Office office) {
         if (StringUtils.isNotNull(office.getPageNum()) && StringUtils.isNotNull(office.getPageSize())) {
             PageHelper.startPage(office.getPageNum(), office.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
         }
         return officeMapper.list(office);
     }
