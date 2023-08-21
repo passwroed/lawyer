@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.GoodsTypeMapper">
+
+    <resultMap type="GoodsType" id="GoodsTypeResult">
+        <id     property="id"      column="id"      />
+        <result property="name"     column="name"     />
+        <result property="type"   column="type"   />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="list" parameterType="GoodsType" resultMap="GoodsTypeResult">
+        select id,`name`,`type`,
+               create_by,create_time
+        ,update_by,update_time
+        from lawyer_goods_type
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+        <if test="name != null and name != '' ">and name like concat('%', #{name}, '%')</if>
+    </select>
+    <insert id="add" parameterType="GoodsType">
+        insert into lawyer_goods_type (
+        <if test="name != null and name != '' ">name,</if>
+        <if test="type != null and type != '' ">type,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="name != null and name != '' ">#{name},</if>
+        <if test="type != null and type != '' ">#{type},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="edit" parameterType="GoodsType">
+        update lawyer_goods_type
+        <set>
+            <if test="name != null and name != '' ">`name` = #{name},</if>
+            <if test="type != null and type != '' ">`type` = #{type},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="del" parameterType="Long">
+        delete from lawyer_goods_type where id = #{id}
+    </delete>
+
+
+</mapper>

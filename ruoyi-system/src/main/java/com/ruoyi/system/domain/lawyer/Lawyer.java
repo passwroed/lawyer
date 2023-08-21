@@ -22,7 +22,6 @@ public class Lawyer extends BaseEntity {
     private String area;
     @NotNull(message = "区划不能为空")
     private Integer areaCode;
-    @NotBlank(message = "律所名称不能为空")
     private String officeName;
     @NotBlank(message = "擅长不能为空")
     private String merit;

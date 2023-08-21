@@ -2,14 +2,8 @@ package com.ruoyi.system.service.laywer.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.domain.lawyer.Area;
-import com.ruoyi.system.domain.lawyer.Client;
-import com.ruoyi.system.domain.lawyer.Lawyer;
-import com.ruoyi.system.domain.lawyer.Task;
-import com.ruoyi.system.mapper.lawyer.AreaMapper;
-import com.ruoyi.system.mapper.lawyer.ClientMapper;
-import com.ruoyi.system.mapper.lawyer.LawyerMapper;
-import com.ruoyi.system.mapper.lawyer.TaskMapper;
+import com.ruoyi.system.domain.lawyer.*;
+import com.ruoyi.system.mapper.lawyer.*;
 import com.ruoyi.system.service.laywer.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,6 +32,8 @@ public class TaskServiceImpl implements TaskService {
     private ClientMapper clientMapper;
     @Autowired
     private AreaMapper areaMapper;
+    @Autowired
+    private OrderMapper orderMapper;
     @Override
     public List<Task> list(Task task) {
         if (StringUtils.isNotNull(task.getPageNum()) && StringUtils.isNotNull(task.getPageSize())) {
@@ -96,6 +92,17 @@ public class TaskServiceImpl implements TaskService {
             task.setLawyerName(lawyer.getName());
             task.setLawyerType(lawyer.getType());
         }
+        if (task.getPovinceId()>0){
+            String name = "";
+            Area area = new Area();
+            area = areaMapper.iDArea(Long.valueOf(task.getPovinceId()));
+            name = area.getName();
+            while (area.getPid() > 0){
+                area = areaMapper.pArea(Long.valueOf(area.getPid()));
+                name = area.getName()+"-"+name;
+            }
+            task.setPovince(name);
+        }
         SimpleDateFormat sdf= new SimpleDateFormat("yyyyMMddHHmmss");
         Random r=new Random();
         task.setNo(sdf.format(System.currentTimeMillis())+r.nextInt(10));//规则：时间+1位随机数
@@ -109,6 +116,16 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public int del(Long id) {
+        Task task = taskMapper.item(id);
+        if (StringUtils.isNull(task)||StringUtils.isNotNull(task.getFastLawyerId())||StringUtils.isNotNull(task.getLawyerId())){
+            return 0;
+        }
+        Order order = new Order();
+        order.setTaskNo(task.getNo());
+        List<Order> list = orderMapper.list(order);
+        if (list.size()>0){
+            return 0;
+        }
         return taskMapper.del(id);
     }
 }

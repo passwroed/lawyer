@@ -1,6 +1,8 @@
 package com.ruoyi.system.domain.lawyer;
 
 import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.jackson.DesensitizationData;
+import com.ruoyi.common.jackson.DesensitizationEnum;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -20,12 +22,15 @@ public class Task extends BaseEntity {
     @NotNull(message = "任务类型不能为空")
     private Integer type;
     private Integer status;
+    private Integer payStatus;
+    private String orderNo;
     private Long cid;
     @NotBlank(message = "客户不能为空")
     private String cName;
     private Long pid;
     private String pName;
     @NotBlank(message = "客户手机号不能为空")
+//    @DesensitizationData(function = DesensitizationEnum.MOBILE_PHONE)
     private String phone;
     @NotBlank(message = "需求不能为空")
     private String need;
@@ -33,6 +38,7 @@ public class Task extends BaseEntity {
     private Long povinceId;
     private String povince;
     private Double money;
+    private Double profit;
     private Double cost;
     private String content;
     private Integer isHall;
@@ -41,6 +47,9 @@ public class Task extends BaseEntity {
     private String lawyerName;
     private Integer lawyerType;
     private Integer willing;
+    private Long FastLawyerId;
+    private String FastLawyerName;
+    private Integer FastLawyerType;
 
     public Long getId() {
         return id;
@@ -82,6 +91,22 @@ public class Task extends BaseEntity {
         this.status = status;
     }
 
+    public Integer getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(Integer payStatus) {
+        this.payStatus = payStatus;
+    }
+
+    public String getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
+    }
+
     public Long getCid() {
         return cid;
     }
@@ -96,6 +121,22 @@ public class Task extends BaseEntity {
 
     public void setcName(String cName) {
         this.cName = cName;
+    }
+
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    public String getpName() {
+        return pName;
+    }
+
+    public void setpName(String pName) {
+        this.pName = pName;
     }
 
     public String getPhone() {
@@ -202,19 +243,35 @@ public class Task extends BaseEntity {
         this.willing = willing;
     }
 
-    public Long getPid() {
-        return pid;
+    public Long getFastLawyerId() {
+        return FastLawyerId;
     }
 
-    public void setPid(Long pid) {
-        this.pid = pid;
+    public void setFastLawyerId(Long fastLawyerId) {
+        FastLawyerId = fastLawyerId;
     }
 
-    public String getpName() {
-        return pName;
+    public String getFastLawyerName() {
+        return FastLawyerName;
     }
 
-    public void setpName(String pName) {
-        this.pName = pName;
+    public void setFastLawyerName(String fastLawyerName) {
+        FastLawyerName = fastLawyerName;
+    }
+
+    public Integer getFastLawyerType() {
+        return FastLawyerType;
+    }
+
+    public void setFastLawyerType(Integer fastLawyerType) {
+        FastLawyerType = fastLawyerType;
+    }
+
+    public Double getProfit() {
+        return profit;
+    }
+
+    public void setProfit(Double profit) {
+        this.profit = profit;
     }
 }

@@ -5,6 +5,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Lawyer;
+import com.ruoyi.system.domain.lawyer.Task;
 import com.ruoyi.system.service.laywer.LawyerService;
 import com.ruoyi.system.service.laywer.LawyerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,11 @@ public class LawyerController extends BaseController {
         startPage();
         List<Lawyer> list = lawyerService.listAndCost(lawyer);
         return getDataTable(list);
+    }
+    @PostMapping("/item")
+    public AjaxResult item(@RequestBody Lawyer lawyer)
+    {
+        return success(lawyerService.item(lawyer.getId()));
     }
     //新增
 //    @PreAuthorize("@ss.hasPermi('lawyer:lawyer:add')")

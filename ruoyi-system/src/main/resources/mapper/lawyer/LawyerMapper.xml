@@ -67,6 +67,9 @@
         from lawyer_lawyer
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>
+        <if test="officeId != null and officeId != '' ">and office_id = #{officeId}</if>
+        <if test="type != null ">and type = #{type}</if>
+        <if test="status != null ">and status = #{status}</if>
         <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
         <if test="areaCode != null">and area_code = #{areaCode}</if>
         <if test="params.areaCode != null">and CAST(area_code AS char) like concat('%', #{name}, '%')</if>
@@ -158,8 +161,8 @@
         <if test="area != null and area != '' ">#{area},</if>
         <if test="areaCode != null and areaCode != '' ">#{areaCode},</if>
         <if test="officeName != null and officeName != '' ">#{officeName},</if>
-        <if test="merit != null and merit != '' ">#{merit},</if>
         <if test="officeId != null and officeId != '' ">#{officeId},</if>
+        <if test="merit != null and merit != '' ">#{merit},</if>
         <if test="sex != null and sex &gt;= 0 ">#{sex},</if>
         <if test="licenseNum != null and licenseNum != '' ">#{licenseNum},</if>
         <if test="lincensStartTime != null">#{lincensStartTime},</if>

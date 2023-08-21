@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @ClassName : OrderController
@@ -80,6 +82,8 @@ public class OrderController extends BaseController {
             List<Client> list = clientService.list(client);
             if (list.size()>0) {
                 return error("当前用户已被绑定");
+            }else {
+
             }
             client.setName(order.getTask().getcName());
             client.setCreateBy(getUsername());
@@ -105,9 +109,12 @@ public class OrderController extends BaseController {
             order.setPid(client.getPid());
             order.setpName(client.getPname());
         }
-
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyyMMddHHmmss");
+        Random r=new Random();
+        order.setNo(sdf.format(System.currentTimeMillis())+r.nextInt(10));//规则：时间+1位随机数
         //添加任务
         Task task = order.getTask();
+        task.setOrderNo(order.getNo());
         task.setName(goods.getName());
         if (taskService.add(task) == 0){
             return error("下单失败，请联系管理员！");

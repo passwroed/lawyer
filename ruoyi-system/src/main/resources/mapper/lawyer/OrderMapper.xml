@@ -46,6 +46,7 @@
         <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
             and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
         </if>
+        <if test="taskNo != null and taskNo != '' ">and task_no = #{taskNo}</if>
     </select>
     <select id="item" parameterType="Order" resultMap="OrderResult">
         select  id,
@@ -67,6 +68,7 @@
     <insert id="add" parameterType="Order">
         insert into lawyer_order (
         <if test="no != null and no != '' ">`no`,</if>
+        <if test="taskNo != null and taskNo != '' ">task_no,</if>
         <if test="goodsId != null and goodsId != '' ">goods_id,</if>
         <if test="goodsName != null and goodsName != '' ">goods_name,</if>
         <if test="clientId != null and clientId != '' ">client_id,</if>
@@ -80,6 +82,7 @@
         create_time
         )values(
         <if test="no != null and no != '' ">#{no},</if>
+        <if test="taskNo != null and taskNo != '' ">#{taskNo},</if>
         <if test="goodsId != null and goodsId != '' ">#{goodsId},</if>
         <if test="goodsName != null and goodsName != '' ">#{goodsName},</if>
         <if test="clientId != null and clientId != '' ">#{clientId},</if>

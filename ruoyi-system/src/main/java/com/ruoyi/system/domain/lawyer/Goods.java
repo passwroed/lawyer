@@ -13,9 +13,11 @@ public class Goods extends BaseEntity {
     private String name;
     private Integer type;
     private String sImage;
+    private String images;
     private Double money;
     private String info;
     private String notice;
+    private Integer status;
 
     public Long getId() {
         return id;
@@ -71,5 +73,21 @@ public class Goods extends BaseEntity {
 
     public void setNotice(String notice) {
         this.notice = notice;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.BannerMapper">
+
+    <resultMap type="Banner" id="BannerResult">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="image" column="image"/>
+        <result property="newsId" column="news_id"/>
+        <result property="url" column="url"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <select id="list" parameterType="Banner" resultMap="BannerResult">
+        select id,
+        title,
+        image,
+        news_id,
+        url,
+        create_by,create_time
+        ,update_by,update_time
+        from lawyer_banner
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+        <if test="title != null and title != '' ">and title like concat('%', #{title}, '%')</if>
+    </select>
+    <insert id="add" parameterType="Banner">
+        insert into lawyer_banner (
+        <if test="title != null and title != '' ">title,</if>
+        <if test="image != null and image != '' ">image,</if>
+        <if test="newsId != null and newsId != ''">news_id,</if>
+        <if test="url != null and url != ''">url,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="title != null and title != '' ">#{title},</if>
+        <if test="image != null and image != '' ">#{image},</if>
+        <if test="newsId != null and newsId != '' ">#{newsId},</if>
+        <if test="url != null and url != '' ">#{url},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="edit" parameterType="Banner">
+        update lawyer_banner
+        <set>
+            <if test="title != null and title != '' ">title = #{title},</if>
+            <if test="image != null and image != '' ">image = #{image},</if>
+            <if test="newsId != null and newsId != '' ">news_id = #{newsId},</if>
+            <if test="url != null and url != '' ">url = #{url},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="del" parameterType="Long">
+        delete
+        from lawyer_banner
+        where id = #{id}
+    </delete>
+
+
+</mapper>

@@ -39,9 +39,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int add(Order order) {
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyyMMddHHmmss");
-        Random r=new Random();
-        order.setNo(sdf.format(System.currentTimeMillis())+r.nextInt(10));//规则：时间+1位随机数
+
         return orderMapper.add(order);
     }
 

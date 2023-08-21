@@ -66,6 +66,18 @@ public class GoodsController extends BaseController {
         }
         return success("操作成功");
     }
+    @PostMapping("/setStatus")
+    public AjaxResult setStatus(@Validated @RequestBody Goods goods)
+    {
+        if (StringUtils.isNull(goods)||StringUtils.isNull(goods.getId())||StringUtils.isNull(goods.getStatus())){
+            return error("参数错误！");
+        }
+        goods.setUpdateBy(getUsername());
+        if (goodsService.edit(goods) == 0){
+            return error("编辑失败，请联系管理员！");
+        }
+        return success("操作成功");
+    }
     //删除
 //    @PreAuthorize("@ss.hasPermi('lawyer:goods:del')")
     @PostMapping("/del")
