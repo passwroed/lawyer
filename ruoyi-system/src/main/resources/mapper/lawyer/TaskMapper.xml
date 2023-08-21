@@ -10,14 +10,18 @@
         <result property="name" column="name"/>
         <result property="type" column="type"/>
         <result property="status" column="status"/>
+        <result property="payStatus" column="pay_status"/>
+        <result property="orderNo" column="order_no"/>
         <result property="cid" column="cid"/>
         <result property="cName" column="c_name"/>
         <result property="pid" column="pid"/>
         <result property="pName" column="p_name"/>
+        <result property="phone" column="phone"/>
         <result property="need" column="need"/>
         <result property="povinceId" column="povince_id"/>
         <result property="povince" column="povince"/>
         <result property="money" column="money"/>
+        <result property="profit" column="profit"/>
         <result property="cost" column="cost"/>
         <result property="content" column="content"/>
         <result property="isHall" column="is_hall"/>
@@ -25,6 +29,9 @@
         <result property="lawyerId" column="lawyer_id"/>
         <result property="lawyerName" column="lawyer_name"/>
         <result property="lawyerType" column="lawyer_type"/>
+        <result property="fastLawyerId" column="fast_lawyer_id"/>
+        <result property="fastLawyerName" column="fast_lawyer_name"/>
+        <result property="fastLawyerType" column="fast_lawyer_type"/>
         <result property="willing" column="willing"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
@@ -39,14 +46,18 @@
         `name`,
         `type`,
         status,
+        pay_status,
+        order_no,
         cid,
         c_name,
         pid,
         p_name,
+        phone,
         need,
         povince_id,
         povince,
         money,
+        profit,
         cost,
         content,
         is_hall,
@@ -54,9 +65,13 @@
         lawyer_id,
         lawyer_name,
         lawyer_type,
+        fast_lawyer_id,
+        fast_lawyer_name,
+        fast_lawyer_type,
         willing,
         create_by,create_time,
-        update_by,update_time
+        update_by,update_time,
+        remark
         from lawyer_task
         where 1=1
         <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
@@ -66,9 +81,17 @@
             and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
         </if>
         <if test="lawyerId != null">and lawyer_id = #{lawyerId}</if>
+        <if test="fastLawyerId == null">and fast_lawyer_id IS NULL</if>
+        <if test="fastLawyerId != null and fastLawyerId != 1 and fastLawyerId != 2">and fast_lawyer_id = #{fastLawyerId}</if>
+        <if test="fastLawyerId == 1">and fast_lawyer_id IS NOT NULL</if>
         <if test="status != null">and status = #{status}</if>
         <if test="no != null and no != '' ">and `no` like concat('%', #{no}, '%')</if>
         <if test="pName != null and pName != '' ">and p_name like concat('%', #{pName}, '%')</if>
+        <if test="cName != null and cName != '' ">and c_name like concat('%', #{cName}, '%')</if>
+        <if test="fastLawyerName != null">and fast_lawyer_name like concat('%', #{fastLawyerName}, '%')</if>
+        <if test="type != null">and type = #{type}</if>
+        <if test="fastLawyerType != null">and fast_lawyer_type = #{fastLawyerType}</if>
+        order by create_time desc
     </select>
     <select id="item" parameterType="Task" resultMap="TaskResult">
         select id,
@@ -76,14 +99,18 @@
         `name`,
         `type`,
         status,
+        pay_status,
+        order_no,
         cid,
         c_name,
         pid,
         p_name,
+        phone,
         need,
         povince_id,
         povince,
         money,
+        profit,
         cost,
         content,
         is_hall,
@@ -91,12 +118,52 @@
         lawyer_id,
         lawyer_name,
         lawyer_type,
+        fast_lawyer_id,
+        fast_lawyer_name,
+        fast_lawyer_type,
         willing,
         create_by,create_time,
-        update_by,update_time
+        update_by,update_time,
+        remark
         from lawyer_task
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>
+    </select>
+    <select id="itemNo" parameterType="Task" resultMap="TaskResult">
+        select id,
+        `no`,
+        `name`,
+        `type`,
+        status,
+        order_no,
+        pay_status,
+        cid,
+        c_name,
+        pid,
+        p_name,
+        phone,
+        need,
+        povince_id,
+        povince,
+        money,
+        profit,
+        cost,
+        content,
+        is_hall,
+        entrust,
+        lawyer_id,
+        lawyer_name,
+        lawyer_type,
+        fast_lawyer_id,
+        fast_lawyer_name,
+        fast_lawyer_type,
+        willing,
+        create_by,create_time,
+        update_by,update_time,
+        remark
+        from lawyer_task
+        where 1=1
+        <if test="no != null and no != '' ">and `no` = #{no}</if>
     </select>
     <insert id="add" parameterType="Task" useGeneratedKeys="true" keyProperty="id">
         insert into lawyer_task (
@@ -104,10 +171,13 @@
         <if test="name != null and name != '' ">`name`,</if>
         <if test="type != null and type != '' ">`type`,</if>
         <if test="status != null and status != '' ">status,</if>
+        <if test="payStatus != null and payStatus != '' ">pay_status,</if>
+        <if test="orderNo != null and orderNo != '' ">order_no,</if>
         <if test="cid != null and cid != '' ">cid,</if>
         <if test="cName != null and cName != '' ">c_name,</if>
         <if test="pid != null and pid != '' ">pid,</if>
         <if test="pName != null and pName != '' ">p_name,</if>
+        <if test="phone != null and phone != '' ">phone,</if>
         <if test="need != null and need != '' ">need,</if>
         <if test="povinceId != null and povinceId != '' ">povince_id,</if>
         <if test="povince != null and povince != '' ">povince,</if>
@@ -118,7 +188,10 @@
         <if test="entrust != null and entrust != '' ">entrust,</if>
         <if test="lawyerId != null and lawyerId != '' ">lawyer_id,</if>
         <if test="lawyerName != null and lawyerName != '' ">lawyer_name,</if>
-        <if test="lawyerType &gt;= 0">lawyer_type,</if>
+        <if test="lawyerType != null">lawyer_type,</if>
+        <if test="fastLawyerId != null and fastLawyerId != '' ">fast_lawyer_id,</if>
+        <if test="fastLawyerName != null and fastLawyerName != '' ">fast_lawyer_name,</if>
+        <if test="fastLawyerType != null">fast_lawyer_type,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
         create_time
@@ -127,10 +200,13 @@
         <if test="name != null and name != '' ">#{name},</if>
         <if test="type != null and type != '' ">#{type},</if>
         <if test="status != null and status != '' ">#{status},</if>
+        <if test="payStatus != null and payStatus != '' ">#{payStatus},</if>
+        <if test="orderNo!= null and orderNo != '' ">#{orderNo},</if>
         <if test="cid != null and cid != '' ">#{cid},</if>
         <if test="cName != null and cName != '' ">#{cName},</if>
         <if test="pid != null and pid != '' ">#{pid},</if>
         <if test="pName != null and pName != '' ">#{pName},</if>
+        <if test="phone != null and phone != '' ">#{phone},</if>
         <if test="need != null and need != '' ">#{need},</if>
         <if test="povinceId != null and povinceId != '' ">#{povinceId},</if>
         <if test="povince != null and povince != '' ">#{povince},</if>
@@ -141,7 +217,10 @@
         <if test="entrust != null and entrust != '' ">#{entrust},</if>
         <if test="lawyerId != null and lawyerId != '' ">#{lawyerId},</if>
         <if test="lawyerName != null and lawyerName != '' ">#{lawyerName},</if>
-        <if test="lawyerType &gt;= 0">#{lawyerType},</if>
+        <if test="lawyerType != null">#{lawyerType},</if>
+        <if test="fastLawyerId != null and fastLawyerId != '' ">#{fastLawyerId},</if>
+        <if test="fastLawyerName != null and fastLawyerName != '' ">#{fastLawyerName},</if>
+        <if test="fastLawyerType != null">#{fastLawyerType},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         sysdate()
@@ -152,11 +231,16 @@
         update lawyer_task
         <set>
             <if test="status != null and status != '' ">status = #{status},</if>
+            <if test="payStatus != null and payStatus != '' ">pay_status = #{payStatus},</if>
             <if test="lawyerId != null and lawyerId != '' ">lawyer_id = #{lawyerId},</if>
             <if test="lawyerName != null and lawyerName != '' ">lawyer_name = #{lawyerName},</if>
-            <if test="lawyerType &gt;= 0">lawyer_type = #{lawyerType},</if>
+            <if test="lawyerType != null">lawyer_type = #{lawyerType},</if>
+            <if test="fastLawyerId != null and fastLawyerId != '' ">fast_lawyer_id = #{fastLawyerId},</if>
+            <if test="fastLawyerName != null and fastLawyerName != '' ">fast_lawyer_name = #{fastLawyerName},</if>
+            <if test="fastLawyerType != null">fast_lawyer_type = #{fastLawyerType},</if>
             <if test="cost != null and cost != '' ">cost = #{cost},</if>
             <if test="content != null and content != '' ">content = #{content},</if>
+            <if test="profit != null and profit != '' ">profit = #{profit},</if>
             <if test="isHall != null and isHall != '' ">is_hall = #{isHall},</if>
             <if test="entrust != null and entrust != '' ">entrust = #{entrust},</if>
             <if test="willing != null and willing != '' ">willing = #{willing},</if>
