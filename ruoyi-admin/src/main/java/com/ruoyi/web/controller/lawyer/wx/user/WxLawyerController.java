@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * @ClassName : LawyerController
+ * @ClassName : WxLawyerLawyerController
  * @Description : 用户端律师
  * @Author : WANGKE
  * @Date: 2023-08-09 16:14

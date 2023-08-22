@@ -71,14 +71,14 @@ public class TaskController extends BaseController {
     @PostMapping("/myList")
     public TableDataInfo myList(@RequestBody Task task) {
         startPage();
-
+        task.setFastLawyerId(null);
         List<SysRole> listRole = getLoginUser().getUser().getRoles();
         for (SysRole role : listRole) {
             if (role.getRoleKey().equals("admin") || role.getRoleKey().equals("general")) {
                 task.setFastLawyerId(1l);
             }
         }
-        task.setFastLawyerId(null);
+
         if (StringUtils.isNull(task.getFastLawyerId()) || task.getFastLawyerId() != 1l) {
             Lawyer lawyer = new Lawyer();
             lawyer.setUserId(getUserId());

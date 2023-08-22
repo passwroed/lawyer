@@ -45,6 +45,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<Task> lawyer1list(Task task) {
+        return taskMapper.lawyer1list(task);
+    }
+
+    @Override
     public Task item(Long id) {
         return taskMapper.item(id);
     }
@@ -127,5 +132,10 @@ public class TaskServiceImpl implements TaskService {
             return 0;
         }
         return taskMapper.del(id);
+    }
+
+    @Override
+    public int reject(Long id) {
+        return taskMapper.reject(id);
     }
 }

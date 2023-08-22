@@ -9,7 +9,7 @@ import java.util.Set;
 
 /**
  * 登录用户身份权限
- * 
+ *
  * @author ruoyi
  */
 public class LoginUser implements UserDetails
@@ -70,6 +70,42 @@ public class LoginUser implements UserDetails
      * 用户信息
      */
     private SysUser user;
+    private String openId;
+    private Long lawyerId;
+    private Integer lawyerType;
+    private String lawyerName;
+
+    public String getLawyerName() {
+        return lawyerName;
+    }
+
+    public void setLawyerName(String lawyerName) {
+        this.lawyerName = lawyerName;
+    }
+
+    public Long getLawyerId() {
+        return lawyerId;
+    }
+
+    public void setLawyerId(Long lawyerId) {
+        this.lawyerId = lawyerId;
+    }
+
+    public Integer getLawyerType() {
+        return lawyerType;
+    }
+
+    public void setLawyerType(Integer lawyerType) {
+        this.lawyerType = lawyerType;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
 
     public LoginUser()
     {
@@ -144,7 +180,7 @@ public class LoginUser implements UserDetails
 
     /**
      * 指定用户是否解锁,锁定的用户无法进行身份验证
-     * 
+     *
      * @return
      */
     @JSONField(serialize = false)
@@ -156,7 +192,7 @@ public class LoginUser implements UserDetails
 
     /**
      * 指示是否已过期的用户的凭据(密码),过期的凭据防止认证
-     * 
+     *
      * @return
      */
     @JSONField(serialize = false)
@@ -168,7 +204,7 @@ public class LoginUser implements UserDetails
 
     /**
      * 是否可用 ,禁用的用户不能身份验证
-     * 
+     *
      * @return
      */
     @JSONField(serialize = false)

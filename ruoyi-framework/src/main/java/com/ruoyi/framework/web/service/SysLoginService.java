@@ -1,6 +1,11 @@
 package com.ruoyi.framework.web.service;
 
 import javax.annotation.Resource;
+
+import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.system.domain.lawyer.Lawyer;
+import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.service.laywer.LawyerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,9 +34,12 @@ import com.ruoyi.framework.security.context.AuthenticationContextHolder;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysUserService;
 
+import java.util.List;
+import java.util.Random;
+
 /**
  * 登录校验方法
- * 
+ *
  * @author ruoyi
  */
 @Component
@@ -45,16 +53,20 @@ public class SysLoginService
 
     @Autowired
     private RedisCache redisCache;
-    
+
     @Autowired
     private ISysUserService userService;
 
     @Autowired
     private ISysConfigService configService;
+    @Autowired
+    private SysUserMapper userMapper;
+    @Autowired
+    private LawyerService lawyerService;
 
     /**
      * 登录验证
-     * 
+     *
      * @param username 用户名
      * @param password 密码
      * @param code 验证码
@@ -96,13 +108,16 @@ public class SysLoginService
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         recordLoginInfo(loginUser.getUserId());
+        loginUser.setLawyerId(13L);
+        loginUser.setLawyerName("名称");
+        loginUser.setLawyerType(0);
         // 生成token
         return tokenService.createToken(loginUser);
     }
 
     /**
      * 校验验证码
-     * 
+     *
      * @param username 用户名
      * @param code 验证码
      * @param uuid 唯一标识
@@ -163,6 +178,82 @@ public class SysLoginService
             AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_FAIL, MessageUtils.message("login.blocked")));
             throw new BlackListException();
         }
+    }
+    /**
+     * 微信登录
+     *
+     * @param decryptResult 登录凭据 只能用一次
+     * @return
+     */
+    public String wxLogin(String decryptResult){
+        //字符串转json
+        JSONObject jsonObject = JSONObject.parseObject(decryptResult);
+        //        String unionid = jsonObject.getString("unionid");
+        String openId = jsonObject.getString("openId");
+        System.out.println("openId"+openId);
+        //获取nickName
+        String nickName = getStringRandom(16);// 生成16位随机昵称
+        //获取头像
+        //        String avatarUrl = jsonObject.getString("avatarUrl");
+        String avatarUrl = "";
+        //还可以获取其他信息
+        //依据openid判别数据库中是否有该用户
+        //依据openid查询用户信息
+        SysUser wxUser = userMapper.selectWxUserByOpenId(openId);
+        //假如查不到，则新增，查到了，则更新
+        SysUser user = new SysUser();
+        if (wxUser == null) {
+            // 新增
+            user.setUserName(getStringRandom(16));// 生成16位随机用户名
+            user.setNickName(nickName);
+            user.setAvatar(avatarUrl);
+            //            wxUser.setUnionId(unionid);
+            user.setOpenId(openId);
+            user.setCreateTime(DateUtils.getNowDate());
+            //新增 用户
+            userMapper.insertUser(user);
+        }else {
+            //更新
+            user = wxUser;
+            user.setNickName(nickName);
+            user.setAvatar(avatarUrl);
+            user.setUpdateTime(DateUtils.getNowDate());
+            userMapper.updateUser(user);
+        }
+        //组装token信息
+        LoginUser loginUser = new LoginUser();
+        loginUser.setOpenId(openId);
+        //假如有的话设置
+        loginUser.setUser(user);
+        loginUser.setUserId(user.getUserId());
+        Lawyer lawyer = new Lawyer();
+        lawyer.setUserId(user.getUserId());
+        List<Lawyer> lawyerList = lawyerService.selectUserId(lawyer);
+        if (lawyerList.size()>0&&StringUtils.isNotNull(lawyerList.get(0).getId())){
+            loginUser.setLawyerId(lawyerList.get(0).getId());
+            loginUser.setLawyerType(lawyerList.get(0).getType());
+            loginUser.setLawyerName(lawyerList.get(0).getName());
+        }
+        // 生成token
+        return tokenService.createToken(loginUser);
+    }
+    //生成随机用户名，数字和字母组成,
+    public static String getStringRandom(int length) {
+        String val = "";
+        Random random = new Random();
+        //参数length，表明生成几位随机数
+        for (int i = 0; i < length; i++) {
+            String charOrNum = random.nextInt(2) % 2 == 0 ? "char" : "num";
+            //输出字母仍是数字
+            if ("char".equalsIgnoreCase(charOrNum)) {
+                //输出是大写字母仍是小写字母
+                int temp = random.nextInt(2) % 2 == 0 ? 65 : 97;
+                val += (char) (random.nextInt(26) + temp);
+            } else if ("num".equalsIgnoreCase(charOrNum)) {
+                val += String.valueOf(random.nextInt(10));
+            }
+        }
+        return val;
     }
 
     /**

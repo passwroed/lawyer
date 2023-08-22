@@ -91,6 +91,48 @@
         <if test="fastLawyerName != null">and fast_lawyer_name like concat('%', #{fastLawyerName}, '%')</if>
         <if test="type != null">and type = #{type}</if>
         <if test="fastLawyerType != null">and fast_lawyer_type = #{fastLawyerType}</if>
+        <if test="isHall != null">and is_hall = #{isHall}</if>
+        <if test="payStatus != null">and pay_status = #{payStatus}</if>
+        <if test="povinceId != null">and CAST(povince_id AS char) like concat('%', #{povinceId}, '%')</if>
+        order by create_time desc
+    </select>
+
+    <select id="lawyer1list" parameterType="Task" resultMap="TaskResult">
+        select id,
+        `no`,
+        `name`,
+        `type`,
+        status,
+        pay_status,
+        order_no,
+        cid,
+        c_name,
+        pid,
+        p_name,
+        phone,
+        need,
+        povince_id,
+        povince,
+        money,
+        profit,
+        cost,
+        content,
+        is_hall,
+        entrust,
+        lawyer_id,
+        lawyer_name,
+        lawyer_type,
+        fast_lawyer_id,
+        fast_lawyer_name,
+        fast_lawyer_type,
+        willing,
+        create_by,create_time,
+        update_by,update_time,
+        remark
+        from lawyer_task
+        where (is_hall = 1 and status = 5)  or (status = 4 and lawyer_id = #{lawyerId})
+        <if test="povinceId != null and povinceId != 0">and CAST(povince_id AS char) like concat('%', #{povinceId}, '%')</if>
+        <if test="type != null">and type = #{type}</if>
         order by create_time desc
     </select>
     <select id="item" parameterType="Task" resultMap="TaskResult">
@@ -250,7 +292,10 @@
         </set>
         where id = #{id}
     </update>
-
+    <update id="reject" parameterType="Long">
+        update lawyer_task SET lawyer_type = NULL ,lawyer_name = NULL,lawyer_id = NULL,status = 3
+        where id = #{id}
+    </update>
     <delete id="del" parameterType="Long">
         delete
         from lawyer_task

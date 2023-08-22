@@ -93,12 +93,19 @@ public class BaseController
     protected TableDataInfo errorDataTable()
     {
         TableDataInfo rspData = new TableDataInfo();
-        rspData.setCode(HttpStatus.SUCCESS);
+        rspData.setCode(HttpStatus.ERROR);
         rspData.setMsg("查询失败");
         rspData.setTotal(0);
         return rspData;
     }
-
+    protected TableDataInfo errorDataTable(String msg)
+    {
+        TableDataInfo rspData = new TableDataInfo();
+        rspData.setCode(HttpStatus.ERROR);
+        rspData.setMsg(msg);
+        rspData.setTotal(0);
+        return rspData;
+    }
     /**
      * 返回成功
      */
@@ -207,5 +214,16 @@ public class BaseController
     public String getUsername()
     {
         return getLoginUser().getUsername();
+    }
+    public Long getLawyerId()
+    {
+        return getLoginUser().getLawyerId();
+    }
+    public Integer getLawyerType()
+    {
+        return getLoginUser().getLawyerType();
+    }
+    public String getLawyerName(){
+        return getLoginUser().getLawyerName();
     }
 }

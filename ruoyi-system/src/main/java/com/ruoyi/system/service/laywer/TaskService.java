@@ -12,6 +12,7 @@ import java.util.List;
  */
 public interface TaskService {
     public List<Task> list(Task task);
+    public List<Task> lawyer1list(Task task);
     //详情
     public Task item(Long id);
     //新增
@@ -20,4 +21,5 @@ public interface TaskService {
     public int edit(Task task);
     //删除
     public int del(Long id);
+    public int reject(Long id);
 }

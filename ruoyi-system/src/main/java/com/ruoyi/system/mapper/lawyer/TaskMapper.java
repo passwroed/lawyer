@@ -13,6 +13,7 @@ import java.util.List;
 public interface TaskMapper {
     //列表
     public List<Task> list(Task task);
+    public List<Task> lawyer1list(Task task);
     //详情
     public Task item(Long id);
     public Task itemNo(String taskNo);
@@ -22,4 +23,5 @@ public interface TaskMapper {
     public int edit(Task task);
     //删除
     public int del(Long id);
+    public int reject(Long id);
 }

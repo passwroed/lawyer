@@ -19,7 +19,7 @@ import java.util.List;
 
 
 /**
- * @ClassName : LawyerController
+ * @ClassName : WxLawyerLawyerController
  * @Description : 律师
  * @Author : WANGKE
  * @Date: 2023-07-11 16:57
