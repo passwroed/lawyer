@@ -1,16 +1,20 @@
 package com.ruoyi.web.controller.system;
 
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.ruoyi.common.config.WxAppConfig;
+import com.ruoyi.common.annotation.Anonymous;
+import com.ruoyi.common.config.WxLawyerAppConfig;
+import com.ruoyi.common.config.WxUserAppConfig;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sign.Base64;
 import com.ruoyi.system.domain.WxLoginBody;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,10 +50,14 @@ public class SysLoginController {
     @Autowired
     private SysPermissionService permissionService;
     @Autowired
-    private WxAppConfig wxAppConfig;
+    private WxLawyerAppConfig wxLawyerAppConfig;
+
+    @Autowired
+    private WxUserAppConfig wxUserAppConfig;
 
     @Autowired
     private RestTemplate restTemplate;
+
     /**
      * 登录方法
      *
@@ -96,33 +104,95 @@ public class SysLoginController {
         List<SysMenu> menus = menuService.selectMenuTreeByUserId(userId);
         return AjaxResult.success(menuService.buildMenus(menus));
     }
+    @Anonymous
+    @PostMapping("/wxLawyerLogin")
+    public AjaxResult wxLawyerLogin(@RequestBody WxLoginBody wxLoginBody) {
+        String loginCode = wxLoginBody.getLoginCode();
+        String phoneCode = wxLoginBody.getPhoneCode();
+        //WXContent.APPID是自定义的全局变量
+        String tokenUrl = String.format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", wxLawyerAppConfig.getAppId(), wxLawyerAppConfig.getAppSecret());
+        String tokenRes = restTemplate.getForObject(tokenUrl, String.class);
+        JSONObject tokenObject = JSONObject.parseObject(tokenRes);
+        //获取手机号
+        String phoneUrl = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + tokenObject.getString("access_token");
+        //封装请求体
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("code", phoneCode);
 
-    @PostMapping("/wxLogin")
-    public AjaxResult wxLogin(@RequestBody WxLoginBody wxLoginBody) {
-        String code = wxLoginBody.getCode();
-        //秘钥
-        String encryptedIv = wxLoginBody.getEncryptedIv();
-        //加密数据
-        String encryptedData = wxLoginBody.getEncryptedData();
+        //封装请求头
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(paramMap,headers);
+        JSONObject phoneObject = JSONObject.parseObject(restTemplate.postForEntity(phoneUrl, httpEntity,String.class).getBody());
+        System.out.println(phoneObject.toString());
+        String phone = "";
+        if (phoneObject.getInteger("errcode") != 0) {
+
+            return AjaxResult.error("微信登录失败！");
+        } else {
+            phone = phoneObject.getJSONObject("phone_info").getString("phoneNumber");
+        }
+
         //向微信服务器发送恳求获取用户信息
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + wxAppConfig.getAppId() + "&secret=" + wxAppConfig.getAppSecret() + "&js_code=" + code + "&grant_type=authorization_code";
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + wxLawyerAppConfig.getAppId() + "&secret=" + wxLawyerAppConfig.getAppSecret() + "&js_code=" + loginCode + "&grant_type=authorization_code";
+        String res = restTemplate.getForObject(url, String.class);
+        JSONObject jsonObject = JSONObject.parseObject(res);
+        System.out.println(jsonObject.toString());
+        //获取session_key和openid
+        String sessionKey = jsonObject.getString("session_key");
+        String openid = jsonObject.getString("openid");
+        if (StringUtils.isNull(jsonObject.getInteger("errcode"))){
+            //假如解析成功,获取token
+            String token = loginService.wxLawyerLogin(openid,phone);
+            AjaxResult ajax = AjaxResult.success();
+            ajax.put(Constants.TOKEN, token);
+            return ajax;
+        } else {
+            return AjaxResult.error("微信登录失败！");
+        }
+    }
+
+    @Anonymous
+    @PostMapping("/wxUserLogin")
+    public AjaxResult wxUserLogin(@RequestBody WxLoginBody wxLoginBody) {
+        String loginCode = wxLoginBody.getLoginCode();
+        String phoneCode = wxLoginBody.getPhoneCode();
+        //WXContent.APPID是自定义的全局变量
+        String tokenUrl = String.format("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", wxUserAppConfig.getAppId(), wxUserAppConfig.getAppSecret());
+        String tokenRes = restTemplate.getForObject(tokenUrl, String.class);
+        JSONObject tokenObject = JSONObject.parseObject(tokenRes);
+        //获取手机号
+        String phoneUrl = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + tokenObject.getString("access_token");
+        //封装请求体
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("code", phoneCode).toString();
+
+        //封装请求头
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(paramMap,headers);
+        JSONObject phoneObject = JSONObject.parseObject(restTemplate.postForEntity(phoneUrl, httpEntity,String.class).getBody());
+
+        String phone = "";
+        if (phoneObject.getInteger("errcode") != 0) {
+            return AjaxResult.error("微信登录失败！");
+        } else {
+            phone = phoneObject.getJSONObject("phone_info").getString("phoneNumber");
+        }
+
+        //向微信服务器发送恳求获取用户信息
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + wxUserAppConfig.getAppId() + "&secret=" + wxUserAppConfig.getAppSecret() + "&js_code=" + loginCode + "&grant_type=authorization_code";
         String res = restTemplate.getForObject(url, String.class);
         JSONObject jsonObject = JSONObject.parseObject(res);
         //获取session_key和openid
         String sessionKey = jsonObject.getString("session_key");
         String openid = jsonObject.getString("openid");
-        //解密
-        String decryptResult = "";
-        try {
-            //假如没有绑定微信敞开渠道，解析结果是没有unionid的。
-            decryptResult = decrypt(sessionKey, encryptedIv, encryptedData);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return AjaxResult.error("微信登录失败！");
-        }
-        if (StringUtils.hasText(decryptResult)) {
+
+        if (jsonObject.getInteger("errcode") == 0){
             //假如解析成功,获取token
-            String token = loginService.wxLogin(decryptResult);
+            String token = loginService.wxUserLogin(openid, phone);
             AjaxResult ajax = AjaxResult.success();
             ajax.put(Constants.TOKEN, token);
             return ajax;

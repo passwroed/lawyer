@@ -9,17 +9,19 @@ ruoyi:
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: /Users/wangke/outher_project/wcc/lawyer/file
-#  profile: /www/wwwroot/java_project/uploadPath
+#  profile: /Users/wangke/outher_project/wcc/lawyer/file
+  profile: /www/wwwroot/java_project/uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
   captchaType: math
 
-wx-app:
-  appId: wxae5813756948397b
-  appSecret: 662faf6ab9e7d635bcda30478f10b333
-
+wx-user-app:
+  appId: wxe72e52a581110877
+  appSecret: 32dcc25799489f8c9aede7052cbe789a
+wx-lawyer-app:
+  appId: wxca18f4697687b04b
+  appSecret: c031df87e0b08824edbc5eec0a8fc660
 
 # 开发环境配置
 server:

@@ -180,44 +180,69 @@ public class SysLoginService
         }
     }
     /**
-     * 微信登录
+     * 用户微信登录
      *
-     * @param decryptResult 登录凭据 只能用一次
+     * @param openId 登录凭据 只能用一次
      * @return
      */
-    public String wxLogin(String decryptResult){
-        //字符串转json
-        JSONObject jsonObject = JSONObject.parseObject(decryptResult);
-        //        String unionid = jsonObject.getString("unionid");
-        String openId = jsonObject.getString("openId");
-        System.out.println("openId"+openId);
-        //获取nickName
-        String nickName = getStringRandom(16);// 生成16位随机昵称
-        //获取头像
-        //        String avatarUrl = jsonObject.getString("avatarUrl");
-        String avatarUrl = "";
+    public String wxUserLogin(String openId,String phone){
         //还可以获取其他信息
         //依据openid判别数据库中是否有该用户
         //依据openid查询用户信息
-        SysUser wxUser = userMapper.selectWxUserByOpenId(openId);
+        SysUser wxUser = userMapper.selectWxUserByPhone(phone);
         //假如查不到，则新增，查到了，则更新
         SysUser user = new SysUser();
         if (wxUser == null) {
             // 新增
             user.setUserName(getStringRandom(16));// 生成16位随机用户名
-            user.setNickName(nickName);
-            user.setAvatar(avatarUrl);
-            //            wxUser.setUnionId(unionid);
+            user.setNickName("微信用户");// 生成16位随机用户名
             user.setOpenId(openId);
-            user.setCreateTime(DateUtils.getNowDate());
+            user.setPhonenumber(phone);
             //新增 用户
             userMapper.insertUser(user);
         }else {
             //更新
             user = wxUser;
-            user.setNickName(nickName);
-            user.setAvatar(avatarUrl);
-            user.setUpdateTime(DateUtils.getNowDate());
+            user.setOpenId(openId);
+            user.setPhonenumber(phone);
+            userMapper.updateUser(user);
+        }
+        //组装token信息
+        LoginUser loginUser = new LoginUser();
+        loginUser.setOpenId(openId);
+        //假如有的话设置
+        loginUser.setUser(user);
+        loginUser.setUserId(user.getUserId());
+
+        // 生成token
+        return tokenService.createToken(loginUser);
+    }
+
+    /**
+     * 律师微信登录
+     *
+     * @param openId 登录凭据 只能用一次
+     * @return
+     */
+    public String wxLawyerLogin(String openId,String phone){
+        //还可以获取其他信息
+        //依据openid判别数据库中是否有该用户
+        //依据openid查询用户信息
+        SysUser wxUser = userMapper.selectWxUserByPhone(phone);
+        //假如查不到，则新增，查到了，则更新
+        SysUser user = new SysUser();
+        if (wxUser == null) {
+            // 新增
+            user.setUserName(getStringRandom(16));// 生成16位随机用户名
+            user.setOpenId(openId);
+            user.setNickName("微信用户");// 生成16位随机用户名
+            user.setPhonenumber(phone);
+            userMapper.insertUser(user);
+        }else {
+            //更新
+            user = wxUser;
+            user.setPhonenumber(phone);
+            user.setOpenId(openId);
             userMapper.updateUser(user);
         }
         //组装token信息

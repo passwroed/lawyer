@@ -4,14 +4,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
- * @ClassName : WxAppConfig
+ * @ClassName : WxLawyerAppConfig
  * @Description : 微信配置文件
  * @Author : WANGKE
  * @Date: 2023-08-22 00:37
  */
 @Component
-@ConfigurationProperties(prefix = "wx-app")
-public class WxAppConfig {
+@ConfigurationProperties(prefix = "wx-user-app")
+public class WxUserAppConfig {
     /** 微信appId */
     private String appId;
 
