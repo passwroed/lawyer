@@ -200,6 +200,7 @@ public class SysLoginService
             user.setPhonenumber(phone);
             //新增 用户
             userMapper.insertUser(user);
+            return null;
         }else {
             //更新
             user = wxUser;
@@ -210,6 +211,7 @@ public class SysLoginService
         //组装token信息
         LoginUser loginUser = new LoginUser();
         loginUser.setOpenId(openId);
+        loginUser.setOpenId(user.getOpenId());
         //假如有的话设置
         loginUser.setUser(user);
         loginUser.setUserId(user.getUserId());
@@ -238,6 +240,7 @@ public class SysLoginService
             user.setNickName("微信用户");// 生成16位随机用户名
             user.setPhonenumber(phone);
             userMapper.insertUser(user);
+            return null;
         }else {
             //更新
             user = wxUser;
@@ -251,6 +254,7 @@ public class SysLoginService
         //假如有的话设置
         loginUser.setUser(user);
         loginUser.setUserId(user.getUserId());
+        loginUser.setOpenId(user.getOpenId());
         Lawyer lawyer = new Lawyer();
         lawyer.setUserId(user.getUserId());
         List<Lawyer> lawyerList = lawyerService.selectUserId(lawyer);

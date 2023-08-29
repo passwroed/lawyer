@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.TaskLog;
 import com.ruoyi.system.mapper.lawyer.TaskLogMapper;
 import com.ruoyi.system.service.laywer.TaskLogService;
@@ -20,6 +22,11 @@ public class TaskLogServiceImpl implements TaskLogService {
     private TaskLogMapper taskLogMapper;
     @Override
     public List<TaskLog> list(TaskLog taskLog) {
+        if (StringUtils.isNotNull(taskLog.getPageNum()) && StringUtils.isNotNull(taskLog.getPageSize())) {
+            PageHelper.startPage(taskLog.getPageNum(), taskLog.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
+        }
         return taskLogMapper.list(taskLog);
     }
 

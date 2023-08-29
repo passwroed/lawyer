@@ -3,6 +3,7 @@ package com.ruoyi.system.service.laywer;
 import com.ruoyi.system.domain.lawyer.Order;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName : OrderService
@@ -15,10 +16,12 @@ public interface OrderService {
     public List<Order> list(Order order);
     //详情
     public Order item(Long id);
+    public Order itemNo(String no);
     //新增
-    public int add(Order order);
+    public Map add(Order order);
     //编辑
     public int edit(Order order);
     //删除
     public int del(Long id);
+    public Map refund(Order order);
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -122,10 +123,11 @@ public class OrderController extends BaseController {
         order.setTaskNo(task.getNo());
         order.setCreateBy(getUsername());
         order.setStatus(0);
-        if (orderService.add(order) == 0){
+        Map payMap = orderService.add(order);
+        if (StringUtils.isNull(payMap)){
             return error("下单失败，请联系管理员！");
         }
-        return success("操作成功");
+        return success(payMap);
     }
     //编辑
 //    @PreAuthorize("@ss.hasPermi('lawyer:order:edit')")

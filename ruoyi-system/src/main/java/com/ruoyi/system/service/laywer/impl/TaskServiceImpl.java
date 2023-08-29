@@ -46,6 +46,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<Task> lawyer1list(Task task) {
+        if (StringUtils.isNotNull(task.getPageNum()) && StringUtils.isNotNull(task.getPageSize())) {
+            PageHelper.startPage(task.getPageNum(), task.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
+        }
         return taskMapper.lawyer1list(task);
     }
 

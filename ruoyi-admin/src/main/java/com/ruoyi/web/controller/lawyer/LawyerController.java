@@ -2,13 +2,16 @@ package com.ruoyi.web.controller.lawyer;
 
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Lawyer;
 import com.ruoyi.system.domain.lawyer.Task;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.service.laywer.LawyerService;
 import com.ruoyi.system.service.laywer.LawyerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +32,8 @@ import java.util.List;
 public class LawyerController extends BaseController {
     @Autowired
     private LawyerService lawyerService;
+    @Autowired
+    private ISysUserService iSysUserService;
 
     //列表查询（条件查询）
 //    @PreAuthorize("@ss.hasPermi('lawyer:lawyer:list')")
@@ -102,6 +107,15 @@ public class LawyerController extends BaseController {
         lawyer.setUpdateBy(getUsername());
         if (lawyerService.status(lawyer) == 0){
             return error("状态变更失败，请联系管理员！");
+        }
+
+        if (lawyer.getStatus() == 1){
+            SysUser sysUser = iSysUserService.selectUserById(lawyer.getUserId());
+            if (StringUtils.isNotNull(sysUser)){
+                sysUser.setAvatar(lawyer.getHeadImg());
+                sysUser.setNickName(lawyer.getName());
+                iSysUserService.updateUser(sysUser);
+            }
         }
         return success("操作成功");
     }

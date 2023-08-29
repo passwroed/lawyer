@@ -21,6 +21,7 @@ public class Order extends BaseEntity {
     private Long pid;
     private String pName;
     private Double money;
+    private Integer type;
     private Integer status;
     private String taskNo;
 
@@ -120,5 +121,13 @@ public class Order extends BaseEntity {
 
     public void setTask(Task task) {
         this.task = task;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

@@ -1,9 +1,12 @@
 package com.ruoyi.web.controller.system;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ruoyi.system.domain.lawyer.Lawyer;
+import com.ruoyi.system.service.laywer.LawyerService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,6 +55,8 @@ public class SysUserController extends BaseController {
 
     @Autowired
     private ISysPostService postService;
+    @Autowired
+    private LawyerService lawyerService;
 
     /**
      * 获取用户列表
@@ -235,6 +240,16 @@ public class SysUserController extends BaseController {
 
     @PostMapping("/item")
     public AjaxResult item() {
-        return success(userService.selectUserList(getLoginUser().getUser()));
+        SysUser sysUser = userService.selectUserById(getLoginUser().getUserId());
+        sysUser.setPhonenumber(sysUser.getPhonenumber().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
+        Lawyer lawyer = new Lawyer();
+        lawyer.setUserId(getLoginUser().getUserId());
+        lawyer.setPhone(lawyer.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
+        List<Lawyer> list = lawyerService.selectUserId(lawyer);
+        Map map = (Map) sysUser;
+        if (list.size()>0){
+            map.put("lawyer",lawyer);
+        }
+        return success(map);
     }
 }

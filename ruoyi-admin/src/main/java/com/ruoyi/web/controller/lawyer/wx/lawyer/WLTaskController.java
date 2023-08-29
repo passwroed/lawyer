@@ -47,6 +47,7 @@ public class WLTaskController extends BaseController {
         if (StringUtils.isNull(getLawyerId())) {
             return errorDataTable("无权限，请使用律师账号登录");
         }
+        startPage();
         List<Task> list;
         if (getLawyerType() == 0) {
             //中台律师
@@ -210,6 +211,7 @@ public class WLTaskController extends BaseController {
         if (StringUtils.isNotNull(task.getStatus())){
             task1.setStatus(task.getStatus());
         }
+        startPage();
         List<Task> list = taskService.list(task);
         return getDataTable(list);
     }
@@ -221,6 +223,7 @@ public class WLTaskController extends BaseController {
         }
         TaskLog taskLog = new TaskLog();
         taskLog.setTaskId(task.getId());
+        startPage();
         List<TaskLog> list = taskLogService.list(taskLog);
         return getDataTable(list);
     }

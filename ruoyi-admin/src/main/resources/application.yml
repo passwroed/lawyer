@@ -22,6 +22,19 @@ wx-user-app:
 wx-lawyer-app:
   appId: wxca18f4697687b04b
   appSecret: c031df87e0b08824edbc5eec0a8fc660
+wx-v3-pay:
+  # 商户证书序列号
+  serialNo: 214A9629B7C7FC9EFBB0FD65722D167781C2A95E
+  #商户号
+  mchId: 1647425009
+  # APIv3密钥
+  apiV3Key: hiydaQWAGF15486AWljQuyt00czdojr4
+  # 支付通知回调
+  notifyUrl: https://www.homelawyers.cn/lawyer-admin/callback/payNotify
+  # 退款通知回调
+  refundNotifyUrl: https://www.homelawyers.cn/lawyer-admin/callback/refundNotify
+  # 密钥路径
+  keyPemPath: apiclient_key.pem
 
 # 开发环境配置
 server:
@@ -29,7 +42,7 @@ server:
   port: 12100
   servlet:
     # 应用的访问路径
-    context-path: /lawyer
+    context-path: /lawyer-admin
   tomcat:
     # tomcat的URI编码
     uri-encoding: UTF-8

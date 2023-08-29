@@ -14,6 +14,7 @@
         <result property="pid"     column="pid"     />
         <result property="pName"     column="p_name"     />
         <result property="money"     column="money"     />
+        <result property="type"     column="type"     />
         <result property="status"     column="status"     />
         <result property="taskNo"     column="task_no"     />
         <result property="createBy"      column="create_by"      />
@@ -33,6 +34,7 @@
         pid,
         p_name,
         money,
+        type,
         status,
         create_by,create_time,
         update_by,update_time
@@ -58,12 +60,31 @@
         pid,
         p_name,
         money,
+        type,
         status,
         create_by,create_time,
         update_by,update_time
         from lawyer_order
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>
+    </select>
+    <select id="itemNo" parameterType="Order" resultMap="OrderResult">
+        select  id,
+        `no`,
+        goods_id,
+        goods_name,
+        client_id,
+        client_name,
+        pid,
+        p_name,
+        money,
+        type,
+        status,
+        create_by,create_time,
+        update_by,update_time
+        from lawyer_order
+        where 1=1
+        <if test="no != null and no != '' ">and no = #{no}</if>
     </select>
     <insert id="add" parameterType="Order">
         insert into lawyer_order (
@@ -76,7 +97,8 @@
         <if test="pid != null and pid != '' ">pid,</if>
         <if test="pName != null and pName != '' ">p_name,</if>
         <if test="money != null and money != '' ">money,</if>
-        <if test="status != null and status != '' ">status,</if>
+        <if test="type != null">type,</if>
+        <if test="status != null">status,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
         create_time
@@ -90,6 +112,7 @@
         <if test="pid != null and pid != '' ">#{pid},</if>
         <if test="pName != null and pName != '' ">#{pName},</if>
         <if test="money != null and money != '' ">#{money},</if>
+        <if test="type != null">#{type},</if>
         <if test="status != null and status != '' ">#{status},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>

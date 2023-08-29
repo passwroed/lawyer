@@ -9,12 +9,16 @@ import com.ruoyi.common.config.WxLawyerAppConfig;
 import com.ruoyi.common.config.WxUserAppConfig;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.sign.Base64;
+import com.ruoyi.framework.manager.AsyncManager;
+import com.ruoyi.framework.manager.factory.AsyncFactory;
+import com.ruoyi.framework.web.service.TokenService;
 import com.ruoyi.system.domain.WxLoginBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,6 +37,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import static com.ruoyi.common.utils.SecurityUtils.getLoginUser;
+import static com.ruoyi.common.utils.SecurityUtils.getUsername;
 
 /**
  * 登录验证
@@ -81,7 +88,7 @@ public class SysLoginController {
      */
     @GetMapping("getInfo")
     public AjaxResult getInfo() {
-        SysUser user = SecurityUtils.getLoginUser().getUser();
+        SysUser user = getLoginUser().getUser();
         // 角色集合
         Set<String> roles = permissionService.getRolePermission(user);
         // 权限集合
@@ -145,6 +152,9 @@ public class SysLoginController {
         if (StringUtils.isNull(jsonObject.getInteger("errcode"))){
             //假如解析成功,获取token
             String token = loginService.wxLawyerLogin(openid,phone);
+            if (StringUtils.isNull(token)){
+                return AjaxResult.error("您尚未注册成为律师，请先完成注册");
+            }
             AjaxResult ajax = AjaxResult.success();
             ajax.put(Constants.TOKEN, token);
             return ajax;
@@ -193,6 +203,9 @@ public class SysLoginController {
         if (jsonObject.getInteger("errcode") == 0){
             //假如解析成功,获取token
             String token = loginService.wxUserLogin(openid, phone);
+            if (StringUtils.isNull(token)){
+                return AjaxResult.error("您尚未注册成为律师，请先完成注册");
+            }
             AjaxResult ajax = AjaxResult.success();
             ajax.put(Constants.TOKEN, token);
             return ajax;

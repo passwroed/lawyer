@@ -1,97 +1,50 @@
-package com.ruoyi.system.service.laywer.impl;
+package com.ruoyi.web.controller.common;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
-import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.config.WxLawyerAppConfig;
-import com.ruoyi.common.config.WxUserAppConfig;
-import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.wxPat.WechatPayConfig;
 import com.ruoyi.common.wxPat.WechatPayRequest;
-import com.ruoyi.system.domain.lawyer.Order;
-import com.ruoyi.system.mapper.lawyer.OrderMapper;
-import com.ruoyi.system.service.laywer.OrderService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.Signature;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import static com.ruoyi.common.utils.SecurityUtils.getLoginUser;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /**
- * @ClassName : OrderServiceImpl
- * @Description : 订单
+ * @ClassName : TestWxPayController
+ * @Description :
  * @Author : WANGKE
- * @Date: 2023-08-02 00:54
+ * @Date: 2023-08-26 02:50
  */
-@Service
-public class OrderServiceImpl implements OrderService {
-    @Autowired
-    private OrderMapper orderMapper;
+@RestController
+@RequestMapping("/testWxPay")
+public class TestWxPayController extends BaseController {
     @Resource
     private WechatPayConfig wechatPayConfig;
     @Resource
     private WxLawyerAppConfig wxLawyerAppConfig;
-    @Resource
-    private WxUserAppConfig wxUserAppConfig;
 
     @Resource
     private WechatPayRequest wechatPayRequest;
-    @Override
-    public List<Order> list(Order order) {
-        if (StringUtils.isNotNull(order.getPageNum()) && StringUtils.isNotNull(order.getPageSize())) {
-            PageHelper.startPage(order.getPageNum(), order.getPageSize());
-        }else {
-            PageHelper.startPage(1, 999);
-        }
-        return orderMapper.list(order);
-    }
 
-    @Override
-    public Order item(Long id) {
-        return orderMapper.item(id);
-    }
+    /**
+     * 预支付订单生成入口
+     */
+    @PostMapping("/transactions")
+    public AjaxResult transactions() {
 
-    @Override
-    public Order itemNo(String no) {
-        return null;
-    }
-
-    @Override
-    public Map add(Order order) {
-
-        if (orderMapper.add(order) == 0){
-            return null;
-        }
-
-        return payWxMap(order);
-    }
-
-    @Override
-    public int edit(Order order) {
-        return orderMapper.edit(order);
-    }
-
-    @Override
-    public int del(Long id) {
-        return orderMapper.del(id);
-    }
-
-
-    @Override
-    public Map refund(Order order) {
-        if (orderMapper.add(order) == 0){
-            return null;
-        }
-        return payWxMap(order);
-    }
-    private Map payWxMap(Order order){
         // 统一参数封装
         Map<String, Object> params = new HashMap<>(10);
         // 1,appid：公众号或移动应用的唯一标识符。
@@ -99,16 +52,16 @@ public class OrderServiceImpl implements OrderService {
         // 2,mch_id：商户号，由微信支付分配。
         params.put("mchid", wechatPayConfig.getMchId());
         // 3.description body：商品描述。
-        params.put("description", order.getGoodsName());
+        params.put("description", "测试商品名称");
         int outRefundNo = new Random().nextInt(999999999);
         // 4.out_trade_no：商户订单号，由商户自定义。
-        params.put("out_trade_no", order.getNo());
+        params.put("out_trade_no", ""+outRefundNo);
         // 5.notify_url：接收微信支付异步通知回调地址。
         params.put("notify_url", wechatPayConfig.getNotifyUrl());
         // 6.total_fee：订单总金额，单位为分。
         Map<String, Object> amountMap = new HashMap<>(4);
         // 金额单位为分
-        amountMap.put("total", order.getMoney()*100);
+        amountMap.put("total", 1);
         amountMap.put("currency", "CNY");
         params.put("amount", amountMap);
 
@@ -155,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
             paySign = Base64.getEncoder().encodeToString(sign.sign());
         } catch (Exception e) {
             System.out.println("支付模块_生成交易签名失败！" + e);
-            return null;
+            return error();
         }
 
 
@@ -173,6 +126,46 @@ public class OrderServiceImpl implements OrderService {
         map.put("signType", "RSA");
         // 签名
         map.put("paySign", paySign);
-        return map;
+        return success(map);
     }
+
+
+    /**
+     * 申请退款
+     */
+    @PostMapping("/refundOrder")
+    public AjaxResult refundOrder() {
+
+        System.out.println("根据订单号申请退款，订单号： {}"+ "要退款的订单号  这里写死");
+        // 退款请求路径
+        String url = "https://api.mch.weixin.qq.com/v3/refund/domestic/refunds";
+        // 设置参数
+        Map<String, Object> params = new HashMap<>(2);
+        // 要退款的订单编号订单编号
+        params.put("out_trade_no", "224773853");
+        // 商户自定义退款记录单号 用于退款记录的单号 跟退款订单号不是一样的
+        int outRefundNo = new Random().nextInt(999999999);
+        System.out.println("退款申请号：{"+outRefundNo+"}");
+        params.put("out_refund_no", outRefundNo + "");
+        // 退款原因
+        params.put("reason", "申请退款");
+        // 退款通知回调地址
+        params.put("notify_url", wechatPayConfig.getRefundNotifyUrl());
+
+        Map<String, Object> amountMap = new HashMap<>();
+        //退款金额，单位：分
+        amountMap.put("refund", 1);
+        //原订单金额，单位：分
+        amountMap.put("total", 1);
+        //退款币种
+        amountMap.put("currency", "CNY");
+        params.put("amount", amountMap);
+        String paramsStr = JSON.toJSONString(params);
+        // todo 插入一条退款记录到数据库
+        System.out.println("请求参数 ===> {}" + paramsStr);
+        String res = wechatPayRequest.wechatHttpPost(url, paramsStr);
+        System.out.println("退款结果：{"+res+"}");
+        return success(res);
+    }
+
 }

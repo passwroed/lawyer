@@ -13,6 +13,7 @@ import java.util.List;
 public interface OrderMapper {
     //列表
     public List<Order> list(Order order);
+    public Order itemNo(String no);
     //详情
     public Order item(Long id);
     //新增

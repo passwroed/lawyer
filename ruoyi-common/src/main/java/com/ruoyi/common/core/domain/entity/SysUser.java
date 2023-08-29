@@ -134,6 +134,7 @@ public class SysUser extends BaseEntity {
      */
     private String openId;
 
+
     public String getUnionId() {
         return unionId;
     }

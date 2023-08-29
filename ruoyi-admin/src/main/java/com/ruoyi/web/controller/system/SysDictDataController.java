@@ -3,6 +3,8 @@ package com.ruoyi.web.controller.system;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.annotation.Anonymous;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +29,7 @@ import com.ruoyi.system.service.ISysDictTypeService;
 
 /**
  * 数据字典信息
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -41,6 +43,7 @@ public class SysDictDataController extends BaseController
     private ISysDictTypeService dictTypeService;
 
     @PreAuthorize("@ss.hasPermi('system:dict:list')")
+    @Anonymous
     @GetMapping("/list")
     public TableDataInfo list(SysDictData dictData)
     {
@@ -51,6 +54,7 @@ public class SysDictDataController extends BaseController
 
     @Log(title = "字典数据", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:dict:export')")
+    @Anonymous
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysDictData dictData)
     {
@@ -63,6 +67,7 @@ public class SysDictDataController extends BaseController
      * 查询字典数据详细
      */
     @PreAuthorize("@ss.hasPermi('system:dict:query')")
+    @Anonymous
     @GetMapping(value = "/{dictCode}")
     public AjaxResult getInfo(@PathVariable Long dictCode)
     {
@@ -73,6 +78,7 @@ public class SysDictDataController extends BaseController
      * 根据字典类型查询字典数据信息
      */
     @GetMapping(value = "/type/{dictType}")
+    @Anonymous
     public AjaxResult dictType(@PathVariable String dictType)
     {
         List<SysDictData> data = dictTypeService.selectDictDataByType(dictType);

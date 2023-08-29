@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.common.annotation.Anonymous;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -24,7 +26,7 @@ import com.ruoyi.system.service.ISysDictTypeService;
 
 /**
  * 数据字典信息
- * 
+ *
  * @author ruoyi
  */
 @RestController
@@ -45,6 +47,7 @@ public class SysDictTypeController extends BaseController
 
     @Log(title = "字典类型", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:dict:export')")
+    @Anonymous
     @PostMapping("/export")
     public void export(HttpServletResponse response, SysDictType dictType)
     {
@@ -57,6 +60,7 @@ public class SysDictTypeController extends BaseController
      * 查询字典类型详细
      */
     @PreAuthorize("@ss.hasPermi('system:dict:query')")
+    @Anonymous
     @GetMapping(value = "/{dictId}")
     public AjaxResult getInfo(@PathVariable Long dictId)
     {
@@ -123,6 +127,7 @@ public class SysDictTypeController extends BaseController
      * 获取字典选择框列表
      */
     @GetMapping("/optionselect")
+    @Anonymous
     public AjaxResult optionselect()
     {
         List<SysDictType> dictTypes = dictTypeService.selectDictTypeAll();
