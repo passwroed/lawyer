@@ -83,12 +83,14 @@
         area,
         area_code,
         office_name,
+        head_img,
         merit,
         `type`,
         user_id
         from lawyer_lawyer
         where 1=1
         <if test="type != null ">and type = #{type}</if>
+        <if test="name != null and name != '' ">and zb.`name` like concat('%', #{name}, '%')</if>
     </select>
     <select id="listAndCost" parameterType="Lawyer" resultMap="LawyerResult">
         SELECT zb.*,glb.sum as sunCost FROM lawyer_lawyer zb

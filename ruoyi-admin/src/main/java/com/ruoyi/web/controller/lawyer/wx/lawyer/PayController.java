@@ -46,6 +46,6 @@ public class PayController extends BaseController {
         order.setType(1);
         order.setClientId(getLawyerId());
         order.setClientName(getLawyerName());
-        return success(orderService.refund(order, wxLawyerAppConfig.getAppId()));
+        return success(orderService.add(order, wxLawyerAppConfig.getAppId()));
     }
 }

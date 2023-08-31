@@ -110,7 +110,7 @@
         <if test="clientName != null and clientName != '' ">client_name,</if>
         <if test="pid != null and pid != '' ">pid,</if>
         <if test="pName != null and pName != '' ">p_name,</if>
-        <if test="money != null and money != '' ">money,</if>
+        <if test="money != null">money,</if>
         <if test="type != null">type,</if>
         <if test="status != null">status,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
@@ -126,7 +126,7 @@
         <if test="clientName != null and clientName != '' ">#{clientName},</if>
         <if test="pid != null and pid != '' ">#{pid},</if>
         <if test="pName != null and pName != '' ">#{pName},</if>
-        <if test="money != null and money != '' ">#{money},</if>
+        <if test="money != null">#{money},</if>
         <if test="type != null">#{type},</if>
         <if test="status != null">#{status},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>

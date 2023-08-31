@@ -23,5 +23,5 @@ public interface OrderService {
     public int edit(Order order);
     //删除
     public int del(Long id);
-    public Map refund(Order order,String appid);
+    public Map refund(Order order);
 }

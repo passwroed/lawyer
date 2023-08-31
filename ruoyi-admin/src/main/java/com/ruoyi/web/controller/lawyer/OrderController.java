@@ -42,6 +42,8 @@ public class OrderController extends BaseController {
     private TaskService taskService;
     @Autowired
     private AreaService areaService;
+    @Autowired
+    private OrderLogService orderLogService;
     //列表查询（条件查询）
 //    @PreAuthorize("@ss.hasPermi('lawyer:order:list')")
     @PostMapping("/list")
@@ -159,5 +161,23 @@ public class OrderController extends BaseController {
         }
         return success("操作成功");
     }
-
+    @PostMapping("/application")
+    public AjaxResult application(@RequestBody Order order)
+    {
+        if (StringUtils.isNull(order.getId())){
+            return error("参数错误！");
+        }
+        OrderLog orderLog = order.getOrderLog();
+        orderLog.setStatus(order.getStatus());
+        orderLog.setOrderId(order.getId());
+        orderLogService.add(orderLog);
+        if (order.getStatus()==6){
+            //同意退款
+            orderService.refund(order);
+        }
+        if (orderService.edit(order)==0){
+            return error("失败，请联系管理员！");
+        }
+        return success("操作成功");
+    }
 }

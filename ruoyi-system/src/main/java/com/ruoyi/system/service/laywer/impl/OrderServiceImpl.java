@@ -6,6 +6,7 @@ import com.alibaba.fastjson2.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.config.WxLawyerAppConfig;
 import com.ruoyi.common.config.WxUserAppConfig;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.wxPat.WechatPayConfig;
 import com.ruoyi.common.wxPat.WechatPayRequest;
@@ -57,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order itemNo(String no) {
-        return null;
+        return orderMapper.itemNo(no);
     }
 
     @Override
@@ -82,11 +83,9 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Map refund(Order order,String appid) {
-        if (orderMapper.add(order) == 0){
-            return null;
-        }
-        return payWxMap(order,appid);
+    public Map refund(Order order) {
+        refundOrder(order);
+        return null;
     }
     private Map payWxMap(Order order,String appid){
         // 统一参数封装
@@ -171,5 +170,36 @@ public class OrderServiceImpl implements OrderService {
         // 签名
         map.put("paySign", paySign);
         return map;
+    }
+    public void refundOrder(Order order) {
+
+        // 退款请求路径
+        String url = "https://api.mch.weixin.qq.com/v3/refund/domestic/refunds";
+        // 设置参数
+        Map<String, Object> params = new HashMap<>(2);
+        // 要退款的订单编号订单编号
+        params.put("out_trade_no", order.getNo());
+        // 商户自定义退款记录单号 用于退款记录的单号 跟退款订单号不是一样的
+        int outRefundNo = new Random().nextInt(999999999);
+        System.out.println("退款申请号：{"+outRefundNo+"}");
+        params.put("out_refund_no", outRefundNo + "");
+        // 退款原因
+        params.put("reason", order.getOrderLog().getReason());
+        // 退款通知回调地址
+        params.put("notify_url", wechatPayConfig.getRefundNotifyUrl());
+
+        Map<String, Object> amountMap = new HashMap<>();
+        //退款金额，单位：分
+        amountMap.put("refund", (int)(order.getMoney()*100));
+        //原订单金额，单位：分
+        amountMap.put("total", (int)(order.getMoney()*100));
+        //退款币种
+        amountMap.put("currency", "CNY");
+        params.put("amount", amountMap);
+        String paramsStr = JSON.toJSONString(params);
+        // todo 插入一条退款记录到数据库
+        System.out.println("请求参数 ===> {}" + paramsStr);
+        String res = wechatPayRequest.wechatHttpPost(url, paramsStr);
+        System.out.println("退款结果：{"+res+"}");
     }
 }

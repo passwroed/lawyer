@@ -9,8 +9,8 @@ ruoyi:
   # 实例演示开关
   demoEnabled: true
   # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: /Users/wangke/outher_project/wcc/lawyer/file
-#  profile: /www/wwwroot/java_project/uploadPath
+#  profile: /Users/wangke/outher_project/wcc/lawyer/file
+  profile: /www/wwwroot/java_project/uploadPath
   # 获取ip地址开关
   addressEnabled: false
   # 验证码类型 math 数字计算 char 字符验证
@@ -30,9 +30,9 @@ wx-v3-pay:
   # APIv3密钥
   apiV3Key: hiydaQWAGF15486AWljQuyt00czdojr4
   # 支付通知回调
-  notifyUrl: https://www.homelawyers.cn/lawyer-admin/callback/payNotify
+  notifyUrl: https://www.homelawyers.cn/lawyer/callback/payNotify
   # 退款通知回调
-  refundNotifyUrl: https://www.homelawyers.cn/lawyer-admin/callback/refundNotify
+  refundNotifyUrl: https://www.homelawyers.cn/lawyer/callback/refundNotify
   # 密钥路径
   keyPemPath: apiclient_key.pem
 

@@ -283,7 +283,7 @@ public class SysUserController extends BaseController {
         System.out.println(JSON.toJSONString(list));
         CostLog costLog = costLogService.newCostLog(lawyer.getId());
         if (StringUtils.isNotNull(costLog)){
-            map.put("cost",costLog.getCost());
+            map.put("cost",costLog.getSum());
         }
         if (list.size()>0){
             lawyer = list.get(0);

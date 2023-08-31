@@ -80,11 +80,13 @@ public class WxPayCallbackController {
                 String resource = bodyMap.get("resource").toString();
                 Map<String, Object> resourceMap = WechatPayValidator.decryptFromResource(resource, wechatPayConfig.getApiV3Key(), 1);
                 String orderNo = resourceMap.get("out_trade_no").toString();
+                System.out.println("--------- 订单NO："+orderNo+"-----");
                 // String transactionId = resourceMap.get("transaction_id").toString();
                 // 更改状态 获取订单号  修改订单状态为已支付
                 // TODO 根据订单号，做幂等处理，并且在对业务数据进行状态检查和处理之前，要采用数据锁进行并发控制，以避免函数重入造成的数据混乱
                 System.out.println("=========== 根据订单号，做幂等处理 ===========");
                 Order order = orderService.itemNo(orderNo);
+                System.out.println(order.getId());
                 order.setStatus(1);
                 if (order.getType()==1){
                     CostLog costLog = new CostLog();

@@ -43,6 +43,8 @@ public class WxOrderController extends BaseController {
     private TaskService taskService;
     @Resource
     private WxUserAppConfig wxUserAppConfig;
+    @Autowired
+    private OrderLogService orderLogService;
     @PostMapping("/add")
     public AjaxResult add(@Validated @RequestBody Order order)
     {
@@ -127,15 +129,47 @@ public class WxOrderController extends BaseController {
         return success(order);
     }
     //删除订单
+    @PostMapping("/del")
+    public AjaxResult del(@RequestBody Order order)
+    {
+        if (StringUtils.isNull(order.getId())){
+            return error("参数错误！");
+        }
+        order = orderService.item(order.getId());
+        if (order.getStatus()==-1||order.getStatus()==-0||order.getStatus()==4||order.getStatus()==7){
+            if (orderService.del(order.getId()) == 0){
+                return error("删除失败，请联系管理员！");
+            }
+        }else {
+            return error("订单进行中，暂不能删除订单");
+        }
+
+        return success("操作成功");
+    }
     //申请退款
     @PostMapping("/application")
     public AjaxResult application(@RequestBody Order order)
     {
-        order = orderService.item(order.getId());
-        if (StringUtils.isNotNull(order.getTaskNo())){
-            Task task = taskService.itemNo(order.getTaskNo());
-            order.setTask(task);
+        if (StringUtils.isNull(order.getId())||StringUtils.isNull(order.getOrderLog())){
+            return error("参数错误！");
         }
-        return success(order);
+        Order orderOld = orderService.item(order.getId());
+        if (orderOld.getClientId() != getUserId()){
+            return error("非本人不可操作！");
+        }
+        if (orderOld.getStatus()==5){
+            return error("已申请退款，请等待审核！");
+        }
+        Order order1 = new Order();
+        order1.setId(order.getId());
+        order1.setStatus(5);
+        if (orderService.edit(order1)==0){
+            return error("申请退款失败，请联系管理员！");
+        }
+        OrderLog orderLog = order.getOrderLog();
+        orderLog.setStatus(5);
+        orderLog.setOrderId(order.getId());
+        orderLogService.add(orderLog);
+        return success("操作成功");
     }
 }

@@ -30,6 +30,7 @@ public class Order extends BaseEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date payTime;
     private Task task;
+    private OrderLog orderLog;
 
     public Long getId() {
         return id;
@@ -149,5 +150,13 @@ public class Order extends BaseEntity {
 
     public void setsImage(String sImage) {
         this.sImage = sImage;
+    }
+
+    public OrderLog getOrderLog() {
+        return orderLog;
+    }
+
+    public void setOrderLog(OrderLog orderLog) {
+        this.orderLog = orderLog;
     }
 }

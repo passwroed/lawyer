@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.CollectibleMapper">
+
+    <resultMap type="Collectible" id="CollectibleResult">
+        <id     property="id"      column="id"      />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"     column="goods_name"     />
+        <result property="sImage"   column="s_image"   />
+        <result property="money"    column="money"    />
+        <result property="clientId"    column="client_id"    />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="list" parameterType="Collectible" resultMap="CollectibleResult">
+        select id,
+        goods_id,
+        goods_name,
+        s_image,
+        money,
+        client_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        from lawyer_collectible
+        where 1=1
+        <if test="clientId != null and clientId != '' ">and client_id = #{clientId}</if>
+    </select>
+    <insert id="add" parameterType="Collectible">
+        insert into lawyer_collectible (
+        <if test="goodsId != null and goodsId != '' ">goods_id,</if>
+        <if test="goodsName != null and goodsName != '' ">goods_name,</if>
+        <if test="sImage != null and sImage != '' ">s_image,</if>
+        <if test="money != null and money != '' ">money,</if>
+        <if test="clientId != null and clientId != '' ">client_id,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="goodsId != null and goodsId != '' ">#{goodsId},</if>
+        <if test="goodsName != null and goodsName != '' ">#{goodsName},</if>
+        <if test="sImage != null and sImage != '' ">#{sImage},</if>
+        <if test="money != null and money != '' ">#{money},</if>
+        <if test="clientId != null and clientId != '' ">#{clientId},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <delete id="del" parameterType="Long">
+        delete from lawyer_collectible where id = #{id}
+    </delete>
+
+
+</mapper>
