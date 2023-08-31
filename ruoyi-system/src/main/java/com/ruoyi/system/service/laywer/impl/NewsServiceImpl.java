@@ -31,6 +31,11 @@ public class NewsServiceImpl implements NewsService {
     }
 
     @Override
+    public News item(Long id) {
+        return newsMapper.item(id);
+    }
+
+    @Override
     public int add(News news) {
         return newsMapper.add(news);
     }

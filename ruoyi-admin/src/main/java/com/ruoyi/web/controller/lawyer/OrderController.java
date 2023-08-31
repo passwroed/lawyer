@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.lawyer;
 
+import com.ruoyi.common.config.WxUserAppConfig;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,8 @@ import java.util.Random;
 @RestController
 @RequestMapping("/order")
 public class OrderController extends BaseController {
-
+    @Resource
+    private WxUserAppConfig wxUserAppConfig;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -123,7 +126,7 @@ public class OrderController extends BaseController {
         order.setTaskNo(task.getNo());
         order.setCreateBy(getUsername());
         order.setStatus(0);
-        Map payMap = orderService.add(order);
+        Map payMap = orderService.add(order,wxUserAppConfig.getAppId());
         if (StringUtils.isNull(payMap)){
             return error("下单失败，请联系管理员！");
         }

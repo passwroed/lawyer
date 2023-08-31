@@ -7,9 +7,13 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.wxPat.WechatPayConfig;
 import com.ruoyi.common.wxPat.WechatPayValidator;
 import com.ruoyi.system.domain.lawyer.CostLog;
+import com.ruoyi.system.domain.lawyer.Goods;
 import com.ruoyi.system.domain.lawyer.Order;
+import com.ruoyi.system.domain.lawyer.Task;
 import com.ruoyi.system.service.laywer.CostLogService;
+import com.ruoyi.system.service.laywer.GoodsService;
 import com.ruoyi.system.service.laywer.OrderService;
+import com.ruoyi.system.service.laywer.TaskService;
 import com.wechat.pay.contrib.apache.httpclient.auth.Verifier;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -38,6 +44,10 @@ public class WxPayCallbackController {
 
     @Resource
     private CostLogService costLogService;
+    @Resource
+    private GoodsService goodsService;
+    @Resource
+    private TaskService taskService;
 
     @Resource
     private Verifier verifier;
@@ -76,10 +86,7 @@ public class WxPayCallbackController {
                 System.out.println("=========== 根据订单号，做幂等处理 ===========");
                 Order order = orderService.itemNo(orderNo);
                 order.setStatus(1);
-                if (orderService.edit(order) == 0){
-                    System.out.println("订单"+orderNo+" 状态变更识别");
-                }
-                if (StringUtils.isNotNull(order.getTask())&&order.getType()==1){
+                if (order.getType()==1){
                     CostLog costLog = new CostLog();
                     costLog.setType(2);
                     costLog.setCost(order.getMoney());
@@ -87,8 +94,22 @@ public class WxPayCallbackController {
                     if (costLogService.add(costLog) == 0){
                         System.out.println("订单"+orderNo+" 积分修改失败");
                     }
-                }
+                }else {
+                    Goods goods = goodsService.item(order.getGoodsId());
+                    if (StringUtils.isNotNull(goods)){
+                        //添加任务
+                        Task task = taskService.itemNo(order.getTaskNo());
+                        if (StringUtils.isNotNull(task)){
+                            task.setStatus(0);
+                            taskService.edit(task);
+                        }
+                    }
 
+                }
+                order.setPayTime(new Date());
+                if (orderService.edit(order) == 0){
+                    System.out.println("订单"+orderNo+" 状态变更识别");
+                }
             } finally {
                 //要主动释放锁
                 lock.unlock();

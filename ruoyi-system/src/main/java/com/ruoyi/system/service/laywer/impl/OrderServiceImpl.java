@@ -36,10 +36,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
     @Resource
     private WechatPayConfig wechatPayConfig;
-    @Resource
-    private WxLawyerAppConfig wxLawyerAppConfig;
-    @Resource
-    private WxUserAppConfig wxUserAppConfig;
+
 
     @Resource
     private WechatPayRequest wechatPayRequest;
@@ -64,13 +61,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Map add(Order order) {
+    public Map add(Order order,String appid) {
 
         if (orderMapper.add(order) == 0){
             return null;
         }
 
-        return payWxMap(order);
+        return payWxMap(order,appid);
     }
 
     @Override
@@ -85,17 +82,17 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Map refund(Order order) {
+    public Map refund(Order order,String appid) {
         if (orderMapper.add(order) == 0){
             return null;
         }
-        return payWxMap(order);
+        return payWxMap(order,appid);
     }
-    private Map payWxMap(Order order){
+    private Map payWxMap(Order order,String appid){
         // 统一参数封装
         Map<String, Object> params = new HashMap<>(10);
         // 1,appid：公众号或移动应用的唯一标识符。
-        params.put("appid", wxLawyerAppConfig.getAppId());
+        params.put("appid", appid);
         // 2,mch_id：商户号，由微信支付分配。
         params.put("mchid", wechatPayConfig.getMchId());
         // 3.description body：商品描述。
@@ -108,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
         // 6.total_fee：订单总金额，单位为分。
         Map<String, Object> amountMap = new HashMap<>(4);
         // 金额单位为分
-        amountMap.put("total", order.getMoney()*100);
+        amountMap.put("total", (int)(order.getMoney()*100));
         amountMap.put("currency", "CNY");
         params.put("amount", amountMap);
 
@@ -138,7 +135,7 @@ public class OrderServiceImpl implements OrderService {
         try {
             StringBuilder sb = new StringBuilder();
             // 应用id
-            sb.append(wxLawyerAppConfig.getAppId()).append("\n");
+            sb.append(appid).append("\n");
             // 支付签名时间戳
             sb.append(System.currentTimeMillis() / 1000).append("\n");
             // 随机字符串
@@ -162,7 +159,7 @@ public class OrderServiceImpl implements OrderService {
         // 将签名时数据和签名一起返回前端用于前端吊起支付
         Map<String, Object> map = new HashMap<>();
         // 小程序id
-        map.put("appId", wxLawyerAppConfig.getAppId());
+        map.put("appId", appid);
         // 时间戳
         map.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
         // 随机字符串

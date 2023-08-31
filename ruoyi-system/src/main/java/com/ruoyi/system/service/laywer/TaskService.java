@@ -15,6 +15,7 @@ public interface TaskService {
     public List<Task> lawyer1list(Task task);
     //详情
     public Task item(Long id);
+    public Task itemNo(String no);
     //新增
     public int add(Task task);
     //编辑

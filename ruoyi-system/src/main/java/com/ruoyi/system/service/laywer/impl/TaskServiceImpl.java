@@ -60,6 +60,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Task itemNo(String no) {
+        return taskMapper.itemNo(no);
+    }
+
+    @Override
     public int add(Task task) {
         if (StringUtils.isNotNull(task.getPovinceId()) && task.getPovinceId()>0){
             task.setPovince(areaMapper.iDArea(task.getPovinceId()).getName());

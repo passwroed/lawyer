@@ -37,7 +37,8 @@
         `role`,
         follow_status,
         feedback,create_by,create_time
-               ,update_by,update_time
+               ,update_by,update_time,
+        remark
         from lawyer_agency
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>

@@ -6,9 +6,11 @@ import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Lawyer;
+import com.ruoyi.system.domain.lawyer.Order;
 import com.ruoyi.system.domain.lawyer.Task;
 import com.ruoyi.system.domain.lawyer.TaskLog;
 import com.ruoyi.system.service.laywer.LawyerService;
+import com.ruoyi.system.service.laywer.OrderService;
 import com.ruoyi.system.service.laywer.TaskLogService;
 import com.ruoyi.system.service.laywer.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,8 @@ public class TaskController extends BaseController {
     private LawyerService lawyerService;
     @Autowired
     private TaskLogService taskLogService;
+    @Autowired
+    private OrderService orderService;
 
     //列表查询（条件查询）
 //    @PreAuthorize("@ss.hasPermi('lawyer:task:list')")
@@ -126,6 +130,18 @@ public class TaskController extends BaseController {
         if (StringUtils.isNull(task1) || task1.getStatus() > 0) {
             return error("任务id错误或者已被领取");
         }
+        Task task2 = taskService.item(task.getId());
+        if (StringUtils.isNotNull(task2.getOrderNo())){
+            Order order = new Order();
+            order.setNo(task2.getOrderNo());
+            order = orderService.itemNo(order.getNo());
+            if (StringUtils.isNotNull(order)){
+                order.setStatus(2);
+                orderService.edit(order);
+            }
+        }
+
+
         Task taskGet = new Task();
         taskGet.setId(task.getId());
         taskGet.setUpdateBy(getUsername());
@@ -217,11 +233,33 @@ public class TaskController extends BaseController {
         if (StringUtils.isNull(task)
                 || StringUtils.isNull(task.getId())
                 || StringUtils.isNull(task.getStatus())
-                || StringUtils.isNull(task.getContent())
-                || StringUtils.isNull(task.getWilling())) {
+                || StringUtils.isNull(task.getContent())) {
             return error("参数错误！");
         }
         Task task2 = taskService.item(task.getId());
+        if (StringUtils.isNotNull(task2.getOrderNo())&&task.getStatus()>1){
+            Order order = new Order();
+            order.setNo(task2.getOrderNo());
+            order = orderService.itemNo(order.getNo());
+            if (StringUtils.isNotNull(order)){
+                switch (task.getStatus()){
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        order.setStatus(2);
+                        break;
+                    case 8:
+                    case 9:
+                        order.setStatus(3);
+                        break;
+                }
+                orderService.edit(order);
+            }
+        }
+
         task.setFastLawyerId(task2.getFastLawyerId());
         task.setFastLawyerName(task2.getFastLawyerName());
         task.setFastLawyerType(task2.getFastLawyerType());

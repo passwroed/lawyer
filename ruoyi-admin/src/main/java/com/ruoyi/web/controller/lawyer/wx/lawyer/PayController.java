@@ -1,5 +1,7 @@
 package com.ruoyi.web.controller.lawyer.wx.lawyer;
 
+import com.ruoyi.common.config.WxLawyerAppConfig;
+import com.ruoyi.common.config.WxUserAppConfig;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Random;
 
@@ -26,7 +29,8 @@ import java.util.Random;
 public class PayController extends BaseController {
     @Autowired
     private OrderService orderService;
-
+    @Resource
+    private WxLawyerAppConfig wxLawyerAppConfig;
     @PostMapping("/recharge")
     public AjaxResult recharge(@RequestBody Order order)
     {
@@ -42,6 +46,6 @@ public class PayController extends BaseController {
         order.setType(1);
         order.setClientId(getLawyerId());
         order.setClientName(getLawyerName());
-        return success(orderService.refund(order));
+        return success(orderService.refund(order, wxLawyerAppConfig.getAppId()));
     }
 }

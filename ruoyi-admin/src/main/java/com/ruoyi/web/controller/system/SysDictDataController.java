@@ -66,7 +66,6 @@ public class SysDictDataController extends BaseController
     /**
      * 查询字典数据详细
      */
-    @PreAuthorize("@ss.hasPermi('system:dict:query')")
     @Anonymous
     @GetMapping(value = "/{dictCode}")
     public AjaxResult getInfo(@PathVariable Long dictCode)

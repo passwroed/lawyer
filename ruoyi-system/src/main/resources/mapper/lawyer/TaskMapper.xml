@@ -85,6 +85,7 @@
         <if test="fastLawyerId != null and fastLawyerId != 1 and fastLawyerId != 2">and fast_lawyer_id = #{fastLawyerId}</if>
         <if test="fastLawyerId == 1">and fast_lawyer_id IS NOT NULL</if>
         <if test="status != null">and status = #{status}</if>
+        <if test="status == null">and status != -1</if>
         <if test="no != null and no != '' ">and `no` like concat('%', #{no}, '%')</if>
         <if test="pName != null and pName != '' ">and p_name like concat('%', #{pName}, '%')</if>
         <if test="cName != null and cName != '' ">and c_name like concat('%', #{cName}, '%')</if>
@@ -93,7 +94,7 @@
         <if test="fastLawyerType != null">and fast_lawyer_type = #{fastLawyerType}</if>
         <if test="isHall != null">and is_hall = #{isHall}</if>
         <if test="payStatus != null">and pay_status = #{payStatus}</if>
-        <if test="povinceId != null">and CAST(povince_id AS char) like concat('%', #{povinceId}, '%')</if>
+        <if test="povinceId != null and povinceId != 0">and CAST(povince_id AS char) like concat('%', #{povinceId}, '%')</if>
         order by create_time desc
     </select>
 
@@ -133,6 +134,7 @@
         where (is_hall = 1 and status = 5)  or (status = 4 and lawyer_id = #{lawyerId})
         <if test="povinceId != null and povinceId != 0">and CAST(povince_id AS char) like concat('%', #{povinceId}, '%')</if>
         <if test="type != null">and type = #{type}</if>
+        <if test="status == null">status != -1</if>
         order by create_time desc
     </select>
     <select id="item" parameterType="Task" resultMap="TaskResult">

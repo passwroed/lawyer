@@ -74,7 +74,21 @@
         <if test="areaCode != null">and area_code = #{areaCode}</if>
         <if test="params.areaCode != null">and CAST(area_code AS char) like concat('%', #{name}, '%')</if>
         <if test="phone != null and phone != '' ">and phone = #{phone}</if>
-        <if test="merit != null and merit != '' ">and merit like concat('%', #{merit}, '%')}</if>
+        <if test="merit != null and merit != '' ">and merit like concat('%', #{merit}, '%')</if>
+    </select>
+    <select id="typeList" parameterType="Lawyer" resultMap="LawyerResult">
+        select id,
+        `name`,
+        phone,
+        area,
+        area_code,
+        office_name,
+        merit,
+        `type`,
+        user_id
+        from lawyer_lawyer
+        where 1=1
+        <if test="type != null ">and type = #{type}</if>
     </select>
     <select id="listAndCost" parameterType="Lawyer" resultMap="LawyerResult">
         SELECT zb.*,glb.sum as sunCost FROM lawyer_lawyer zb
@@ -119,13 +133,30 @@
         select id,
         `name`,
         phone,
+        area,
+        area_code,
+        office_name,
+        merit,
+        office_id,
+        status,
+        feed_back,
+        sex,
+        license_num,
+        lincens_start_time,
+        lincens_end_time,
+        task_max,
+        head_img,
+        lincens_img,
+        id_up_img,
+        id_down_img,
         `type`,
         user_id,
         create_by,
         create_time,
         update_by,
         update_time,
-        remark
+        remark,
+        info
         from lawyer_lawyer
         where status >= 1
         <if test="userId != null and userId != '' ">and user_id = #{userId}</if>

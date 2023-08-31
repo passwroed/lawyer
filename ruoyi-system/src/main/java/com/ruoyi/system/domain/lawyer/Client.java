@@ -18,6 +18,7 @@ public class Client extends BaseEntity {
     private String areaInfo;
     private Long pid;
     private String pname;
+    private Long userId;
 
     public Long getId() {
         return id;
@@ -89,5 +90,13 @@ public class Client extends BaseEntity {
 
     public void setPname(String pname) {
         this.pname = pname;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

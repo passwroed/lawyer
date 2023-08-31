@@ -1,8 +1,10 @@
 package com.ruoyi.system.domain.lawyer;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * @ClassName : Order
@@ -16,6 +18,7 @@ public class Order extends BaseEntity {
     @NotNull(message = "商品不能为空")
     private Long goodsId;
     private String goodsName;
+    private String sImage;
     private Long clientId;
     private String clientName;
     private Long pid;
@@ -24,7 +27,8 @@ public class Order extends BaseEntity {
     private Integer type;
     private Integer status;
     private String taskNo;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date payTime;
     private Task task;
 
     public Long getId() {
@@ -129,5 +133,21 @@ public class Order extends BaseEntity {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Date getPayTime() {
+        return payTime;
+    }
+
+    public void setPayTime(Date payTime) {
+        this.payTime = payTime;
+    }
+
+    public String getsImage() {
+        return sImage;
+    }
+
+    public void setsImage(String sImage) {
+        this.sImage = sImage;
     }
 }

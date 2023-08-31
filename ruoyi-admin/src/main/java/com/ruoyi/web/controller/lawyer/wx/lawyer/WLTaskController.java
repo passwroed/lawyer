@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,8 +61,19 @@ public class WLTaskController extends BaseController {
         } else {
             return errorDataTable("用户信息获取失败，请重新登陆");
         }
+        List<Task> returnlist = new ArrayList<>();
+        if (list.size() > 0 && StringUtils.isNull(task.getFastLawyerId())) {
+            for (Task task1 : list) {
+                if (StringUtils.isNotNull(task1.getPhone())) {
+                    task1.setPhone(task1.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
+                    returnlist.add(task1);
+                }
 
-        return getDataTable(list);
+            }
+        } else {
+            returnlist = list;
+        }
+        return getDataTable(returnlist);
     }
 
     @PostMapping("/item")
@@ -72,6 +84,9 @@ public class WLTaskController extends BaseController {
         task = taskService.item(task.getId());
         if (StringUtils.isNull(task) || StringUtils.isNull(task.getId())) {
             return error("查询错误");
+        }
+        if (task.getLawyerId() != getLawyerId() && task.getFastLawyerId() != getLawyerId()){
+            task.setPhone(task.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
         }
         return success(task);
     }
@@ -212,7 +227,7 @@ public class WLTaskController extends BaseController {
             task1.setStatus(task.getStatus());
         }
         startPage();
-        List<Task> list = taskService.list(task);
+        List<Task> list = taskService.list(task1);
         return getDataTable(list);
     }
 
@@ -233,8 +248,7 @@ public class WLTaskController extends BaseController {
         if (StringUtils.isNull(task)
                 || StringUtils.isNull(task.getId())
                 || StringUtils.isNull(task.getStatus())
-                || StringUtils.isNull(task.getContent())
-                || StringUtils.isNull(task.getWilling())) {
+                || StringUtils.isNull(task.getContent())) {
             return error("参数错误！");
         }
         Task task2 = taskService.item(task.getId());

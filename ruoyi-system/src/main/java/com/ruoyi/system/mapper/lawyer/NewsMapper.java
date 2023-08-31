@@ -14,7 +14,7 @@ import java.util.List;
 public interface NewsMapper {
     //列表
     public List<News> list(News news);
-
+    public News item(Long id);
     //新增
     public int add(News news);
     //编辑

@@ -14,6 +14,7 @@
         <result property="areaInfo"     column="area_info"     />
         <result property="pid"     column="pid"     />
         <result property="pname"     column="pname"     />
+        <result property="userId"     column="user_id"     />
         <result property="createBy"      column="create_by"      />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"      column="update_by"      />
@@ -31,6 +32,7 @@
         area_info,
         pid,
         pname,
+        user_id,
         create_by,create_time,
         update_by,update_time
         from lawyer_client
@@ -38,6 +40,7 @@
         <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
         <if test="phone != null and phone != '' ">and phone like concat('%', #{phone}, '%')</if>
         <if test="pid != null and pid != '' ">and pid = #{pid}</if>
+        <if test="userId != null and userId != '' ">and user_id = #{userId}</if>
     </select>
     <select id="item" parameterType="Client" resultMap="ClientResult">
         select id,
@@ -65,6 +68,7 @@
         <if test="areaInfo != null and areaInfo != '' ">area_info,</if>
         <if test="pid != null and pid != '' ">pid,</if>
         <if test="pname != null and pname != '' ">pname,</if>
+        <if test="userId != null and userId != '' ">user_id,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
         create_time
@@ -77,6 +81,7 @@
         <if test="areaInfo != null and areaInfo != '' ">#{areaInfo},</if>
         <if test="pid != null and pid != '' ">#{pid},</if>
         <if test="pname != null and pname != '' ">#{pname},</if>
+        <if test="userId != null and userId != '' ">#{userId},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         sysdate()
@@ -93,6 +98,7 @@
         <if test="areaInfo != null and areaInfo != '' ">area_info,</if>
         <if test="pid != null and pid != '' ">pid,</if>
         <if test="pname != null and pname != '' ">pname,</if>
+        <if test="userId != null and userId != '' ">user_id,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
         create_time
@@ -105,6 +111,7 @@
         <if test="areaInfo != null and areaInfo != '' ">#{areaInfo},</if>
         <if test="pid != null and pid != '' ">#{pid},</if>
         <if test="pname != null and pname != '' ">#{pname},</if>
+        <if test="userId != null and userId != '' ">#{userId},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         sysdate()
@@ -120,6 +127,7 @@
             <if test="area != null and area != '' ">area = #{area},</if>
             <if test="areaCode != null and areaCode != '' ">area_code = #{areaCode},</if>
             <if test="areaInfo != null and areaInfo != '' ">area_info = #{areaInfo},</if>
+            <if test="userId != null and userId != ''">user_id = #{userId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()

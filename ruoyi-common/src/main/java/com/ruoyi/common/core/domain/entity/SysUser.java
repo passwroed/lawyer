@@ -134,6 +134,33 @@ public class SysUser extends BaseEntity {
      */
     private String openId;
 
+    private String area;
+    private Integer areaCode;
+    private String licenseNum;
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public Integer getAreaCode() {
+        return areaCode;
+    }
+
+    public void setAreaCode(Integer areaCode) {
+        this.areaCode = areaCode;
+    }
+
+    public String getLicenseNum() {
+        return licenseNum;
+    }
+
+    public void setLicenseNum(String licenseNum) {
+        this.licenseNum = licenseNum;
+    }
 
     public String getUnionId() {
         return unionId;

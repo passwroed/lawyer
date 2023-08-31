@@ -5,7 +5,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson2.JSON;
+import com.ruoyi.system.domain.lawyer.Area;
+import com.ruoyi.system.domain.lawyer.CostLog;
 import com.ruoyi.system.domain.lawyer.Lawyer;
+import com.ruoyi.system.service.laywer.AreaService;
+import com.ruoyi.system.service.laywer.CostLogService;
 import com.ruoyi.system.service.laywer.LawyerService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +63,11 @@ public class SysUserController extends BaseController {
     @Autowired
     private LawyerService lawyerService;
 
+    @Autowired
+    private AreaService areaService;
+
+    @Autowired
+    private CostLogService costLogService;
     /**
      * 获取用户列表
      */
@@ -235,6 +245,28 @@ public class SysUserController extends BaseController {
         if (userService.updateUser(user) == 0){
             return error("操作失败，请联系管理员");
         }
+        Lawyer lawyer = new Lawyer();
+        if (StringUtils.isNotNull(user.getAreaCode())){
+            lawyer.setAreaCode(user.getAreaCode());
+            String name = "";
+            Area area = areaService.iDArea(Long.valueOf(lawyer.getAreaCode()));
+            name = area.getName();
+            while (area.getPid() > 0){
+                area = areaService.pArea(Long.valueOf(area.getPid()));
+                name = area.getName()+"-"+name;
+            }
+            lawyer.setArea(name);
+        }
+        if (StringUtils.isNotNull(user.getLicenseNum())){
+            lawyer.setLicenseNum(user.getLicenseNum());
+        }
+
+        lawyer.setUserId(getLoginUser().getUserId());
+        List<Lawyer> list = lawyerService.selectUserId(lawyer);
+        if (list.size()>0){
+            lawyer = list.get(0);
+            lawyerService.edit(lawyer);
+        }
         return success();
     }
 
@@ -244,11 +276,19 @@ public class SysUserController extends BaseController {
         sysUser.setPhonenumber(sysUser.getPhonenumber().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
         Lawyer lawyer = new Lawyer();
         lawyer.setUserId(getLoginUser().getUserId());
-        lawyer.setPhone(lawyer.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
+        System.out.println(JSON.toJSONString(sysUser));
+        Map map =  JSON.parseObject(JSON.toJSONString(sysUser), Map.class);;
+        System.out.println(JSON.toJSONString(lawyer));
         List<Lawyer> list = lawyerService.selectUserId(lawyer);
-        Map map = (Map) sysUser;
+        System.out.println(JSON.toJSONString(list));
+        CostLog costLog = costLogService.newCostLog(lawyer.getId());
+        if (StringUtils.isNotNull(costLog)){
+            map.put("cost",costLog.getCost());
+        }
         if (list.size()>0){
-            map.put("lawyer",lawyer);
+            lawyer = list.get(0);
+            lawyer.setPhone(sysUser.getPhonenumber().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
+            map.put("lawyer",JSON.parseObject(JSON.toJSONString(lawyer), Map.class));
         }
         return success(map);
     }

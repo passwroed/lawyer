@@ -13,9 +13,7 @@
     <select id="list" parameterType="Area" resultMap="AreaResult">
         select id,pid,`name`
         from lawyer_area
-        where 1=1
-        <if test="pid &gt; 0 and id &lt;= 0">and pid = #{pid}</if>
-        <if test="id &gt; 0">and id = #{id}</if>
+        where pid = #{pid}
     </select>
     <select id="pArea" parameterType="Long" resultMap="AreaResult">
         select id,pid,`name`

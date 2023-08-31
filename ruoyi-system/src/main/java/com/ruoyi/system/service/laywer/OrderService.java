@@ -18,10 +18,10 @@ public interface OrderService {
     public Order item(Long id);
     public Order itemNo(String no);
     //新增
-    public Map add(Order order);
+    public Map add(Order order,String appid);
     //编辑
     public int edit(Order order);
     //删除
     public int del(Long id);
-    public Map refund(Order order);
+    public Map refund(Order order,String appid);
 }

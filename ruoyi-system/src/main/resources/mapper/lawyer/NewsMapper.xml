@@ -28,6 +28,23 @@
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>
     </select>
+    <select id="item" parameterType="News" resultMap="NewsResult">
+        select id,
+        small_icon,
+        name,
+        type,
+        author,
+        synopsis,
+        info,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        from lawyer_news
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+    </select>
     <insert id="add" parameterType="News">
         insert into lawyer_news (
         <if test="smallIcon != null and smallIcon != '' ">small_icon,</if>

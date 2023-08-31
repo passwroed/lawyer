@@ -3,8 +3,10 @@ package com.ruoyi.framework.web.service;
 import javax.annotation.Resource;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.ruoyi.system.domain.lawyer.Client;
 import com.ruoyi.system.domain.lawyer.Lawyer;
 import com.ruoyi.system.mapper.SysUserMapper;
+import com.ruoyi.system.mapper.lawyer.ClientMapper;
 import com.ruoyi.system.service.laywer.LawyerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -61,6 +63,8 @@ public class SysLoginService
     private ISysConfigService configService;
     @Autowired
     private SysUserMapper userMapper;
+    @Autowired
+    private ClientMapper clientMapper;
     @Autowired
     private LawyerService lawyerService;
 
@@ -200,7 +204,17 @@ public class SysLoginService
             user.setPhonenumber(phone);
             //新增 用户
             userMapper.insertUser(user);
-            return null;
+            Client client = new Client();
+            client.setPhone(phone);
+            List<Client> list = clientMapper.list(client);
+            if (list.size()==0){
+                client.setName("微信用户");
+                client.setNickName("微信用户");
+                client.setPid(1L);
+                client.setPname("admin");
+                client.setUserId(user.getUserId());
+                clientMapper.add(client);
+            }
         }else {
             //更新
             user = wxUser;
@@ -237,10 +251,9 @@ public class SysLoginService
             // 新增
             user.setUserName(getStringRandom(16));// 生成16位随机用户名
             user.setOpenId(openId);
-            user.setNickName("微信用户");// 生成16位随机用户名
+            user.setNickName("微信律师用户");// 生成16位随机用户名
             user.setPhonenumber(phone);
             userMapper.insertUser(user);
-            return null;
         }else {
             //更新
             user = wxUser;
