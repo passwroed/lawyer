@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Msg;
 import com.ruoyi.system.mapper.lawyer.MsgMapper;
 import com.ruoyi.system.service.laywer.MsgService;
@@ -20,6 +22,11 @@ public class MsgServiceImpl implements MsgService {
     private MsgMapper msgMapper;
     @Override
     public List<Msg> list(Msg msg) {
+        if (StringUtils.isNotNull(msg.getPageNum()) && StringUtils.isNotNull(msg.getPageSize())) {
+            PageHelper.startPage(msg.getPageNum(), msg.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
+        }
         return msgMapper.list(msg);
     }
 

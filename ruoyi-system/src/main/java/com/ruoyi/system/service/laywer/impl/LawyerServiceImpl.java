@@ -76,6 +76,16 @@ public class LawyerServiceImpl implements LawyerService {
     }
 
     @Override
+    public List<Lawyer> headImageList(Lawyer lawyer) {
+        if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
+            PageHelper.startPage(lawyer.getPageNum(), lawyer.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
+        }
+        return lawyerMapper.headImageList(lawyer);
+    }
+
+    @Override
     public Lawyer item(Long id) {
         return lawyerMapper.item(id);
     }

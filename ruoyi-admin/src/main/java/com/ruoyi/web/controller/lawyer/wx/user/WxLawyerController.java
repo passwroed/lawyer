@@ -38,6 +38,14 @@ public class WxLawyerController extends BaseController {
         return getDataTable(list);
     }
     @Anonymous
+    @PostMapping("/headImageList")
+    public TableDataInfo headImageList(@RequestBody Lawyer lawyer)
+    {
+        startPage();
+        List<Lawyer> list = lawyerService.headImageList(lawyer);
+        return getDataTable(list);
+    }
+    @Anonymous
     @PostMapping("/item")
     public AjaxResult item(@RequestBody Lawyer lawyer)
     {

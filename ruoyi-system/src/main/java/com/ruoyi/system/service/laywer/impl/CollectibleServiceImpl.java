@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Collectible;
 import com.ruoyi.system.mapper.lawyer.CollectibleMapper;
 import com.ruoyi.system.service.laywer.CollectibleService;
@@ -20,6 +22,11 @@ public class CollectibleServiceImpl implements CollectibleService {
     private CollectibleMapper collectibleMapper;
     @Override
     public List<Collectible> list(Collectible collectible) {
+        if (StringUtils.isNotNull(collectible.getPageNum()) && StringUtils.isNotNull(collectible.getPageSize())) {
+            PageHelper.startPage(collectible.getPageNum(), collectible.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
+        }
         return collectibleMapper.list(collectible);
     }
 

@@ -20,6 +20,7 @@ public interface LawyerMapper {
     public List<Lawyer> selectUserId(Lawyer lawyer);
     public List<Lawyer> listAndCost(Lawyer lawyer);
     public List<Lawyer> typeList(Lawyer lawyer);
+    public List<Lawyer> headImageList(Lawyer lawyer);
     //新增
     public int add(Lawyer lawyer);
     //编辑

@@ -1,5 +1,7 @@
 package com.ruoyi.system.service.laywer.impl;
 
+import com.github.pagehelper.PageHelper;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.OrderLog;
 import com.ruoyi.system.mapper.lawyer.OrderLogMapper;
 import com.ruoyi.system.service.laywer.OrderLogService;
@@ -20,6 +22,11 @@ public class OrderLogServiceImpl implements OrderLogService {
     private OrderLogMapper orderLogMapper;
     @Override
     public List<OrderLog> list(OrderLog orderLog) {
+        if (StringUtils.isNotNull(orderLog.getPageNum()) && StringUtils.isNotNull(orderLog.getPageSize())) {
+            PageHelper.startPage(orderLog.getPageNum(), orderLog.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
+        }
         return orderLogMapper.list(orderLog);
     }
 

@@ -20,6 +20,7 @@ public interface LawyerService {
     //通过Userid获取详情
     public List<Lawyer> selectUserId(Lawyer lawyer);
     public List<Lawyer> listAndCost(Lawyer lawyer);
+    public List<Lawyer> headImageList(Lawyer lawyer);
     //详情
     public Lawyer item(Long id);
     //新增

@@ -92,6 +92,12 @@
         <if test="type != null ">and type = #{type}</if>
         <if test="name != null and name != '' ">and zb.`name` like concat('%', #{name}, '%')</if>
     </select>
+    <select id="headImageList" parameterType="Lawyer" resultMap="LawyerResult">
+        select
+        head_img
+        from lawyer_lawyer
+        where create_time BETWEEN CONCAT(CURDATE(),' 00:00:00') AND CONCAT(CURDATE(),' 23:59:59')
+    </select>
     <select id="listAndCost" parameterType="Lawyer" resultMap="LawyerResult">
         SELECT zb.*,glb.sum as sunCost FROM lawyer_lawyer zb
         left join lawyer_cost_log glb on glb.id=(
