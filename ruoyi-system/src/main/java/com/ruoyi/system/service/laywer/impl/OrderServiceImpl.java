@@ -10,8 +10,10 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.wxPat.WechatPayConfig;
 import com.ruoyi.common.wxPat.WechatPayRequest;
+import com.ruoyi.system.domain.lawyer.Msg;
 import com.ruoyi.system.domain.lawyer.Order;
 import com.ruoyi.system.mapper.lawyer.OrderMapper;
+import com.ruoyi.system.service.laywer.MsgService;
 import com.ruoyi.system.service.laywer.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +39,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
     @Resource
     private WechatPayConfig wechatPayConfig;
-
+    @Autowired
+    private MsgService msgService;
 
     @Resource
     private WechatPayRequest wechatPayRequest;
@@ -73,6 +76,32 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public int edit(Order order) {
+        Order order1 = orderMapper.item(order.getId());
+        if (order.getStatus() != -1 && order.getStatus() != 0 && order.getStatus() != 1 && order.getStatus() != 2 && order.getStatus() != 5){
+            Msg msg = new Msg();
+            msg.setClientId(order.getClientId());
+            msg.setType(1);
+            msg.setStatus(0);
+            switch (order.getStatus()){
+                case -2:
+                    msg.setMsg("尊敬的用户您好：您的编号为："+order1.getNo()+"的订单，"+"退款失败，"+"您可以前往我的->我的订单中查看详情进度");
+                    break;
+                case 3:
+                    msg.setMsg("尊敬的用户您好：您的编号为："+order1.getNo()+"的订单，"+"跟进中，"+"您可以前往我的->我的订单中查看详情进度");
+                    break;
+                case 4:
+                    msg.setMsg("尊敬的用户您好：您的编号为："+order1.getNo()+"的订单，"+"已完成，"+"您可以前往我的->我的订单中查看详情进度");
+                    break;
+                case 6:
+                    msg.setMsg("尊敬的用户您好：您的编号为："+order1.getNo()+"的订单，"+"退款中，"+"您可以前往我的->我的订单中查看详情进度");
+                    break;
+                case 7:
+                    msg.setMsg("尊敬的用户您好：您的编号为："+order1.getNo()+"的订单，"+"退款完成，"+"您可以前往我的->我的订单中查看详情进度");
+                    break;
+            }
+
+            msgService.add(msg);
+        }
         return orderMapper.edit(order);
     }
 

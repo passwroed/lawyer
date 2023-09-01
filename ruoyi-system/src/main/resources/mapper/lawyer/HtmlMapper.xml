@@ -16,12 +16,13 @@
     </resultMap>
 
     <select id="list" parameterType="Html" resultMap="HtmlResult">
-        select id,html,`type`,
+        select id,`type`,
+        <if test="id != null and id != ''">html,</if>
         create_by,create_time,
         update_by,update_time
         from lawyer_html
         where 1=1
-        <if test="id != null and id != '' ">and id = #{id}</if>
+        <if test="id != null and id != ''">and id = #{id}</if>
         <if test="type != null and type != '' ">and `type` = #{type}</if>
     </select>
     <insert id="add" parameterType="Html">

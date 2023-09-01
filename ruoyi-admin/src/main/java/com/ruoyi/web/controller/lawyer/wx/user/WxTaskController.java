@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.lawyer.wx.user;
 
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -32,6 +33,7 @@ public class WxTaskController extends BaseController {
 
     //列表查询（条件查询）
 //    @PreAuthorize("@ss.hasPermi('lawyer:task:list')")
+    @Anonymous
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody Task task) {
         startPage();

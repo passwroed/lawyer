@@ -35,6 +35,7 @@ public class WxGoodsController extends BaseController {
         List<Goods> list = goodsService.list(goods);
         return getDataTable(list);
     }
+    @Anonymous
     @PostMapping("/item")
     public AjaxResult item(@RequestBody Goods goods)
     {

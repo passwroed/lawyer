@@ -1,10 +1,10 @@
-package com.ruoyi.web.controller.lawyer.wx.user;
+package com.ruoyi.web.controller.lawyer.wx.lawyer;
 
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.system.domain.lawyer.Help;
-import com.ruoyi.system.service.laywer.HelpService;
+import com.ruoyi.system.domain.lawyer.Html;
+import com.ruoyi.system.service.laywer.HtmlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,25 +14,27 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * @ClassName : WxHelpController
- * @Description : 帮助中心
+ * @ClassName : HtmlController
+ * @Description : HTML页面富文本
  * @Author : WANGKE
- * @Date: 2023-08-30 19:51
+ * @Date: 2023-07-16 23:02
  */
 @RestController
-@RequestMapping("/wxuser/help")
-public class WxHelpController extends BaseController {
+@RequestMapping("/wxLawyer/html")
+public class WLHtmlController extends BaseController {
     @Autowired
-    private HelpService helpService;
+    private HtmlService htmlService;
 
     //列表查询（条件查询）
-//    @PreAuthorize("@ss.hasPermi('lawyer:help:list')")
+//    @PreAuthorize("@ss.hasPermi('lawyer:html:list')")
     @Anonymous
     @PostMapping("/list")
-    public TableDataInfo list(@RequestBody Help help)
+    public TableDataInfo list(@RequestBody Html html)
     {
         startPage();
-        List<Help> list = helpService.list(help);
+        List<Html> list = htmlService.list(html);
         return getDataTable(list);
     }
+
+
 }

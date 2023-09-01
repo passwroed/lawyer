@@ -6,15 +6,10 @@ import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.wxPat.WechatPayConfig;
 import com.ruoyi.common.wxPat.WechatPayValidator;
-import com.ruoyi.system.domain.lawyer.CostLog;
-import com.ruoyi.system.domain.lawyer.Goods;
-import com.ruoyi.system.domain.lawyer.Order;
-import com.ruoyi.system.domain.lawyer.Task;
-import com.ruoyi.system.service.laywer.CostLogService;
-import com.ruoyi.system.service.laywer.GoodsService;
-import com.ruoyi.system.service.laywer.OrderService;
-import com.ruoyi.system.service.laywer.TaskService;
+import com.ruoyi.system.domain.lawyer.*;
+import com.ruoyi.system.service.laywer.*;
 import com.wechat.pay.contrib.apache.httpclient.auth.Verifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +43,8 @@ public class WxPayCallbackController {
     private GoodsService goodsService;
     @Resource
     private TaskService taskService;
+    @Autowired
+    private MsgService msgService;
 
     @Resource
     private Verifier verifier;
@@ -106,9 +103,16 @@ public class WxPayCallbackController {
                             taskService.edit(task);
                         }
                     }
+                    Msg msg = new Msg();
+                    msg.setClientId(order.getClientId());
+                    msg.setType(1);
+                    msg.setStatus(0);
+                    msg.setMsg("尊敬的用户您好：您的编号为："+orderNo+"的订单，"+"已购买成功，"+"您可以前往我的->我的订单中查看详情进度");
+                    msgService.add(msg);
 
                 }
                 order.setPayTime(new Date());
+
                 if (orderService.edit(order) == 0){
                     System.out.println("订单"+orderNo+" 状态变更识别");
                 }

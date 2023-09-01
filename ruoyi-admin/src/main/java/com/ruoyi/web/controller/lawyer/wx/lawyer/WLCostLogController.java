@@ -29,6 +29,7 @@ public class WLCostLogController extends BaseController {
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody CostLog costLog) {
         costLog.setLawyerId(getLawyerId());
+        System.out.println(getLawyerId());
         startPage();
         return getDataTable(costLogService.list(costLog));
     }

@@ -5,7 +5,11 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.Collectible;
+import com.ruoyi.system.domain.lawyer.Goods;
+import com.ruoyi.system.domain.lawyer.Order;
 import com.ruoyi.system.service.laywer.CollectibleService;
+import com.ruoyi.system.service.laywer.GoodsService;
+import com.ruoyi.system.service.laywer.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,9 +27,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/wxuser/collectible")
-public class CollectibleController extends BaseController {
+public class WxCollectibleController extends BaseController {
     @Autowired
     private CollectibleService collectibleService;
+    @Autowired
+    private GoodsService goodsService;
 
     //列表查询（条件查询）
 //    @PreAuthorize("@ss.hasPermi('lawyer:collectible:list')")
@@ -42,6 +48,10 @@ public class CollectibleController extends BaseController {
     @PostMapping("/add")
     public AjaxResult add(@Validated @RequestBody Collectible collectible)
     {
+        Goods goods = goodsService.item(collectible.getGoodsId());
+        collectible.setGoodsName(goods.getName());
+        collectible.setMoney(goods.getMoney());
+        collectible.setsImage(goods.getsImage());
         collectible.setClientId(getUserId());
         collectible.setCreateBy(getUsername());
         if (collectibleService.add(collectible) == 0){

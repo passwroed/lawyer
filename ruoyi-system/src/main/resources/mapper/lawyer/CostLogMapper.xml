@@ -41,8 +41,7 @@
         create_by,create_time
         ,update_by,update_time
         from lawyer_cost_log
-        where 1=1
-        <if test="lawyerId != null">and lawyer_id = #{id}</if>
+        where lawyer_id = #{id}
         ORDER BY create_time DESC LIMIT 1
     </select>
     <select id="item" parameterType="CostLog" resultMap="CostLogResult">

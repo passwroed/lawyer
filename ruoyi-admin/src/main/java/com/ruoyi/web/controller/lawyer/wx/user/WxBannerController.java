@@ -2,10 +2,9 @@ package com.ruoyi.web.controller.lawyer.wx.user;
 
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.system.domain.lawyer.News;
-import com.ruoyi.system.service.laywer.NewsService;
+import com.ruoyi.system.domain.lawyer.Banner;
+import com.ruoyi.system.service.laywer.BannerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,31 +14,24 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * @ClassName : WxNewsController
- * @Description : 微信用户新闻
+ * @ClassName : BannerController
+ * @Description : banner
  * @Author : WANGKE
- * @Date: 2023-08-30 18:06
+ * @Date: 2023-09-01 16:11
  */
 @RestController
-@RequestMapping("/wxuser/news")
-public class WxNewsController extends BaseController {
+@RequestMapping("/wxuser/banner")
+public class WxBannerController extends BaseController {
     @Autowired
-    private NewsService newsService;
+    private BannerService bannerService;
 
     //列表查询（条件查询）
-//    @PreAuthorize("@ss.hasPermi('lawyer:news:list')")
+//    @PreAuthorize("@ss.hasPermi('lawyer:banner:list')")
     @Anonymous
     @PostMapping("/list")
-    public TableDataInfo list(@RequestBody News news)
-    {
+    public TableDataInfo list(@RequestBody Banner banner) {
         startPage();
-        List<News> list = newsService.list(news);
+        List<Banner> list = bannerService.list(banner);
         return getDataTable(list);
-    }
-    @Anonymous
-    @PostMapping("/item")
-    public AjaxResult item(@RequestBody News news)
-    {
-        return success(newsService.item(news.getId()));
     }
 }

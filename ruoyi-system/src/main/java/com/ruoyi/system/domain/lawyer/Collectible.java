@@ -2,6 +2,8 @@ package com.ruoyi.system.domain.lawyer;
 
 import com.ruoyi.common.core.domain.BaseEntity;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @ClassName : Collectible
  * @Description : 收藏
@@ -10,6 +12,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
  */
 public class Collectible extends BaseEntity {
     private Long id;
+    @NotNull(message = "商品不能为空")
     private Long goodsId;
     private String goodsName;
     private String sImage;

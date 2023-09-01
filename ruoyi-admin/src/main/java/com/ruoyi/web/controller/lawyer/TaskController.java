@@ -184,14 +184,9 @@ public class TaskController extends BaseController {
         Task taskGet = new Task();
         taskGet.setId(task.getId());
         task.setUpdateBy(getUsername());
-        Lawyer lawyer = new Lawyer();
-        lawyer.setId(task.getLawyerId());
-        lawyer.setType(0);
-        List<Lawyer> lawyerList = lawyerService.selectUserId(lawyer);
-        if (lawyerList.size() == 0) {
+        Lawyer lawyer = lawyerService.item(task.getLawyerId());
+        if (StringUtils.isNull(lawyer)&&StringUtils.isNull(lawyer.getType())&&lawyer.getType()!=0) {
             return error("尚未是中台律师，无法领取任务，请联系管理员！");
-        } else {
-            lawyer = lawyerList.get(0);
         }
         taskGet.setFastLawyerId(lawyer.getId());
         taskGet.setFastLawyerName(lawyer.getName());
@@ -284,14 +279,7 @@ public class TaskController extends BaseController {
                 if (StringUtils.isNull(task.getLawyerId())) {
                     return error("需要指定律师");
                 }
-                Lawyer lawyer2 = new Lawyer();
-                lawyer2.setId(task.getLawyerId());
-                List<Lawyer> lawyerList2 = lawyerService.selectUserId(lawyer2);
-                if (lawyerList2.size() == 0) {
-                    return error("未找到指定律师！");
-                } else {
-                    lawyer2 = lawyerList2.get(0);
-                }
+                Lawyer lawyer2 =lawyerService.item(task.getLawyerId());
                 task.setPayStatus(1);
                 task.setLawyerId(lawyer2.getId());
                 task.setLawyerName(lawyer2.getName());

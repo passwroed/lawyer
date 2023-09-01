@@ -281,14 +281,16 @@ public class SysUserController extends BaseController {
         System.out.println(JSON.toJSONString(lawyer));
         List<Lawyer> list = lawyerService.selectUserId(lawyer);
         System.out.println(JSON.toJSONString(list));
-        CostLog costLog = costLogService.newCostLog(lawyer.getId());
-        if (StringUtils.isNotNull(costLog)){
-            map.put("cost",costLog.getSum());
-        }
         if (list.size()>0){
             lawyer = list.get(0);
             lawyer.setPhone(sysUser.getPhonenumber().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
             map.put("lawyer",JSON.parseObject(JSON.toJSONString(lawyer), Map.class));
+            System.out.println("id ---------------------->"+lawyer.getId());
+            CostLog costLog = costLogService.newCostLog(lawyer.getId());
+            if (StringUtils.isNotNull(costLog)){
+                System.out.println("item ---------------------->"+costLog.getSum());
+                map.put("cost",costLog.getSum());
+            }
         }
         return success(map);
     }

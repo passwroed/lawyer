@@ -4,9 +4,11 @@ import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.system.domain.lawyer.News;
-import com.ruoyi.system.service.laywer.NewsService;
+import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.system.domain.lawyer.Html;
+import com.ruoyi.system.service.laywer.HtmlService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,31 +17,27 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * @ClassName : WxNewsController
- * @Description : 微信用户新闻
+ * @ClassName : HtmlController
+ * @Description : HTML页面富文本
  * @Author : WANGKE
- * @Date: 2023-08-30 18:06
+ * @Date: 2023-07-16 23:02
  */
 @RestController
-@RequestMapping("/wxuser/news")
-public class WxNewsController extends BaseController {
+@RequestMapping("/wxuser/html")
+public class WxHtmlController extends BaseController {
     @Autowired
-    private NewsService newsService;
+    private HtmlService htmlService;
 
     //列表查询（条件查询）
-//    @PreAuthorize("@ss.hasPermi('lawyer:news:list')")
+//    @PreAuthorize("@ss.hasPermi('lawyer:html:list')")
     @Anonymous
     @PostMapping("/list")
-    public TableDataInfo list(@RequestBody News news)
+    public TableDataInfo list(@RequestBody Html html)
     {
         startPage();
-        List<News> list = newsService.list(news);
+        List<Html> list = htmlService.list(html);
         return getDataTable(list);
     }
-    @Anonymous
-    @PostMapping("/item")
-    public AjaxResult item(@RequestBody News news)
-    {
-        return success(newsService.item(news.getId()));
-    }
+
+
 }

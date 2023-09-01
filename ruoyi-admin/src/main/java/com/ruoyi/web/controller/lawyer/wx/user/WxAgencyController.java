@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.lawyer.wx.user;
 
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.system.domain.lawyer.Agency;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WxAgencyController extends BaseController {
     @Autowired
     private AgencyService agencyService;
-
+    @Anonymous
     @PostMapping("/add")
     public AjaxResult add(@Validated @RequestBody Agency agency)
     {

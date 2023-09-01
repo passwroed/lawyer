@@ -131,10 +131,10 @@
         update_by,update_time,
         remark
         from lawyer_task
-        where (is_hall = 1 and status = 5)  or (status = 4 and lawyer_id = #{lawyerId})
+        where (is_hall = 1 and status = 5)  or (status = 4 and lawyer_id is null)
         <if test="povinceId != null and povinceId != 0">and CAST(povince_id AS char) like concat('%', #{povinceId}, '%')</if>
         <if test="type != null">and type = #{type}</if>
-        <if test="status == null">status != -1</if>
+        <if test="status == null">and status != -1</if>
         order by create_time desc
     </select>
     <select id="item" parameterType="Task" resultMap="TaskResult">

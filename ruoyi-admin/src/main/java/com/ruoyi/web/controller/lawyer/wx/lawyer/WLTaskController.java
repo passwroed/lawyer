@@ -221,6 +221,7 @@ public class WLTaskController extends BaseController {
         if (getLawyerType() == 0){
             task1.setFastLawyerId(getLawyerId());
         }else {
+            task1.setFastLawyerId(1l);
             task1.setLawyerId(getLawyerId());
         }
         if (StringUtils.isNotNull(task.getStatus())){
@@ -276,14 +277,7 @@ public class WLTaskController extends BaseController {
                 if (StringUtils.isNull(task.getLawyerId())) {
                     return error("需要指定律师");
                 }
-                Lawyer lawyer2 = new Lawyer();
-                lawyer2.setId(task.getLawyerId());
-                List<Lawyer> lawyerList2 = lawyerService.selectUserId(lawyer2);
-                if (lawyerList2.size() == 0) {
-                    return error("未找到指定律师！");
-                } else {
-                    lawyer2 = lawyerList2.get(0);
-                }
+                Lawyer lawyer2 = lawyerService.item(task.getLawyerId());
                 task.setPayStatus(1);
                 task.setLawyerId(lawyer2.getId());
                 task.setLawyerName(lawyer2.getName());
