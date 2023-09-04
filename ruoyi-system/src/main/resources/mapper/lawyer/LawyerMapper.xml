@@ -71,7 +71,7 @@
         <if test="type != null ">and type = #{type}</if>
         <if test="status != null ">and status = #{status}</if>
         <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
-        <if test="areaCode != null">and area_code = #{areaCode}</if>
+        <if test="areaCode != null">and CAST(area_code AS char) like concat('%', #{areaCode}, '%')</if>
         <if test="params.areaCode != null">and CAST(area_code AS char) like concat('%', #{name}, '%')</if>
         <if test="phone != null and phone != '' ">and phone = #{phone}</if>
         <if test="merit != null and merit != '' ">and merit like concat('%', #{merit}, '%')</if>

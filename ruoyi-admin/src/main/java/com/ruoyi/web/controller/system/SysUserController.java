@@ -245,28 +245,31 @@ public class SysUserController extends BaseController {
         if (userService.updateUser(user) == 0){
             return error("操作失败，请联系管理员");
         }
-        Lawyer lawyer = new Lawyer();
-        if (StringUtils.isNotNull(user.getAreaCode())){
-            lawyer.setAreaCode(user.getAreaCode());
-            String name = "";
-            Area area = areaService.iDArea(Long.valueOf(lawyer.getAreaCode()));
-            name = area.getName();
-            while (area.getPid() > 0){
-                area = areaService.pArea(Long.valueOf(area.getPid()));
-                name = area.getName()+"-"+name;
+        if (StringUtils.isNotNull(getLawyerId())){
+            Lawyer lawyer = new Lawyer();
+            if (StringUtils.isNotNull(user.getAreaCode())){
+                lawyer.setAreaCode(user.getAreaCode());
+                String name = "";
+                Area area = areaService.iDArea(Long.valueOf(lawyer.getAreaCode()));
+                name = area.getName();
+                while (area.getPid() > 0){
+                    area = areaService.pArea(Long.valueOf(area.getPid()));
+                    name = area.getName()+"-"+name;
+                }
+                lawyer.setArea(name);
             }
-            lawyer.setArea(name);
-        }
-        if (StringUtils.isNotNull(user.getLicenseNum())){
-            lawyer.setLicenseNum(user.getLicenseNum());
+            if (StringUtils.isNotNull(user.getLicenseNum())){
+                lawyer.setLicenseNum(user.getLicenseNum());
+            }
+
+            lawyer.setUserId(getLoginUser().getUserId());
+            List<Lawyer> list = lawyerService.selectUserId(lawyer);
+            if (list.size()>0){
+                lawyer = list.get(0);
+                lawyerService.edit(lawyer);
+            }
         }
 
-        lawyer.setUserId(getLoginUser().getUserId());
-        List<Lawyer> list = lawyerService.selectUserId(lawyer);
-        if (list.size()>0){
-            lawyer = list.get(0);
-            lawyerService.edit(lawyer);
-        }
         return success();
     }
 

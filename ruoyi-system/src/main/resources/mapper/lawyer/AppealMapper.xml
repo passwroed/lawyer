@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.AppealMapper">
+
+    <resultMap type="Appeal" id="AppealResult">
+        <id     property="id"      column="id"      />
+        <result property="type"    column="type"    />
+        <result property="status"    column="status"    />
+        <result property="cid"     column="cid"     />
+        <result property="cName"   column="c_name"   />
+        <result property="need"    column="need"    />
+        <result property="povinceId"    column="povince_id"    />
+        <result property="phone"    column="phone"    />
+        <result property="povince"    column="povince"    />
+        <result property="money"    column="money"    />
+        <result property="createBy"      column="create_by"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"      column="update_by"      />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <select id="list" parameterType="Appeal" resultMap="AppealResult">
+        select id,
+        type,
+        status,
+        cid,
+        c_name,
+        need,
+        povince_id,
+        phone,
+        povince,
+        money,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        from lawyer_appeal
+        where 1=1
+        <if test="cName != null and cName != '' ">and c_name = #{cName}</if>
+        <if test="cid != null and cid != '' ">and cid = #{cid}</if>
+        <if test="type &gt; 0">and type = #{type}</if>
+    </select>
+    <select id="item" parameterType="Appeal" resultMap="AppealResult">
+        select id,
+        type,
+        status,
+        cid,
+        c_name,
+        need,
+        povince_id,
+        phone,
+        povince,
+        money,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        from lawyer_appeal
+        where 1=1
+        <if test="id != null and id != '' ">and id = #{id}</if>
+    </select>
+    <insert id="add" parameterType="Appeal">
+        insert into lawyer_appeal (
+        <if test="type &gt; 0">type,</if>
+        <if test="status &gt; 0">status,</if>
+        <if test="cid != null and cid != '' ">cid,</if>
+        <if test="cName != null and cName != '' ">c_name,</if>
+        <if test="need != null and need != '' ">need,</if>
+        <if test="povinceId != null and povinceId != '' ">povince_id,</if>
+        <if test="phone != null and phone != '' ">phone,</if>
+        <if test="povince != null and povince != '' ">povince,</if>
+        <if test="money != null">money,</if>
+        <if test="createBy != null and createBy != ''">create_by,</if>
+        <if test="remark != null and remark != ''">remark,</if>
+        create_time
+        )values(
+        <if test="type &gt; 0">#{type},</if>
+        <if test="status &gt; 0">#{status},</if>
+        <if test="cid != null and cid != '' ">#{cid},</if>
+        <if test="cName != null and cName != '' ">#{cName},</if>
+        <if test="need != null and need != '' ">#{need},</if>
+        <if test="povinceId != null and povinceId != '' ">#{povinceId},</if>
+        <if test="phone != null and phone != '' ">#{phone},</if>
+        <if test="povince != null and povince != '' ">#{povince},</if>
+        <if test="money != null">#{money},</if>
+        <if test="createBy != null and createBy != ''">#{createBy},</if>
+        <if test="remark != null and remark != ''">#{remark},</if>
+        sysdate()
+        )
+    </insert>
+
+    <update id="edit" parameterType="Appeal">
+        update lawyer_appeal
+        <set>
+            <if test="type &gt; 0">type = #{type},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="cid != null and cid != '' ">cid = #{cid},</if>
+            <if test="cName != null and cName != '' ">c_name = #{cName},</if>
+            <if test="need != null and need != '' ">need = #{need},</if>
+            <if test="povinceId != null and povinceId != '' ">povince_id = #{povinceId},</if>
+            <if test="phone != null and phone != '' ">phone = #{phone},</if>
+            <if test="povince != null and povince != '' ">povince = #{povince},</if>
+            <if test="money != null">money = #{money},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where  id = #{id}
+    </update>
+
+    <update id="isNotStatus" parameterType="Appeal">
+        update lawyer_appeal
+        <set>
+            status = 0,
+            update_time = sysdate()
+        </set>
+        where  cid = #{cid}
+    </update>
+    <update id="isStatus" parameterType="Appeal">
+        update lawyer_appeal
+        <set>
+            status = 1,
+            update_time = sysdate()
+        </set>
+        where  id = #{id}
+    </update>
+
+    <delete id="del" parameterType="Long">
+        delete from lawyer_appeal where id = #{id}
+    </delete>
+
+
+</mapper>

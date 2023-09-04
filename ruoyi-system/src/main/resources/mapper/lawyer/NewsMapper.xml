@@ -11,6 +11,7 @@
         <result property="type"   column="type"   />
         <result property="author"    column="author"    />
         <result property="synopsis"    column="synopsis"    />
+        <result property="num"    column="num"    />
         <result property="info"    column="info"    />
         <result property="createBy"      column="create_by"      />
         <result property="createTime"    column="create_time"    />
@@ -20,13 +21,15 @@
     </resultMap>
 
     <select id="list" parameterType="News" resultMap="NewsResult">
-        select id,small_icon,`name`,`type`,
+        select id,small_icon,`name`,`type`,num,
                author,synopsis,create_by,create_time
                ,update_by,update_time
         <if test="id != null and id != '' ">,info</if>
         from lawyer_news
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>
+        <if test="name != null and name != '' ">and `name` like concat('%', #{name}, '%')</if>
+        <if test="type &gt; 0">and type = #{type}</if>
     </select>
     <select id="item" parameterType="News" resultMap="NewsResult">
         select id,
@@ -35,6 +38,7 @@
         type,
         author,
         synopsis,
+        num,
         info,
         create_by,
         create_time,
@@ -80,6 +84,7 @@
             <if test="info != null and info != '' ">info = #{info},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
+            num = num+1,
             update_time = sysdate()
         </set>
         where id = #{id}

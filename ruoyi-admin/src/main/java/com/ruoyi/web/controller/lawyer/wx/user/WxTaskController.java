@@ -29,6 +29,8 @@ import java.util.List;
 public class WxTaskController extends BaseController {
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private TaskLogService taskLogService;
 
 
     //列表查询（条件查询）
@@ -37,11 +39,10 @@ public class WxTaskController extends BaseController {
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody Task task) {
         startPage();
-        task.setIsHall(1);
-        task.setFastLawyerId(1L);
+        task.setFastLawyerId(2l);
         List<Task> list = taskService.list(task);
         List<Task> returnlist = new ArrayList<>();
-        if (list.size() > 0 && StringUtils.isNull(task.getFastLawyerId())) {
+        if (list.size() > 0) {
             for (Task task1 : list) {
                 if (StringUtils.isNotNull(task1.getPhone())) {
                     task1.setPhone(task1.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));

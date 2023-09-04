@@ -176,7 +176,7 @@ public class SysLoginController {
         String phoneUrl = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + tokenObject.getString("access_token");
         //封装请求体
         Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("code", phoneCode).toString();
+        paramMap.put("code", phoneCode);
 
         //封装请求头
         HttpHeaders headers = new HttpHeaders();
@@ -200,7 +200,8 @@ public class SysLoginController {
         String sessionKey = jsonObject.getString("session_key");
         String openid = jsonObject.getString("openid");
 
-        if (jsonObject.getInteger("errcode") == 0){
+        System.out.println(jsonObject.toString());
+        if (StringUtils.isNotNull(openid)){
             //假如解析成功,获取token
             String token = loginService.wxUserLogin(openid, phone);
             if (StringUtils.isNull(token)){

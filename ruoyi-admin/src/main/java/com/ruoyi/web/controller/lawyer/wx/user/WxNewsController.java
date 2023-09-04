@@ -40,6 +40,9 @@ public class WxNewsController extends BaseController {
     @PostMapping("/item")
     public AjaxResult item(@RequestBody News news)
     {
+        News news1 = new News();
+        news1.setId(news.getId());
+        newsService.edit(news1);
         return success(newsService.item(news.getId()));
     }
 }

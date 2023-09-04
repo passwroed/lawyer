@@ -31,6 +31,7 @@ public class News extends BaseEntity {
     @Excel(name = "简介")
     @NotBlank(message = "简介不能为空")
     private String synopsis;
+    private Integer num;
     @Excel(name = "详情")
     @NotBlank(message = "详情不能为空")
     private String info;
@@ -89,5 +90,13 @@ public class News extends BaseEntity {
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 }

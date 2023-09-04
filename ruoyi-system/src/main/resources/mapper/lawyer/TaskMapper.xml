@@ -236,6 +236,7 @@
         <if test="fastLawyerId != null and fastLawyerId != '' ">fast_lawyer_id,</if>
         <if test="fastLawyerName != null and fastLawyerName != '' ">fast_lawyer_name,</if>
         <if test="fastLawyerType != null">fast_lawyer_type,</if>
+        <if test="willing != null">willing,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
         create_time
@@ -265,6 +266,7 @@
         <if test="fastLawyerId != null and fastLawyerId != '' ">#{fastLawyerId},</if>
         <if test="fastLawyerName != null and fastLawyerName != '' ">#{fastLawyerName},</if>
         <if test="fastLawyerType != null">#{fastLawyerType},</if>
+        <if test="willing != null">#{willing},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         sysdate()
