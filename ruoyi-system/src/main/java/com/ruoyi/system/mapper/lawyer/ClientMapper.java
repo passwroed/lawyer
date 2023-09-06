@@ -15,6 +15,7 @@ public interface ClientMapper {
     public List<Client> list(Client client);
     //详情
     public Client item(Long id);
+    public Client itemUserId(Long userId);
     //新增
     public int add(Client client);
     //手动新增

@@ -56,8 +56,11 @@ public class WxOrderController extends BaseController {
             order.setGoodsName(goods.getName());
             order.setMoney(goods.getMoney());
             order.setsImage(goods.getsImage());
+            Goods goods1 = new Goods();
+            goods1.setId(goods.getId());
+            goods1.setNum(goods.getNum()+1);
+            goodsService.edit(goods1);
         }
-        LoginUser sysUser = getLoginUser();
         //获取客户
         Client client = new Client();
         client.setUserId(getUserId());
@@ -75,11 +78,15 @@ public class WxOrderController extends BaseController {
         SimpleDateFormat sdf= new SimpleDateFormat("yyyyMMddHHmmss");
         Random r=new Random();
         order.setNo(sdf.format(System.currentTimeMillis())+r.nextInt(10));//规则：时间+1位随机数
+        System.out.println("order no ==============="+order.getNo());
         order.setCreateBy(getUsername());
         order.setStatus(0);
         order.setType(0);
         //添加任务
         Task task = order.getTask();
+        if (StringUtils.isNull(order.getTask())){
+            task = new Task();
+        }
         task.setOrderNo(order.getNo());
         task.setName(goods.getName());
         task.setPhone(client.getPhone());

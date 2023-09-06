@@ -34,6 +34,24 @@
         where 1=1
         <if test="clientId != null and clientId != '' ">and client_id = #{clientId}</if>
     </select>
+    <select id="item" parameterType="Collectible" resultMap="CollectibleResult">
+        select id,
+        goods_id,
+        goods_name,
+        s_image,
+        money,
+        client_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time,
+        remark
+        from lawyer_collectible
+        where 1=1
+        <if test="clientId != null and clientId != '' ">and client_id = #{clientId}</if>
+        <if test="goodsId != null and goodsId != '' ">and goods_id = #{goodsId}</if>
+         LIMIT 1
+    </select>
     <insert id="add" parameterType="Collectible">
         insert into lawyer_collectible (
         <if test="goodsId != null and goodsId != '' ">goods_id,</if>

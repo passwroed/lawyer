@@ -42,6 +42,22 @@ public class LawyerServiceImpl implements LawyerService {
         }else {
             PageHelper.startPage(1, 999);
         }
+        if (StringUtils.isNotNull(lawyer.getAreaCode())&&lawyer.getAreaCode()>0){
+            String str = lawyer.getAreaCode()+"";
+            int index = str.indexOf("00");
+
+            switch (index){
+                case 4:
+                    lawyer.setAreaCode((int)lawyer.getAreaCode()/100);
+                    break;
+                case 2:
+                    lawyer.setAreaCode((int)lawyer.getAreaCode()/10000);
+                    break;
+            }
+            System.out.println("index"+lawyer.getAreaCode());
+        }else {
+            lawyer.setAreaCode(null);
+        }
         return lawyerMapper.list(lawyer);
     }
 

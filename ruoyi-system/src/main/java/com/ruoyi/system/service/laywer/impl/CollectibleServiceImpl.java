@@ -31,6 +31,11 @@ public class CollectibleServiceImpl implements CollectibleService {
     }
 
     @Override
+    public Collectible item(Collectible collectible) {
+        return collectibleMapper.item(collectible);
+    }
+
+    @Override
     public int add(Collectible collectible) {
         return collectibleMapper.add(collectible);
     }

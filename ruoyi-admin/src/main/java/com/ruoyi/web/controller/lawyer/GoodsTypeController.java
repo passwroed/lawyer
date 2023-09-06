@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.lawyer;
 
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -29,6 +30,7 @@ public class GoodsTypeController extends BaseController {
 
     //列表查询（条件查询）
 //    @PreAuthorize("@ss.hasPermi('lawyer:goodsType:list')")
+    @Anonymous
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody GoodsType goodsType)
     {

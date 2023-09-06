@@ -12,6 +12,7 @@ import java.util.List;
  */
 public interface CollectibleMapper {
     public List<Collectible> list(Collectible collectible);
+    public Collectible item(Collectible collectible);
     //新增
     public int add(Collectible collectible);
     //删除

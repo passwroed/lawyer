@@ -48,6 +48,12 @@ public class WxCollectibleController extends BaseController {
     @PostMapping("/add")
     public AjaxResult add(@Validated @RequestBody Collectible collectible)
     {
+        Collectible collectible1 = new Collectible();
+        collectible1.setClientId(getUserId());
+        collectible1.setGoodsId(collectible.getGoodsId());
+        if (StringUtils.isNotNull(collectibleService.item(collectible1))){
+            return success("操作成功");
+        }
         Goods goods = goodsService.item(collectible.getGoodsId());
         collectible.setGoodsName(goods.getName());
         collectible.setMoney(goods.getMoney());
@@ -67,8 +73,14 @@ public class WxCollectibleController extends BaseController {
         if (StringUtils.isNull(collectible.getId())){
             return error("参数错误！");
         }
+        collectible.setClientId(getUserId());
+        collectible.setGoodsId(collectible.getId());
+        collectible = collectibleService.item(collectible);
+        if (StringUtils.isNull(collectible.getId())){
+            return success("操作成功");
+        }
         if (collectibleService.del(collectible.getId()) == 0){
-            return error("删除失败，请联系管理员！");
+            return error("取消收藏失败，请联系管理员！");
         }
         return success("操作成功");
     }

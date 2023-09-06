@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -57,7 +58,31 @@ public class OrderController extends BaseController {
     @PostMapping("/item")
     public AjaxResult item(@RequestBody Order order)
     {
-        return success(orderService.item(order.getId()));
+        Map<String,Object> map = new HashMap<>();
+        order = orderService.item(order.getId());
+        if (StringUtils.isNull(order)){
+            return success();
+        }
+        map.put("order",order);
+        //获取任务
+        Task task = taskService.itemNo(order.getTaskNo());
+        if (StringUtils.isNotNull(task)){
+            map.put("task",task);
+        }
+        //获取客户
+        Client client = clientService.itemUserId(order.getClientId());
+        if (StringUtils.isNotNull(client)){
+            map.put("client",client);
+        }
+        //如果状态==5显示理由
+        if (StringUtils.isNotNull(order)||StringUtils.isNotNull(order.getStatus())){
+            if (order.getStatus() == 5||order.getStatus() == -2||order.getStatus() == 6||order.getStatus() == 7){
+                OrderLog orderLog = new OrderLog();
+                orderLog.setOrderId(order.getId());
+                orderLogService.list(orderLog);
+            }
+        }
+        return success(map);
     }
     //新增
 //    @PreAuthorize("@ss.hasPermi('lawyer:order:add')")
@@ -164,10 +189,20 @@ public class OrderController extends BaseController {
     @PostMapping("/application")
     public AjaxResult application(@RequestBody Order order)
     {
-        if (StringUtils.isNull(order.getId())){
+        if (StringUtils.isNull(order.getId())||StringUtils.isNull(order.getStatus())){
             return error("参数错误！");
         }
+        Order order1 = orderService.item(order.getId());
+        if (StringUtils.isNull(order1)){
+            return error("未找到该订单");
+        }
+        if (order1.getStatus() != 5){
+            return error("该订单，不可申请退款");
+        }
         OrderLog orderLog = order.getOrderLog();
+        if (StringUtils.isNull(orderLog)){
+            orderLog = new OrderLog();
+        }
         orderLog.setStatus(order.getStatus());
         orderLog.setOrderId(order.getId());
         orderLogService.add(orderLog);

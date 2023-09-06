@@ -18,6 +18,8 @@ public class Goods extends BaseEntity {
     private String info;
     private String notice;
     private Integer status;
+    private Integer isCollectible;
+    private Integer num;
 
     public Long getId() {
         return id;
@@ -89,5 +91,21 @@ public class Goods extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getIsCollectible() {
+        return isCollectible;
+    }
+
+    public void setIsCollectible(Integer isCollectible) {
+        this.isCollectible = isCollectible;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 }

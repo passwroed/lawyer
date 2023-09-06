@@ -41,6 +41,11 @@ public class ClinetServiceImpl implements ClientService {
     }
 
     @Override
+    public Client itemUserId(Long userId) {
+        return clientMapper.itemUserId(userId);
+    }
+
+    @Override
     public int add(Client client) {
         if (client.getAreaCode()!=null && client.getAreaCode()>0){
             String name = "";

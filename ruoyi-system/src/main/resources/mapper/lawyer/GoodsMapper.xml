@@ -14,6 +14,7 @@
         <result property="info"     column="info"     />
         <result property="notice"     column="notice"     />
         <result property="status"     column="status"     />
+        <result property="num"     column="num"     />
         <result property="createBy"      column="create_by"      />
         <result property="createTime"    column="create_time"    />
         <result property="updateBy"      column="update_by"      />
@@ -28,6 +29,7 @@
         s_image,
         money,
         status,
+        num,
         create_by,create_time,
         update_by,update_time
         from lawyer_goods
@@ -46,6 +48,7 @@
         info,
         notice,
         status,
+        num,
         create_by,create_time,
         update_by,update_time
         from lawyer_goods
@@ -62,6 +65,7 @@
         <if test="info != null and info != '' ">info,</if>
         <if test="notice != null and notice != '' ">notice,</if>
         <if test="status != null">status,</if>
+        <if test="num != null">num,</if>
         <if test="createBy != null and createBy != ''">create_by,</if>
         <if test="remark != null and remark != ''">remark,</if>
         create_time
@@ -74,6 +78,7 @@
         <if test="info != null and info != '' ">#{info},</if>
         <if test="notice != null and notice != '' ">#{notice},</if>
         <if test="status != null">#{status},</if>
+        <if test="num != null">#{num},</if>
         <if test="createBy != null and createBy != ''">#{createBy},</if>
         <if test="remark != null and remark != ''">#{remark},</if>
         sysdate()
@@ -91,6 +96,7 @@
             <if test="info != null and info != '' ">info = #{info},</if>
             <if test="notice != null and notice != '' ">notice = #{notice},</if>
             <if test="status != null ">status = #{status},</if>
+            <if test="num != null ">num = #{num},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()

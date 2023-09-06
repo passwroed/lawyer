@@ -207,7 +207,7 @@ public class SysLoginService
             Client client = new Client();
             client.setPhone(phone);
             List<Client> list = clientMapper.list(client);
-            if (list.size()==0){
+            if (StringUtils.isNull(list)||list.size()==0){
                 client.setName("微信用户");
                 client.setNickName("微信用户");
                 client.setPid(1L);

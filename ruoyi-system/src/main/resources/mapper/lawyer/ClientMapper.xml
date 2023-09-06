@@ -52,11 +52,29 @@
         area_info,
         pid,
         pname,
+        user_id,
         create_by,create_time,
         update_by,update_time
         from lawyer_client
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>
+    </select>
+    <select id="itemUserId" parameterType="Client" resultMap="ClientResult">
+        select id,
+        `name`,
+        phone,
+        nick_name,
+        area,
+        area_code,
+        area_info,
+        pid,
+        pname,
+        user_id,
+        create_by,create_time,
+        update_by,update_time
+        from lawyer_client
+        where 1=1
+        <if test="userId != null and userId != '' ">and user_id = #{userId}</if>
     </select>
     <insert id="add" parameterType="Client" useGeneratedKeys="true" keyProperty="id">
         insert into lawyer_client (

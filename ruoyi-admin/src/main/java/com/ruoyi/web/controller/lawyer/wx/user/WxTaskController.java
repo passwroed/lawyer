@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.lawyer.wx.user;
 
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
@@ -48,11 +49,14 @@ public class WxTaskController extends BaseController {
                     task1.setPhone(task1.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
                     returnlist.add(task1);
                 }
-
             }
         } else {
             returnlist = list;
         }
         return getDataTable(returnlist);
+    }
+    @PostMapping("/item")
+    public AjaxResult item(@RequestBody Task task) {
+        return success(taskService.item(task.getId()));
     }
 }

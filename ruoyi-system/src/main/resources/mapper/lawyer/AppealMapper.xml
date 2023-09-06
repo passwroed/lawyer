@@ -43,6 +43,8 @@
         <if test="cName != null and cName != '' ">and c_name = #{cName}</if>
         <if test="cid != null and cid != '' ">and cid = #{cid}</if>
         <if test="type &gt; 0">and type = #{type}</if>
+        <if test="status != null ">and status = #{status}</if>
+        ORDER BY `status` DESC
     </select>
     <select id="item" parameterType="Appeal" resultMap="AppealResult">
         select id,

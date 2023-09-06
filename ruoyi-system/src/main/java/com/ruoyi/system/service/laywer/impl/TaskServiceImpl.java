@@ -43,6 +43,22 @@ public class TaskServiceImpl implements TaskService {
         }else {
             PageHelper.startPage(1, 999);
         }
+        if (StringUtils.isNotNull(task.getPovinceId())&&task.getPovinceId()>0){
+            String str = task.getPovinceId()+"";
+            int index = str.indexOf("00");
+
+            switch (index){
+                case 4:
+                    task.setPovinceId(task.getPovinceId()/100);
+                    break;
+                case 2:
+                    task.setPovinceId(task.getPovinceId()/10000);
+                    break;
+            }
+            System.out.println("index"+task.getPovinceId());
+        }else {
+            task.setPovinceId(null);
+        }
         return taskMapper.list(task);
     }
 
@@ -52,6 +68,22 @@ public class TaskServiceImpl implements TaskService {
             PageHelper.startPage(task.getPageNum(), task.getPageSize());
         }else {
             PageHelper.startPage(1, 999);
+        }
+        if (StringUtils.isNotNull(task.getPovinceId())&&task.getPovinceId()>0){
+            String str = task.getPovinceId()+"";
+            int index = str.indexOf("00");
+
+            switch (index){
+                case 4:
+                    task.setPovinceId((int)task.getPovinceId()/100);
+                    break;
+                case 2:
+                    task.setPovinceId((int)task.getPovinceId()/10000);
+                    break;
+            }
+            System.out.println("index"+task.getPovinceId());
+        }else {
+            task.setPovinceId(null);
         }
         return taskMapper.lawyer1list(task);
     }
@@ -69,7 +101,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public int add(Task task) {
         if (StringUtils.isNotNull(task.getPovinceId()) && task.getPovinceId()>0){
-            task.setPovince(areaMapper.iDArea(task.getPovinceId()).getName());
+            task.setPovince(areaMapper.iDArea(Long.valueOf(task.getPovinceId())).getName());
         }
         if (StringUtils.isNotNull(task.getCid()) && task.getCid() >0){
             task.setcName(clientMapper.item(task.getCid()).getName());
@@ -106,14 +138,20 @@ public class TaskServiceImpl implements TaskService {
 
             //创建述求
             appeal.setCid(getUserId());
-            appeal.setType(task.getType());
-            appeal.setPovinceId(task.getPovinceId());
-            appeal.setPovince(name);
-            appeal.setMoney(task.getMoney());
-            appeal.setcName(task.getcName());
-            appeal.setPhone(task.getPhone());
-            appeal.setRemark(task.getRemark());
-            appealMapper.add(appeal);
+            if (appealMapper.list(appeal).size()>0){
+                appeal.setStatus(0);
+            }else {
+                appeal.setStatus(1);
+                appeal.setType(task.getType());
+                appeal.setPovinceId(Long.valueOf(task.getPovinceId()));
+                appeal.setPovince(name);
+                appeal.setMoney(task.getMoney());
+                appeal.setcName(task.getcName());
+                appeal.setPhone(task.getPhone());
+                appeal.setNeed(task.getNeed());
+                appeal.setRemark(task.getRemark());
+                appealMapper.add(appeal);
+            }
         }
         if (StringUtils.isNotNull(task.getLawyerId()) && task.getLawyerId() >0){
             Lawyer lawyer = lawyerMapper.item(task.getLawyerId());

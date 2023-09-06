@@ -35,7 +35,7 @@ public class Task extends BaseEntity {
     @NotBlank(message = "需求不能为空")
     private String need;
     @NotNull(message = "省份不能为空")
-    private Long povinceId;
+    private Integer povinceId;
     private String povince;
     private Double money;
     private Double profit;
@@ -155,11 +155,11 @@ public class Task extends BaseEntity {
         this.need = need;
     }
 
-    public Long getPovinceId() {
+    public Integer getPovinceId() {
         return povinceId;
     }
 
-    public void setPovinceId(Long povinceId) {
+    public void setPovinceId(Integer povinceId) {
         this.povinceId = povinceId;
     }
 
