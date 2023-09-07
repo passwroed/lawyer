@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSON;
 import com.ruoyi.system.domain.lawyer.Area;
+import com.ruoyi.system.domain.lawyer.Client;
 import com.ruoyi.system.domain.lawyer.CostLog;
 import com.ruoyi.system.domain.lawyer.Lawyer;
 import com.ruoyi.system.service.laywer.AreaService;
+import com.ruoyi.system.service.laywer.ClientService;
 import com.ruoyi.system.service.laywer.CostLogService;
 import com.ruoyi.system.service.laywer.LawyerService;
 import org.apache.commons.lang3.ArrayUtils;
@@ -62,12 +64,15 @@ public class SysUserController extends BaseController {
     private ISysPostService postService;
     @Autowired
     private LawyerService lawyerService;
+    @Autowired
+    private ClientService clientService;
 
     @Autowired
     private AreaService areaService;
 
     @Autowired
     private CostLogService costLogService;
+
     /**
      * 获取用户列表
      */
@@ -242,29 +247,37 @@ public class SysUserController extends BaseController {
     @PostMapping("/update")
     public AjaxResult update(@RequestBody SysUser user) {
         user.setUserId(getUserId());
-        if (userService.updateUser(user) == 0){
+        if (userService.updateUser(user) == 0) {
             return error("操作失败，请联系管理员");
         }
-        if (StringUtils.isNotNull(getLawyerId())){
+        Client client = clientService.itemUserId(getUserId());
+        if (StringUtils.isNotNull(client)) {
+            if (StringUtils.isNotNull(user.getNickName())){
+                client.setName(user.getNickName());
+                client.setNickName(user.getNickName());
+                clientService.edit(client);
+            }
+        }
+        if (StringUtils.isNotNull(getLawyerId())) {
             Lawyer lawyer = new Lawyer();
-            if (StringUtils.isNotNull(user.getAreaCode())){
+            if (StringUtils.isNotNull(user.getAreaCode())) {
                 lawyer.setAreaCode(user.getAreaCode());
                 String name = "";
                 Area area = areaService.iDArea(Long.valueOf(lawyer.getAreaCode()));
                 name = area.getName();
-                while (area.getPid() > 0){
+                while (area.getPid() > 0) {
                     area = areaService.pArea(Long.valueOf(area.getPid()));
-                    name = area.getName()+"-"+name;
+                    name = area.getName() + "-" + name;
                 }
                 lawyer.setArea(name);
             }
-            if (StringUtils.isNotNull(user.getLicenseNum())){
+            if (StringUtils.isNotNull(user.getLicenseNum())) {
                 lawyer.setLicenseNum(user.getLicenseNum());
             }
 
             lawyer.setUserId(getLoginUser().getUserId());
             List<Lawyer> list = lawyerService.selectUserId(lawyer);
-            if (list.size()>0){
+            if (list.size() > 0) {
                 lawyer = list.get(0);
                 lawyerService.edit(lawyer);
             }
@@ -280,19 +293,20 @@ public class SysUserController extends BaseController {
         Lawyer lawyer = new Lawyer();
         lawyer.setUserId(getLoginUser().getUserId());
         System.out.println(JSON.toJSONString(sysUser));
-        Map map =  JSON.parseObject(JSON.toJSONString(sysUser), Map.class);;
+        Map map = JSON.parseObject(JSON.toJSONString(sysUser), Map.class);
+        ;
         System.out.println(JSON.toJSONString(lawyer));
         List<Lawyer> list = lawyerService.selectUserId(lawyer);
         System.out.println(JSON.toJSONString(list));
-        if (list.size()>0){
+        if (list.size() > 0) {
             lawyer = list.get(0);
             lawyer.setPhone(sysUser.getPhonenumber().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
-            map.put("lawyer",JSON.parseObject(JSON.toJSONString(lawyer), Map.class));
-            System.out.println("id ---------------------->"+lawyer.getId());
+            map.put("lawyer", JSON.parseObject(JSON.toJSONString(lawyer), Map.class));
+            System.out.println("id ---------------------->" + lawyer.getId());
             CostLog costLog = costLogService.newCostLog(lawyer.getId());
-            if (StringUtils.isNotNull(costLog)){
-                System.out.println("item ---------------------->"+costLog.getSum());
-                map.put("cost",costLog.getSum());
+            if (StringUtils.isNotNull(costLog)) {
+                System.out.println("item ---------------------->" + costLog.getSum());
+                map.put("cost", costLog.getSum());
             }
         }
         return success(map);

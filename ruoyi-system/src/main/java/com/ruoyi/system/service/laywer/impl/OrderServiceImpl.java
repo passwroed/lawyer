@@ -116,7 +116,8 @@ public class OrderServiceImpl implements OrderService {
         refundOrder(order);
         return null;
     }
-    private Map payWxMap(Order order,String appid){
+    @Override
+    public Map payWxMap(Order order,String appid){
         // 统一参数封装
         Map<String, Object> params = new HashMap<>(10);
         // 1,appid：公众号或移动应用的唯一标识符。

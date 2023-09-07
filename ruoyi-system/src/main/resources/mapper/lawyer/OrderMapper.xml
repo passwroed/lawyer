@@ -44,7 +44,7 @@
         create_by,create_time,
         update_by,update_time
         from lawyer_order
-        where 1=1
+        where status != -1
         <if test="no != null and no != '' ">and `no` like concat('%', #{no}, '%')</if>
         <if test="pid != null and pid != '' ">and pid = #{pid}</if>
         <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
@@ -56,6 +56,7 @@
         <if test="taskNo != null and taskNo != '' ">and task_no = #{taskNo}</if>
         <if test="clientId != null ">and client_id = #{clientId}</if>
         <if test="status != null ">and status = #{status}</if>
+        ORDER BY create_time DESC
     </select>
     <select id="item" parameterType="Order" resultMap="OrderResult">
         select  id,

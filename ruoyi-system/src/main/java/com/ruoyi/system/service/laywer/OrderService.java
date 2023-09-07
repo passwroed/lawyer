@@ -24,4 +24,5 @@ public interface OrderService {
     //删除
     public int del(Long id);
     public Map refund(Order order);
+    public Map payWxMap(Order order,String appid);
 }

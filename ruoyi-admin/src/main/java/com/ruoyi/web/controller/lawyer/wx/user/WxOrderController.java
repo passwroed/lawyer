@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.lawyer.wx.user;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.WxUserAppConfig;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -9,8 +10,10 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.*;
 import com.ruoyi.system.service.laywer.*;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +48,8 @@ public class WxOrderController extends BaseController {
     private WxUserAppConfig wxUserAppConfig;
     @Autowired
     private OrderLogService orderLogService;
+    @Autowired
+    private RocketMQTemplate rocketMQTemplate;
     @PostMapping("/add")
     public AjaxResult add(@Validated @RequestBody Order order)
     {
@@ -99,6 +104,7 @@ public class WxOrderController extends BaseController {
         if (StringUtils.isNull(payMap)){
             return error("下单失败，请联系管理员！");
         }
+        rocketMQTemplate.syncSend("test-topic-delay", MessageBuilder.withPayload(JSONObject.toJSONString(order)).build(),3000,9);
         return success(payMap);
     }
     @PostMapping("/list")
@@ -134,6 +140,37 @@ public class WxOrderController extends BaseController {
             order.setTask(task);
         }
         return success(order);
+    }
+    @PostMapping("/getPayItem")
+    public AjaxResult getPayItem(@RequestBody Order order)
+    {
+        if (StringUtils.isNull(order.getId())){
+            return error("参数错误");
+        }
+        order = orderService.item(order.getId());
+        if (StringUtils.isNotNull(order)&&StringUtils.isNotNull(order.getStatus())&&order.getStatus() == 2){
+            return success(orderService.payWxMap(order,wxUserAppConfig.getAppId()));
+        }else {
+            return error("非未支付订单");
+        }
+    }
+    @PostMapping("/cancel")
+    public AjaxResult cancel(@RequestBody Order order)
+    {
+        if (StringUtils.isNull(order.getId())){
+            return error("参数错误！");
+        }
+        order = orderService.item(order.getId());
+
+        if (StringUtils.isNotNull(order)&&StringUtils.isNotNull(order.getStatus()) && order.getStatus() == 0){
+            order.setStatus(-3);
+            orderService.edit(order);
+            return success("操作成功");
+        }else {
+            return error("此订单不能取消");
+        }
+
+
     }
     //删除订单
     @PostMapping("/del")

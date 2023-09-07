@@ -84,7 +84,7 @@ public class WxPayCallbackController {
                 System.out.println("=========== 根据订单号，做幂等处理 ===========");
                 Order order = orderService.itemNo(orderNo);
                 System.out.println(order.getId());
-                order.setStatus(1);
+                order.setStatus(2);
                 if (order.getType()==1){
                     CostLog costLog = new CostLog();
                     costLog.setType(2);

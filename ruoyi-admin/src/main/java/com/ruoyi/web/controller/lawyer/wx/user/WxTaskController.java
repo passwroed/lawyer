@@ -57,6 +57,10 @@ public class WxTaskController extends BaseController {
     }
     @PostMapping("/item")
     public AjaxResult item(@RequestBody Task task) {
-        return success(taskService.item(task.getId()));
+        task = taskService.item(task.getId());
+        if (StringUtils.isNotNull(task.getPhone())){
+            task.setPhone(task.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
+        }
+        return success(task);
     }
 }
