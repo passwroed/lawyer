@@ -14,6 +14,7 @@ import java.util.Map;
 public interface OrderService {
     //列表
     public List<Order> list(Order order);
+    public List<Order> afterSaleList(Order order);
     //详情
     public Order item(Long id);
     public Order itemNo(String no);

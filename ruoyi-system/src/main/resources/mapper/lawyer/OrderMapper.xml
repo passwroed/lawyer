@@ -12,7 +12,9 @@
         <result property="sImage"    column="s_image"    />
         <result property="clientId"     column="client_id"     />
         <result property="clientName"     column="client_name"     />
+        <result property="clientPhone"     column="client_phone"     />
         <result property="pid"     column="pid"     />
+        <result property="pName"     column="p_name"     />
         <result property="pName"     column="p_name"     />
         <result property="money"     column="money"     />
         <result property="type"     column="type"     />
@@ -34,6 +36,7 @@
         s_image,
         client_id,
         client_name,
+        client_phone,
         pid,
         p_name,
         money,
@@ -44,7 +47,7 @@
         create_by,create_time,
         update_by,update_time
         from lawyer_order
-        where status != -1
+        where 1=1
         <if test="no != null and no != '' ">and `no` like concat('%', #{no}, '%')</if>
         <if test="pid != null and pid != '' ">and pid = #{pid}</if>
         <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
@@ -56,6 +59,42 @@
         <if test="taskNo != null and taskNo != '' ">and task_no = #{taskNo}</if>
         <if test="clientId != null ">and client_id = #{clientId}</if>
         <if test="status != null ">and status = #{status}</if>
+        <if test="status == null ">and (status != -2 and status != 5 and status != 6 and status != 7)</if>
+        <if test="type != null ">and type = #{type}</if>
+        ORDER BY create_time DESC
+    </select>
+    <select id="afterSaleList" parameterType="Order" resultMap="OrderResult">
+        select id,
+        `no`,
+        goods_id,
+        goods_name,
+        s_image,
+        client_id,
+        client_name,
+        client_phone,
+        pid,
+        p_name,
+        money,
+        type,
+        status,
+        task_no,
+        pay_time,
+        create_by,create_time,
+        update_by,update_time
+        from lawyer_order
+        where 1=1
+        <if test="no != null and no != '' ">and `no` like concat('%', #{no}, '%')</if>
+        <if test="pid != null and pid != '' ">and pid = #{pid}</if>
+        <if test="params.beginTime != null and params.beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')
+        </if>
+        <if test="params.endTime != null and params.endTime != ''"><!-- 结束时间检索 -->
+            and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
+        </if>
+        <if test="taskNo != null and taskNo != '' ">and task_no = #{taskNo}</if>
+        <if test="clientId != null ">and client_id = #{clientId}</if>
+        <if test="status != null ">and status = #{status}</if>
+        <if test="status == null ">and (status = -2 or status = 5 or status = 6 or status = 7)</if>
         ORDER BY create_time DESC
     </select>
     <select id="item" parameterType="Order" resultMap="OrderResult">
@@ -66,6 +105,7 @@
         s_image,
         client_id,
         client_name,
+        client_phone,
         pid,
         p_name,
         money,
@@ -87,6 +127,7 @@
         s_image,
         client_id,
         client_name,
+        client_phone,
         pid,
         p_name,
         money,
@@ -109,6 +150,7 @@
         <if test="sImage != null and sImage != '' ">s_image,</if>
         <if test="clientId != null and clientId != '' ">client_id,</if>
         <if test="clientName != null and clientName != '' ">client_name,</if>
+        <if test="clientPhone != null and clientPhone != '' ">client_phone,</if>
         <if test="pid != null and pid != '' ">pid,</if>
         <if test="pName != null and pName != '' ">p_name,</if>
         <if test="money != null">money,</if>
@@ -125,6 +167,7 @@
         <if test="sImage != null and sImage != '' ">#{sImage},</if>
         <if test="clientId != null and clientId != '' ">#{clientId},</if>
         <if test="clientName != null and clientName != '' ">#{clientName},</if>
+        <if test="clientPhone != null and clientPhone != '' ">#{clientPhone},</if>
         <if test="pid != null and pid != '' ">#{pid},</if>
         <if test="pName != null and pName != '' ">#{pName},</if>
         <if test="money != null">#{money},</if>

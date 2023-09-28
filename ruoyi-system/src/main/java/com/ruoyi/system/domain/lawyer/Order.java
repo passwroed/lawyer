@@ -1,6 +1,7 @@
 package com.ruoyi.system.domain.lawyer;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 import javax.validation.constraints.NotNull;
@@ -13,18 +14,29 @@ import java.util.Date;
  * @Date: 2023-07-27 17:54
  */
 public class Order extends BaseEntity {
+    @Excel(name = "序号", cellType = Excel.ColumnType.NUMERIC)
     private Long id;
+    @Excel(name = "订单号")
     private String no;
     @NotNull(message = "商品不能为空")
     private Long goodsId;
+    @Excel(name = "商品名称")
     private String goodsName;
     private String sImage;
+    @Excel(name = "客户id", cellType = Excel.ColumnType.NUMERIC)
     private Long clientId;
+    @Excel(name = "客户名称")
     private String clientName;
+    @Excel(name = "客户手机号")
+    private String clientPhone;
     private Long pid;
+    @Excel(name = "客服姓名")
     private String pName;
+    @Excel(name = "价格", cellType = Excel.ColumnType.NUMERIC)
     private Double money;
+    @Excel(name = "类型", readConverterExp = "0=商品订单,1=充值订单")
     private Integer type;
+    @Excel(name = "状态", readConverterExp = "-3=取消订单,-2=拒绝退款,-1=失效,0=待支付,1=支付完成,2=待交付,3=跟进中,4=已完成,5=申请退款,6=退款中,7=退款完成")
     private Integer status;
     private String taskNo;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -78,6 +90,14 @@ public class Order extends BaseEntity {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public String getClientPhone() {
+        return clientPhone;
+    }
+
+    public void setClientPhone(String clientPhone) {
+        this.clientPhone = clientPhone;
     }
 
     public Long getPid() {

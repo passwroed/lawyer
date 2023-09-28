@@ -36,7 +36,17 @@ public class OrderLogServiceImpl implements OrderLogService {
     }
 
     @Override
+    public OrderLog itemOrderId(Long orderId) {
+        return orderLogMapper.itemOrderId(orderId);
+    }
+
+    @Override
     public int add(OrderLog orderLog) {
         return orderLogMapper.add(orderLog);
+    }
+
+    @Override
+    public int edit(OrderLog orderLog) {
+        return orderLogMapper.edit(orderLog);
     }
 }

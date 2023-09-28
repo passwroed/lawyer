@@ -18,7 +18,7 @@ ruoyi:
 
 wx-user-app:
   appId: wxe72e52a581110877
-  appSecret: 32dcc25799489f8c9aede7052cbe789a
+  appSecret: e56d38c36ab3b604f4b7726954b18503
 wx-lawyer-app:
   appId: wxca18f4697687b04b
   appSecret: c031df87e0b08824edbc5eec0a8fc660

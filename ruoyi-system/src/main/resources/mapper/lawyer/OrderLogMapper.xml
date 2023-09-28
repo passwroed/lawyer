@@ -39,6 +39,17 @@
         where 1=1
         <if test="id != null and id != '' ">and id = #{id}</if>
     </select>
+    <select id="itemOrderId" parameterType="OrderLog" resultMap="OrderLogResult">
+        select id,
+        order_id,
+        status,
+        image,
+        reason,create_by,create_time
+        ,update_by,update_time,remark
+        from lawyer_order_log
+        where 1=1
+        <if test="orderId != null and orderId != '' ">and order_id = #{orderId}</if>
+    </select>
     <insert id="add" parameterType="OrderLog">
         insert into lawyer_order_log (
         <if test="orderId != null and orderId != '' ">order_id,</if>
@@ -58,6 +69,17 @@
         sysdate()
         )
     </insert>
-
+    <update id="edit" parameterType="OrderLog">
+        update lawyer_order_log
+        <set>
+            <if test="orderId != null and orderId != '' ">order_id = #{orderId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="image != null and image != '' ">image = #{image},</if>
+            <if test="reason != null and reason != '' ">reason = #{reason},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
 
 </mapper>

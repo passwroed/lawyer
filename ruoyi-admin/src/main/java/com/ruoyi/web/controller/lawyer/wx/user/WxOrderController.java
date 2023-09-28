@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.lawyer.wx.user;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.ruoyi.common.config.WxUserAppConfig;
 import com.ruoyi.common.core.controller.BaseController;
@@ -22,10 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @ClassName : WxOrderController
@@ -76,6 +74,7 @@ public class WxOrderController extends BaseController {
             client = list.get(0);
             order.setClientId(client.getId());
             order.setClientName(client.getName());
+            order.setClientPhone(client.getPhone());
             order.setPid(client.getPid());
             order.setpName(client.getPname());
         }
@@ -95,6 +94,7 @@ public class WxOrderController extends BaseController {
         task.setOrderNo(order.getNo());
         task.setName(goods.getName());
         task.setPhone(client.getPhone());
+        task.setMoney(goods.getMoney());
         task.setStatus(-1);
         if (taskService.add(task) == 0){
             return error("下单失败，请联系管理员！");
@@ -104,6 +104,7 @@ public class WxOrderController extends BaseController {
         if (StringUtils.isNull(payMap)){
             return error("下单失败，请联系管理员！");
         }
+        System.out.println("发送成功="+JSONObject.toJSONString(order));
         rocketMQTemplate.syncSend("test-topic-delay", MessageBuilder.withPayload(JSONObject.toJSONString(order)).build(),3000,9);
         return success(payMap);
     }
@@ -134,12 +135,33 @@ public class WxOrderController extends BaseController {
     @PostMapping("/item")
     public AjaxResult item(@RequestBody Order order)
     {
+        Map<String,Object> map = new HashMap<>();
         order = orderService.item(order.getId());
-        if (StringUtils.isNotNull(order.getTaskNo())){
-            Task task = taskService.itemNo(order.getTaskNo());
-            order.setTask(task);
+        if (StringUtils.isNull(order)){
+            return success();
         }
-        return success(order);
+        map.put("order",order);
+        //获取任务
+        Task task = taskService.itemNo(order.getTaskNo());
+        if (StringUtils.isNotNull(task)){
+            map.put("task",task);
+        }
+        //获取客户
+        Client client = clientService.item(order.getClientId());
+        if (StringUtils.isNotNull(client)){
+            map.put("client",client);
+        }
+        //如果状态==5显示理由
+        if (StringUtils.isNotNull(order)||StringUtils.isNotNull(order.getStatus())){
+            if (order.getStatus() == 5||order.getStatus() == -2||order.getStatus() == 6||order.getStatus() == 7){
+                OrderLog orderLog = orderLogService.itemOrderId(order.getId());
+                if (StringUtils.isNotNull(orderLog)){
+                    map.put("orderLog",orderLog);
+                }
+
+            }
+        }
+        return success(map);
     }
     @PostMapping("/getPayItem")
     public AjaxResult getPayItem(@RequestBody Order order)
@@ -148,7 +170,8 @@ public class WxOrderController extends BaseController {
             return error("参数错误");
         }
         order = orderService.item(order.getId());
-        if (StringUtils.isNotNull(order)&&StringUtils.isNotNull(order.getStatus())&&order.getStatus() == 2){
+        System.out.println(JSON.toJSONString(order));
+        if (StringUtils.isNotNull(order)&&StringUtils.isNotNull(order.getStatus())&&order.getStatus() == 0){
             return success(orderService.payWxMap(order,wxUserAppConfig.getAppId()));
         }else {
             return error("非未支付订单");
@@ -180,7 +203,7 @@ public class WxOrderController extends BaseController {
             return error("参数错误！");
         }
         order = orderService.item(order.getId());
-        if (order.getStatus()==-1||order.getStatus()==-0||order.getStatus()==4||order.getStatus()==7){
+        if (order.getStatus()==-3||order.getStatus()==-1||order.getStatus()==-0||order.getStatus()==4||order.getStatus()==7){
             if (orderService.del(order.getId()) == 0){
                 return error("删除失败，请联系管理员！");
             }
@@ -198,7 +221,11 @@ public class WxOrderController extends BaseController {
             return error("参数错误！");
         }
         Order orderOld = orderService.item(order.getId());
-        if (orderOld.getClientId() != getUserId()){
+        Client client = clientService.itemUserId(getUserId());
+        if (StringUtils.isNull(orderOld) || StringUtils.isNull(client)){
+            return error("参数错误！");
+        }
+        if (orderOld.getClientId() != client.getId()){
             return error("非本人不可操作！");
         }
         if (orderOld.getStatus()==5){

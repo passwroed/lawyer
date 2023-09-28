@@ -16,10 +16,12 @@ public interface TaskService {
     //详情
     public Task item(Long id);
     public Task itemNo(String no);
+    public Task itemOrderNo(String orderNo);
     //新增
     public int add(Task task);
     //编辑
     public int edit(Task task);
+    public int editStatus0(Task task);
     //删除
     public int del(Long id);
     public int reject(Long id);

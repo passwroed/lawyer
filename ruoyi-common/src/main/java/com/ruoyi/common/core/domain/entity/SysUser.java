@@ -44,6 +44,7 @@ public class SysUser extends BaseEntity {
      */
     @Excel(name = "用户名称")
     private String nickName;
+    private String userType;
 
     /**
      * 用户邮箱
@@ -346,6 +347,14 @@ public class SysUser extends BaseEntity {
         this.roleId = roleId;
     }
 
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
@@ -371,4 +380,5 @@ public class SysUser extends BaseEntity {
                 .append("openId", getOpenId())
                 .toString();
     }
+
 }

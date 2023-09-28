@@ -99,6 +99,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public Task itemOrderNo(String orderNo) {
+        return taskMapper.itemOrderNo(orderNo);
+    }
+
+    @Override
     public int add(Task task) {
         if (StringUtils.isNotNull(task.getPovinceId()) && task.getPovinceId()>0){
             task.setPovince(areaMapper.iDArea(Long.valueOf(task.getPovinceId())).getName());
@@ -178,6 +183,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public int edit(Task task) {
         return taskMapper.edit(task);
+    }
+
+    @Override
+    public int editStatus0(Task task) {
+        return taskMapper.editStatus0(task);
     }
 
     @Override

@@ -83,6 +83,7 @@ public class WxPayCallbackController {
                 // TODO 根据订单号，做幂等处理，并且在对业务数据进行状态检查和处理之前，要采用数据锁进行并发控制，以避免函数重入造成的数据混乱
                 System.out.println("=========== 根据订单号，做幂等处理 ===========");
                 Order order = orderService.itemNo(orderNo);
+                System.out.println("订单 --- "+JSONObject.toJSONString(order));
                 System.out.println(order.getId());
                 order.setStatus(2);
                 if (order.getType()==1){
@@ -94,14 +95,16 @@ public class WxPayCallbackController {
                         System.out.println("订单"+orderNo+" 积分修改失败");
                     }
                 }else {
-                    Goods goods = goodsService.item(order.getGoodsId());
-                    if (StringUtils.isNotNull(goods)){
-                        //添加任务
-                        Task task = taskService.itemNo(order.getTaskNo());
-                        if (StringUtils.isNotNull(task)){
-                            task.setStatus(0);
-                            taskService.edit(task);
+                    //添加任务
+                    Task task = taskService.itemOrderNo(order.getNo());
+                    System.out.println("任务更新"+JSONObject.toJSONString(task));
+                    if (StringUtils.isNotNull(task)){
+                        Task task1 = new Task();
+                        task1.setId(task.getId());
+                        if (taskService.editStatus0(task1) == 0){
+                            System.out.println("任务更新失败");
                         }
+
                     }
                     Msg msg = new Msg();
                     msg.setClientId(order.getClientId());

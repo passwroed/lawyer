@@ -58,6 +58,7 @@ public class WxLawyerController extends BaseController {
     public AjaxResult add(@Validated @RequestBody Lawyer lawyer)
     {
         lawyer.setCreateBy(getUsername());
+        lawyer.setType(1);
         switch (lawyerService.add(lawyer)){
             case -1:
                 return error("当前手机号已绑定！");

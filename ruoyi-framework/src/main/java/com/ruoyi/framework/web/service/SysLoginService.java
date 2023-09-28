@@ -201,6 +201,7 @@ public class SysLoginService
             user.setUserName(getStringRandom(16));// 生成16位随机用户名
             user.setNickName("微信用户");// 生成16位随机用户名
             user.setOpenId(openId);
+            user.setUserType("01");
             user.setPhonenumber(phone);
             //新增 用户
             userMapper.insertUser(user);
@@ -251,6 +252,7 @@ public class SysLoginService
             // 新增
             user.setUserName(getStringRandom(16));// 生成16位随机用户名
             user.setOpenId(openId);
+            user.setUserType("02");
             user.setNickName("微信律师用户");// 生成16位随机用户名
             user.setPhonenumber(phone);
             userMapper.insertUser(user);

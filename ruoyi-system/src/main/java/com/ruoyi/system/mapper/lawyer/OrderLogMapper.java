@@ -13,6 +13,8 @@ import java.util.List;
 public interface OrderLogMapper {
     public List<OrderLog> list(OrderLog orderLog);
     public OrderLog item(Long id);
+    public OrderLog itemOrderId(Long orderId);
     //新增
     public int add(OrderLog orderLog);
+    public int edit(OrderLog orderLog);
 }

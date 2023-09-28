@@ -83,6 +83,12 @@ public class SysUserController extends BaseController {
         List<SysUser> list = userService.selectUserList(user);
         return getDataTable(list);
     }
+    @GetMapping("/wxList")
+    public TableDataInfo wxList(SysUser user) {
+        startPage();
+        List<SysUser> list = userService.selectWxUserList(user);
+        return getDataTable(list);
+    }
 
     @Log(title = "用户管理", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('system:user:export')")

@@ -55,6 +55,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> afterSaleList(Order order) {
+        return orderMapper.afterSaleList(order);
+    }
+
+    @Override
     public Order item(Long id) {
         return orderMapper.item(id);
     }
@@ -188,7 +193,7 @@ public class OrderServiceImpl implements OrderService {
         // 将签名时数据和签名一起返回前端用于前端吊起支付
         Map<String, Object> map = new HashMap<>();
         // 小程序id
-        map.put("appId", appid);
+//        map.put("appId", appid);
         // 时间戳
         map.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
         // 随机字符串

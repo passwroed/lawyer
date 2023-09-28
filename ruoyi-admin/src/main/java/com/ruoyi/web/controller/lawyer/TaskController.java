@@ -5,6 +5,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.lawyer.Lawyer;
 import com.ruoyi.system.domain.lawyer.Order;
 import com.ruoyi.system.domain.lawyer.Task;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -381,5 +383,13 @@ public class TaskController extends BaseController {
         taskLog.setTaskId(task.getId());
         List<TaskLog> list = taskLogService.list(taskLog);
         return getDataTable(list);
+    }
+
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, @RequestBody Task task)
+    {
+        List<Task> list = taskService.list(task);
+        ExcelUtil<Task> util = new ExcelUtil<Task>(Task.class);
+        util.exportExcel(response, list, "任务数据数据");
     }
 }

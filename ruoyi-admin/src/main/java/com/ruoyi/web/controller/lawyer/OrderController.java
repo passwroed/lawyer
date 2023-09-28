@@ -3,9 +3,14 @@ package com.ruoyi.web.controller.lawyer;
 import com.ruoyi.common.config.WxUserAppConfig;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.lawyer.*;
+import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.service.laywer.*;
 import org.apache.poi.ss.formula.ptg.Area2DPtgBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -45,14 +51,22 @@ public class OrderController extends BaseController {
     private AreaService areaService;
     @Autowired
     private OrderLogService orderLogService;
+    @Autowired
+    private ISysUserService iSysUserService;
     //列表查询（条件查询）
 //    @PreAuthorize("@ss.hasPermi('lawyer:order:list')")
     @PostMapping("/list")
     public TableDataInfo list(@RequestBody Order order)
     {
         startPage();
-        order.setPid(getUserId());
         List<Order> list = orderService.list(order);
+        return getDataTable(list);
+    }
+    @PostMapping("/afterSaleList")
+    public TableDataInfo afterSaleList(@RequestBody Order order)
+    {
+        startPage();
+        List<Order> list = orderService.afterSaleList(order);
         return getDataTable(list);
     }
     @PostMapping("/item")
@@ -70,16 +84,17 @@ public class OrderController extends BaseController {
             map.put("task",task);
         }
         //获取客户
-        Client client = clientService.itemUserId(order.getClientId());
+        Client client = clientService.item(order.getClientId());
         if (StringUtils.isNotNull(client)){
             map.put("client",client);
         }
         //如果状态==5显示理由
         if (StringUtils.isNotNull(order)||StringUtils.isNotNull(order.getStatus())){
             if (order.getStatus() == 5||order.getStatus() == -2||order.getStatus() == 6||order.getStatus() == 7){
-                OrderLog orderLog = new OrderLog();
-                orderLog.setOrderId(order.getId());
-                orderLogService.list(orderLog);
+                OrderLog orderLog = orderLogService.itemOrderId(order.getId());
+                if (StringUtils.isNotNull(orderLog)){
+                    map.put("orderLog",orderLog);
+                }
             }
         }
         return success(map);
@@ -193,26 +208,74 @@ public class OrderController extends BaseController {
             return error("参数错误！");
         }
         Order order1 = orderService.item(order.getId());
+
         if (StringUtils.isNull(order1)){
             return error("未找到该订单");
         }
         if (order1.getStatus() != 5){
             return error("该订单，不可申请退款");
         }
-        OrderLog orderLog = order.getOrderLog();
-        if (StringUtils.isNull(orderLog)){
-            orderLog = new OrderLog();
+        OrderLog orderLog = orderLogService.itemOrderId(order.getId());
+        if (StringUtils.isNotNull(orderLog)) {
+            orderLog.setStatus(order.getStatus());
+            orderLog.setOrderId(order.getId());
+            orderLogService.edit(orderLog);
         }
-        orderLog.setStatus(order.getStatus());
-        orderLog.setOrderId(order.getId());
-        orderLogService.add(orderLog);
-        if (order.getStatus()==6){
+        if (order.getStatus()==7){
             //同意退款
-            orderService.refund(order);
+            order1.setOrderLog(orderLog);
+            orderService.refund(order1);
         }
+        order.setClientId(order1.getClientId());
         if (orderService.edit(order)==0){
             return error("失败，请联系管理员！");
         }
         return success("操作成功");
+    }
+    @PostMapping("/editServer")
+    public AjaxResult editServer(@RequestBody Order order){
+        if (StringUtils.isNull(order.getId())||StringUtils.isNull(order.getPid())){
+            return error("参数错误");
+        }
+        //修改订单客服id
+        order.getId();
+        Order order1 = orderService.item(order.getId());
+        SysUser sysUser = iSysUserService.selectUserById(order.getPid());
+        if (StringUtils.isNull(order1)){
+            return error("未找到该订单，请联系管理员");
+        }else {
+            if (StringUtils.isNull(sysUser)){
+                return error("未找到该客服，请联系管理员");
+            }else {
+                Order order2 = new Order();
+                order2.setId(order.getId());
+                order2.setPid(sysUser.getUserId());
+                order2.setpName(sysUser.getNickName());
+                if (orderService.edit(order2) == 0 ){
+                    return error("操作失败，请联系管理员");
+                }
+            }
+        }
+        //修改客服的父客服id
+        Client client = clientService.item(order1.getClientId());
+        if (StringUtils.isNull(client)){
+            return error("未找到该客户，请联系管理员");
+        }else {
+            Client client1 = new Client();
+            client1.setId(client.getId());
+            client1.setPid(sysUser.getUserId());
+            client1.setPname(sysUser.getNickName());
+            if (clientService.edit(client1) == 0 ){
+                return error("操作失败，请联系管理员");
+            }
+        }
+        return success("操作成功");
+    }
+    @PostMapping("/export")
+    public void export(HttpServletResponse response, @RequestBody Order order)
+    {
+        List<Order> list = orderService.list(order);
+        ExcelUtil<Order> util = new ExcelUtil<Order>(Order.class);
+        util.exportExcel(response, list, "订单数据数据");
     }
 }

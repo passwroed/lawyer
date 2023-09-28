@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.lawyer.StatisticsMapper">
+    <select id="midLawyer" resultType="hashmap" parameterType="map">
+        SELECT IFNULL(COUNT(task.id) , 0) AS count, IFNULL(SUM(task.money) , 0) AS money ,days.days AS dateTime
+        FROM (
+        SELECT @date :=DATE_ADD(@date,INTERVAL+1 DAY) days
+        FROM (
+        SELECT @date :=DATE_ADD("2023-08-17",INTERVAL-1 DAY) FROM lawyer_task
+        ) tiem
+        <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+            WHERE @date &lt; DATE(#{endTime})
+        </if>
+        ) days
+        LEFT JOIN
+        lawyer_task AS task ON TO_DAYS(task.create_time)=TO_DAYS(days.days) AND task.fast_lawyer_id IS NOT NULL AND
+        task.lawyer_type = 0 AND task.status = 4
+        <if test="lawyerId != null">and lawyer_id = #{lawyerId}</if>
+        <if test="fastLawyerName != null and fastLawyerName != '' ">and `fast_lawyer_name` like concat('%',
+            #{fastLawyerName}, '%')
+        </if>
+        GROUP BY days.days
+
+    </select>
+    <select id="orderMoney" resultType="hashmap" parameterType="map">
+        SELECT IFNULL(SUM(money),0) AS money,days.days AS dateTime
+        FROM (
+        SELECT @date :=DATE_ADD(@date,INTERVAL+1 DAY) days
+        FROM (
+        SELECT @date :=DATE_ADD(#{beginTime},INTERVAL-1 DAY) FROM lawyer_task
+        ) tiem
+        <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+            WHERE @date &lt; DATE(#{endTime})
+        </if>
+        ) days
+        LEFT JOIN lawyer_task ON TO_DAYS(lawyer_task.create_time)=TO_DAYS(days.days) and lawyer_task.pid IS NOT NULL AND (lawyer_task.status>0)
+        <if test="pid != null">and lawyer_task.pid = #{pid}</if>
+        <if test="pName != null and pName != '' ">and lawyer_task.p_name like concat('%', #{pName}, '%')</if>
+        GROUP BY days.days
+
+    </select>
+    <select id="orderNum" resultType="hashmap" parameterType="map">
+        SELECT COUNT(*) AS count,DATE_FORMAT(create_time,'%Y-%m-%d') AS dateTime FROM lawyer_task
+        WHERE create_time IS NOT NULL
+        <if test="pid != null">and pid = #{pid}</if>
+        <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+        </if>
+        <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+            and date_format(create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+        </if>
+        <if test="pName != null and pName != '' ">and `p_name` like concat('%', #{pName}, '%')</if>
+        GROUP BY dateTime
+    </select>
+    <select id="typeTop" resultType="hashmap" parameterType="map">
+        SELECT COUNT(*) AS count,`type` FROM lawyer_task WHERE 1=1
+        <if test="pid != null">and pid = #{pid}</if>
+        <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
+            and date_format(create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
+        </if>
+        <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
+            and date_format(create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+        </if>
+        <if test="pName != null and pName != '' ">and `p_name` like concat('%', #{pName}, '%')</if>
+        GROUP BY `type` ORDER BY count DESC
+    </select>
+</mapper>

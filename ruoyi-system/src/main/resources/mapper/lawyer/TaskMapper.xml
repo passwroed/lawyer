@@ -209,6 +209,42 @@
         where 1=1
         <if test="no != null and no != '' ">and `no` = #{no}</if>
     </select>
+    <select id="itemOrderNo" parameterType="Task" resultMap="TaskResult">
+        select id,
+        `no`,
+        `name`,
+        `type`,
+        status,
+        order_no,
+        pay_status,
+        cid,
+        c_name,
+        pid,
+        p_name,
+        phone,
+        need,
+        povince_id,
+        povince,
+        money,
+        profit,
+        cost,
+        content,
+        is_hall,
+        entrust,
+        lawyer_id,
+        lawyer_name,
+        lawyer_type,
+        fast_lawyer_id,
+        fast_lawyer_name,
+        fast_lawyer_type,
+        willing,
+        create_by,create_time,
+        update_by,update_time,
+        remark
+        from lawyer_task
+        where 1=1
+        <if test="orderNo != null and orderNo != '' ">and order_no = #{orderNo}</if>
+    </select>
     <insert id="add" parameterType="Task" useGeneratedKeys="true" keyProperty="id">
         insert into lawyer_task (
         <if test="no != null and no != '' ">`no`,</if>
@@ -226,6 +262,7 @@
         <if test="povinceId != null and povinceId != '' ">povince_id,</if>
         <if test="povince != null and povince != '' ">povince,</if>
         <if test="money != null and money != '' ">money,</if>
+        <if test="profit != null and profit != '' ">profit,</if>
         <if test="cost != null and cost != '' ">cost,</if>
         <if test="content != null and content != '' ">content,</if>
         <if test="isHall != null and isHall != '' ">is_hall,</if>
@@ -256,6 +293,7 @@
         <if test="povinceId != null and povinceId != '' ">#{povinceId},</if>
         <if test="povince != null and povince != '' ">#{povince},</if>
         <if test="money != null and money != '' ">#{money},</if>
+        <if test="profit != null and profit != '' ">#{profit},</if>
         <if test="cost != null and cost != '' ">#{cost},</if>
         <if test="content != null and content != '' ">#{content},</if>
         <if test="isHall != null and isHall != '' ">#{isHall},</if>
@@ -276,7 +314,7 @@
     <update id="edit" parameterType="Task">
         update lawyer_task
         <set>
-            <if test="status != null and status != '' ">status = #{status},</if>
+            <if test="status != null">status = #{status},</if>
             <if test="payStatus != null and payStatus != '' ">pay_status = #{payStatus},</if>
             <if test="lawyerId != null and lawyerId != '' ">lawyer_id = #{lawyerId},</if>
             <if test="lawyerName != null and lawyerName != '' ">lawyer_name = #{lawyerName},</if>
@@ -294,6 +332,11 @@
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()
         </set>
+        where id = #{id}
+    </update>
+    <update id="editStatus0" parameterType="Task">
+        update lawyer_task
+            set status = 0,update_time = sysdate()
         where id = #{id}
     </update>
     <update id="reject" parameterType="Long">
