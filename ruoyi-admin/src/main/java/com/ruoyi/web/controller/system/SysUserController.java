@@ -300,7 +300,7 @@ public class SysUserController extends BaseController {
         lawyer.setUserId(getLoginUser().getUserId());
         System.out.println(JSON.toJSONString(sysUser));
         Map map = JSON.parseObject(JSON.toJSONString(sysUser), Map.class);
-        ;
+
         System.out.println(JSON.toJSONString(lawyer));
         List<Lawyer> list = lawyerService.selectUserId(lawyer);
         System.out.println(JSON.toJSONString(list));

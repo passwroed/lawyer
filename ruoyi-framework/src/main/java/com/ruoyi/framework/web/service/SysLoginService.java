@@ -248,6 +248,7 @@ public class SysLoginService
         SysUser wxUser = userMapper.selectWxUserByPhone(phone);
         //假如查不到，则新增，查到了，则更新
         SysUser user = new SysUser();
+        System.out.println("手机号"+phone);
         if (wxUser == null) {
             // 新增
             user.setUserName(getStringRandom(16));// 生成16位随机用户名
@@ -277,6 +278,21 @@ public class SysLoginService
             loginUser.setLawyerId(lawyerList.get(0).getId());
             loginUser.setLawyerType(lawyerList.get(0).getType());
             loginUser.setLawyerName(lawyerList.get(0).getName());
+        }else {
+            System.out.println("未找到律师");
+            Lawyer lawyer1 = new Lawyer();
+            lawyer1.setPhone(phone);
+            List<Lawyer> lawyerList1= lawyerService.list(lawyer1);
+            System.out.println("未找到律师，律师数:"+lawyerList1.size());
+            if (lawyerList1.size()>0){
+                System.out.println("未找到律师，律师id:"+lawyerList1.get(0).getId());
+                lawyer1 = lawyerList1.get(0);
+                lawyer1.setUserId(user.getUserId());
+                lawyerService.edit(lawyer1);
+                loginUser.setLawyerId(lawyerList1.get(0).getId());
+                loginUser.setLawyerType(lawyerList1.get(0).getType());
+                loginUser.setLawyerName(lawyerList1.get(0).getName());
+            }
         }
         // 生成token
         return tokenService.createToken(loginUser);

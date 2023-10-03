@@ -74,6 +74,8 @@ public class LawyerController extends BaseController {
     {
         lawyer.setCreateBy(getUsername());
         switch (lawyerService.add(lawyer)){
+            case -2:
+                return error("有多个用户拥有此手机号，请重新选择！");
             case -1:
                 return error("当前手机号已绑定！");
             case 0:

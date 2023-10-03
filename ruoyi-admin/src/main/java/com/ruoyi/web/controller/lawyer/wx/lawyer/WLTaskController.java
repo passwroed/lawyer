@@ -53,10 +53,11 @@ public class WLTaskController extends BaseController {
         if (getLawyerType() == 0) {
             //中台律师
             task.setFastLawyerId(null);
+            task.setStatus(0);
             list = taskService.list(task);
         } else if (getLawyerType() == 1) {
             //当地律师
-            task.setLawyerId(getLawyerId());
+            task.setStatus(5);
             list = taskService.lawyer1list(task);
         } else {
             return errorDataTable("用户信息获取失败，请重新登陆");
@@ -133,6 +134,13 @@ public class WLTaskController extends BaseController {
             }
             return success("操作成功");
         } else if (getLawyerType() == 1) {
+            Lawyer lawyer = lawyerService.item(getLawyerId());
+            if (StringUtils.isNull(lawyer)) {
+                return error("无法领取任务，请联系管理员！");
+            }
+            if (lawyer.getStatus()!=2){
+                return error("非工作时间，无法领取改任务");
+            }
             //如果是当地律师，查询积分是否够
             CostLog costLog = costLogService.newCostLog(getLawyerId());
             if (costLog.getSum() < task.getCost()) {
@@ -146,10 +154,6 @@ public class WLTaskController extends BaseController {
             costLog.setTaskId(Long.valueOf(taskGet.getNo()));
             if (costLogService.add(costLog) == 0) {
                 return error("系统错误");
-            }
-            Lawyer lawyer = lawyerService.item(getLawyerId());
-            if (StringUtils.isNull(lawyer)) {
-                return error("无法领取任务，请联系管理员！");
             }
             task.setLawyerType(lawyer.getType());
             task.setLawyerName(lawyer.getName());
@@ -312,7 +316,31 @@ public class WLTaskController extends BaseController {
                 if (!lawyer.getUserId().equals(getUserId())) {
                     return error("此任务已被其他律所领取，您无法修改");
                 }
-                taskLog.setRemark("持续跟进");
+                //扣除相应积分
+                if (StringUtils.isNull(lawyer)) {
+                    return error("无法领取任务，请联系管理员！");
+                }
+                if (lawyer.getStatus()!=2){
+                    return error("非工作时间，无法领取改任务");
+                }
+                //如果是当地律师，查询积分是否够
+                CostLog costLog = costLogService.newCostLog(task1.getLawyerId());
+                if (costLog.getSum() < task.getCost()) {
+                    //积分不够
+                    return error("您的积分不够，请充值");
+                }
+                costLog = new CostLog();
+                costLog.setType(3);
+                costLog.setCost(task.getCost());
+                costLog.setLawyerId(getLawyerId());
+                costLog.setTaskId(task.getId());
+                if (costLogService.add(costLog) == 0) {
+                    return error("系统错误");
+                }
+                task.setLawyerType(lawyer.getType());
+                task.setLawyerName(lawyer.getName());
+                task.setLawyerId(getLawyerId());
+                task.setPayStatus(2);
                 break;
             case 8:
                 if (StringUtils.isNull(task.getProfit())) {
@@ -330,6 +358,9 @@ public class WLTaskController extends BaseController {
         taskLog.setFastLawyerId(task.getFastLawyerId());
         taskLog.setFastLawyerName(task.getFastLawyerName());
         taskLog.setFastLawyerType(task.getFastLawyerType());
+        taskLog.setLawyerType(task.getLawyerType());
+        taskLog.setLawyerName(task.getLawyerName());
+        taskLog.setLawyerId(task.getLawyerId());
         taskLog.setContent(task.getContent());
         taskLog.setWilling(task.getWilling());
         taskLog.setProfit(task.getProfit());

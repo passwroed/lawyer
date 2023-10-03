@@ -21,7 +21,7 @@ wx-user-app:
   appSecret: e56d38c36ab3b604f4b7726954b18503
 wx-lawyer-app:
   appId: wxca18f4697687b04b
-  appSecret: c031df87e0b08824edbc5eec0a8fc660
+  appSecret: 91e91a1092f0a9ed09424136996d2f8d
 wx-v3-pay:
   # 商户证书序列号
   serialNo: 214A9629B7C7FC9EFBB0FD65722D167781C2A95E

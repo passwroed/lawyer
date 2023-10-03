@@ -88,7 +88,7 @@
         `type`,
         user_id
         from lawyer_lawyer
-        where 1=1
+        where status = 2
         <if test="type != null ">and type = #{type}</if>
         <if test="name != null and name != '' ">and zb.`name` like concat('%', #{name}, '%')</if>
     </select>

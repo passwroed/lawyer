@@ -2,10 +2,12 @@ package com.ruoyi.system.service.laywer.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.ruoyi.common.core.domain.entity.SysDictData;
+import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.utils.PageUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.*;
 import com.ruoyi.system.mapper.SysDictDataMapper;
+import com.ruoyi.system.mapper.SysUserMapper;
 import com.ruoyi.system.mapper.lawyer.CostLogMapper;
 import com.ruoyi.system.mapper.lawyer.LawyerMapper;
 import com.ruoyi.system.service.laywer.AreaService;
@@ -35,6 +37,9 @@ public class LawyerServiceImpl implements LawyerService {
     private SysDictDataMapper sysDictDataMapper;
     @Autowired
     private CostLogMapper costLogMapper;
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
     @Override
     public List<Lawyer> list(Lawyer lawyer) {
         if (StringUtils.isNotNull(lawyer.getPageNum()) && StringUtils.isNotNull(lawyer.getPageSize())) {
@@ -133,6 +138,20 @@ public class LawyerServiceImpl implements LawyerService {
             lawyer.setArea(name);
         }else {
             return 0;
+        }
+        if (StringUtils.isNotNull(lawyer.getUserId())){
+            SysUser user = sysUserMapper.selectUserById(lawyer.getUserId());
+            SysUser user1 = new SysUser();
+            user1.setPhonenumber(lawyer.getPhone());
+            List<SysUser> list1 = sysUserMapper.selectUserList(user1);
+            if (StringUtils.isNotNull(user)&&user.getPhonenumber().equals("")&&list1.size()==0){
+                SysUser sysUser = new SysUser();
+                sysUser.setUserId(lawyer.getUserId());
+                sysUser.setPhonenumber(lawyer.getPhone());
+                sysUserMapper.updateUser(sysUser);
+            }else {
+                return -2;
+            }
         }
         return lawyerMapper.add(lawyer);
     }

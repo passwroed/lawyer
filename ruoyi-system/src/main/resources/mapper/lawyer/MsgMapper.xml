@@ -31,6 +31,7 @@
         from lawyer_msg
         where 1=1
         <if test="clientId != null and clientId != '' ">and client_id = #{clientId}</if>
+        order by create_time desc
     </select>
     <insert id="add" parameterType="Msg">
         insert into lawyer_msg (

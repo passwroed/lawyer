@@ -111,7 +111,7 @@ public class ClientController extends BaseController {
         }
         try {
             System.out.println("生成文件");
-            QRCodeUtils.createCodeToFile("https://www.homelawyers.cn/pages/index/index?id="+String.valueOf(getUserId()), String.valueOf(getUserId()));
+            QRCodeUtils.createCodeToFile("https://www.homelawyers.cn/dev-api/pages/index/index?id="+String.valueOf(getUserId()), String.valueOf(getUserId()));
 
             return success(map);
         } catch (Exception e) {

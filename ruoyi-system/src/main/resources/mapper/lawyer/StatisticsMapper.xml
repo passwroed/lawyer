@@ -8,7 +8,7 @@
         FROM (
         SELECT @date :=DATE_ADD(@date,INTERVAL+1 DAY) days
         FROM (
-        SELECT @date :=DATE_ADD("2023-08-17",INTERVAL-1 DAY) FROM lawyer_task
+        SELECT @date :=DATE_ADD(#{beginTime},INTERVAL-1 DAY) FROM lawyer_area
         ) tiem
         <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
             WHERE @date &lt; DATE(#{endTime})
@@ -29,7 +29,7 @@
         FROM (
         SELECT @date :=DATE_ADD(@date,INTERVAL+1 DAY) days
         FROM (
-        SELECT @date :=DATE_ADD(#{beginTime},INTERVAL-1 DAY) FROM lawyer_task
+        SELECT @date :=DATE_ADD(#{beginTime},INTERVAL-1 DAY) FROM lawyer_area
         ) tiem
         <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
             WHERE @date &lt; DATE(#{endTime})
