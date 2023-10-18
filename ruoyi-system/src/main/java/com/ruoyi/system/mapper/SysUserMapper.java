@@ -117,6 +117,7 @@ public interface SysUserMapper
      * @return 结果
      */
     public SysUser checkPhoneUnique(String phonenumber);
+    public SysUser checkPhoneUserType(SysUser user);
 
     /**
      * 校验email是否唯一

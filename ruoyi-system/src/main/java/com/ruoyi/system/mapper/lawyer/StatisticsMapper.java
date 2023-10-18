@@ -14,4 +14,10 @@ public interface StatisticsMapper {
     public List<Map> orderMoney(Map<String,Object> map);
     public List<Map> orderNum(Map<String,Object> map);
     public List<Map> typeTop(Map<String,Object> map);
+    public Map orderNumNow();
+    public Map orderNumYd();
+    public Map userNumNow();
+    public Map userNumYd();
+    public Map orderAllNumNow();
+    public Map orderAllNumYd();
 }

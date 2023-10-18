@@ -193,6 +193,11 @@ public class SysUserServiceImpl implements ISysUserService
         return UserConstants.UNIQUE;
     }
 
+    @Override
+    public SysUser checkPhoneUserType(SysUser user) {
+        return userMapper.checkPhoneUserType(user);
+    }
+
     /**
      * 校验手机号码是否唯一
      *

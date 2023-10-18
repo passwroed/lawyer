@@ -45,6 +45,9 @@ public class WxBindUserController extends BaseController {
         if (StringUtils.isNull(client)){
             return error("请登录");
         }
+        if (client.getPid()!=1l){
+            return success("操作成功");
+        }
         SysUser sysUser1 = iSysUserService.selectUserById(sysUser.getUserId());
         if (StringUtils.isNull(sysUser1)){
             return error("未找到客服");

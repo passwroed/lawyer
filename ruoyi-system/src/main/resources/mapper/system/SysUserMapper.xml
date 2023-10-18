@@ -206,7 +206,12 @@
         where phonenumber = #{phonenumber}
           and del_flag = '0' limit 1
     </select>
-
+    <select id="checkPhoneUserType" parameterType="String" resultMap="SysUserResult">
+        select user_id, phonenumber
+        from sys_user
+        where phonenumber = #{phonenumber}
+          and del_flag = '0' and user_type in ('01','02') limit 1
+    </select>
     <select id="checkEmailUnique" parameterType="String" resultMap="SysUserResult">
         select user_id, email
         from sys_user
@@ -254,6 +259,7 @@
         update sys_user
         <set>
             <if test="deptId != null and deptId != 0">dept_id = #{deptId},</if>
+            <if test="userType != null and userType != ''">user_type = #{userType},</if>
             <if test="userName != null and userName != ''">user_name = #{userName},</if>
             <if test="nickName != null and nickName != ''">nick_name = #{nickName},</if>
             <if test="email != null ">email = #{email},</if>

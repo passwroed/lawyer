@@ -14,4 +14,7 @@ public interface StatisticsService {
     public List<Map> orderMoney(Map<String,Object> map);
     public List<Map> orderNum(Map<String,Object> map);
     public List<Map> typeTop(Map<String,Object> map);
+    public List<Map> orderNumDay();
+    public List<Map> userNumDay();
+    public List<Map> orderAllNumDay();
 }

@@ -205,17 +205,7 @@ public class SysLoginService
             user.setPhonenumber(phone);
             //新增 用户
             userMapper.insertUser(user);
-            Client client = new Client();
-            client.setPhone(phone);
-            List<Client> list = clientMapper.list(client);
-            if (StringUtils.isNull(list)||list.size()==0){
-                client.setName("微信用户");
-                client.setNickName("微信用户");
-                client.setPid(1L);
-                client.setPname("admin");
-                client.setUserId(user.getUserId());
-                clientMapper.add(client);
-            }
+
         }else {
             //更新
             user = wxUser;
@@ -230,7 +220,22 @@ public class SysLoginService
         //假如有的话设置
         loginUser.setUser(user);
         loginUser.setUserId(user.getUserId());
-
+        Client client = new Client();
+        client.setPhone(phone);
+        List<Client> list = clientMapper.list(client);
+        if (StringUtils.isNull(list)||list.size()==0){
+            client.setName("微信用户");
+            client.setNickName("微信用户");
+            client.setPid(1L);
+            client.setPname("admin");
+            client.setUserId(user.getUserId());
+            clientMapper.add(client);
+        }else {
+            if (StringUtils.isNull(list.get(0).getUserId())){
+                client = list.get(0);
+                client.setUserId(wxUser.getUserId());
+            }
+        }
         // 生成token
         return tokenService.createToken(loginUser);
     }

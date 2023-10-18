@@ -42,17 +42,20 @@
 
     </select>
     <select id="orderNum" resultType="hashmap" parameterType="map">
-        SELECT COUNT(*) AS count,DATE_FORMAT(create_time,'%Y-%m-%d') AS dateTime FROM lawyer_task
-        WHERE create_time IS NOT NULL
-        <if test="pid != null">and pid = #{pid}</if>
-        <if test="beginTime != null and beginTime != ''"><!-- 开始时间检索 -->
-            and date_format(create_time,'%y%m%d') &gt;= date_format(#{beginTime},'%y%m%d')
-        </if>
+        SELECT IFNULL(COUNT(task.id) , 0) AS count,days.days AS dateTime
+        FROM (
+        SELECT @date :=DATE_ADD(@date,INTERVAL+1 DAY) days
+        FROM (
+        SELECT @date :=DATE_ADD(#{beginTime},INTERVAL-1 DAY) FROM lawyer_area
+        ) tiem
         <if test="endTime != null and endTime != ''"><!-- 结束时间检索 -->
-            and date_format(create_time,'%y%m%d') &lt;= date_format(#{endTime},'%y%m%d')
+            WHERE @date &lt; DATE(#{endTime})
         </if>
-        <if test="pName != null and pName != '' ">and `p_name` like concat('%', #{pName}, '%')</if>
-        GROUP BY dateTime
+        ) days
+        LEFT JOIN lawyer_task AS task ON TO_DAYS(task.create_time)=TO_DAYS(days.days) and task.pid IS NOT NULL AND (task.status>0)
+        <if test="pid != null">and task.pid = #{pid}</if>
+        <if test="pName != null and pName != '' ">and task.p_name like concat('%', #{pName}, '%')</if>
+        GROUP BY days.days
     </select>
     <select id="typeTop" resultType="hashmap" parameterType="map">
         SELECT COUNT(*) AS count,`type` FROM lawyer_task WHERE 1=1
@@ -66,4 +69,24 @@
         <if test="pName != null and pName != '' ">and `p_name` like concat('%', #{pName}, '%')</if>
         GROUP BY `type` ORDER BY count DESC
     </select>
+
+    <select id="orderNumNow" resultType="hashmap" parameterType="map">
+        SELECT COUNT(*) AS count FROM lawyer_task WHERE order_no IS NOT NULL AND DATEDIFF(create_time,NOW())=0
+    </select>
+    <select id="orderNumYd" resultType="hashmap" parameterType="map">
+        SELECT COUNT(*) AS count FROM lawyer_task WHERE order_no IS NOT NULL AND DATEDIFF(create_time,NOW())=-1
+    </select>
+    <select id="userNumNow" resultType="hashmap" parameterType="map">
+        SELECT COUNT(*) AS count FROM sys_user WHERE user_type != '00' AND DATEDIFF(create_time,NOW())=0
+    </select>
+    <select id="userNumYd" resultType="hashmap" parameterType="map">
+        SELECT COUNT(*) AS count FROM sys_user WHERE user_type != '00' AND DATEDIFF(create_time,NOW())=-1
+    </select>
+    <select id="orderAllNumNow" resultType="hashmap" parameterType="map">
+        SELECT COUNT(*) AS count FROM lawyer_task WHERE DATEDIFF(create_time,NOW())=0
+    </select>
+    <select id="orderAllNumYd" resultType="hashmap" parameterType="map">
+        SELECT COUNT(*) AS count FROM lawyer_task WHERE DATEDIFF(create_time,NOW())=-1
+    </select>
+
 </mapper>

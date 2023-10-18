@@ -80,4 +80,18 @@ public class StatisticsController extends BaseController {
         }
         return success(statisticsService.typeTop(map));
     }
+
+    @PostMapping("/orderNumDay")
+    public AjaxResult orderNumDay() {
+        return success(statisticsService.orderNumDay());
+    }
+    @PostMapping("/userNumDay")
+    public AjaxResult userNumDay() {
+        return success(statisticsService.userNumDay());
+    }
+    @PostMapping("/orderAllNumDay")
+    public AjaxResult orderAllNumDay() {
+        return success(statisticsService.orderAllNumDay());
+    }
+
 }

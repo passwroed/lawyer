@@ -74,7 +74,7 @@ public interface ISysUserService
      * @return 结果
      */
     public boolean checkUserNameUnique(SysUser user);
-
+    public SysUser checkPhoneUserType(SysUser user);
     /**
      * 校验手机号码是否唯一
      *

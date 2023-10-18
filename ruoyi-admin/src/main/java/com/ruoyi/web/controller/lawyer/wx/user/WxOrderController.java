@@ -73,8 +73,8 @@ public class WxOrderController extends BaseController {
         }else {
             client = list.get(0);
             order.setClientId(client.getId());
-            order.setClientName(client.getName());
-            order.setClientPhone(client.getPhone());
+            order.setClientName(order.getTask().getName());
+            order.setClientPhone(order.getTask().getPhone());
             order.setPid(client.getPid());
             order.setpName(client.getPname());
         }
@@ -93,8 +93,10 @@ public class WxOrderController extends BaseController {
         }
         task.setOrderNo(order.getNo());
         task.setName(goods.getName());
-        task.setPhone(client.getPhone());
+        task.setPhone(order.getTask().getPhone());
+        task.setcName(order.getClientName());
         task.setMoney(goods.getMoney());
+        task.setProfit(order.getTask().getProfit());
         task.setStatus(-1);
         if (taskService.add(task) == 0){
             return error("下单失败，请联系管理员！");

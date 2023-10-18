@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson2.JSON;
+import com.ruoyi.framework.web.domain.server.Sys;
 import com.ruoyi.system.domain.lawyer.Area;
 import com.ruoyi.system.domain.lawyer.Client;
 import com.ruoyi.system.domain.lawyer.CostLog;
@@ -146,7 +147,14 @@ public class SysUserController extends BaseController {
         if (!userService.checkUserNameUnique(user)) {
             return error("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
         } else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
-            return error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
+            SysUser user1=userService.checkPhoneUserType(user);
+            if (StringUtils.isNotNull(user1)){
+                user.setUserId(user1.getUserId());
+                user.setUserType("00");
+                return toAjax(userService.updateUser(user));
+            }else {
+                return error("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
+            }
         } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
             return error("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }
@@ -167,7 +175,15 @@ public class SysUserController extends BaseController {
         if (!userService.checkUserNameUnique(user)) {
             return error("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
         } else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
-            return error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
+            SysUser user1=userService.checkPhoneUserType(user);
+            if (StringUtils.isNotNull(user1)){
+                user.setUserId(user1.getUserId());
+                user.setUserType("00");
+                return toAjax(userService.updateUser(user));
+            }else {
+                return error("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
+            }
+
         } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
             return error("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
         }

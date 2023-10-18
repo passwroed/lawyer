@@ -81,6 +81,7 @@
             and date_format(create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')
         </if>
         <if test="lawyerId != null">and lawyer_id = #{lawyerId}</if>
+        <if test="pid != null and pid != '' ">and pid = #{pid}</if>
         <if test="fastLawyerId == null">and fast_lawyer_id IS NULL</if>
         <if test="fastLawyerId != null and fastLawyerId != 1 and fastLawyerId != 2">and fast_lawyer_id = #{fastLawyerId}</if>
         <if test="fastLawyerId == 1">and fast_lawyer_id IS NOT NULL</if>
@@ -94,6 +95,7 @@
         <if test="fastLawyerType != null">and fast_lawyer_type = #{fastLawyerType}</if>
         <if test="isHall != null">and is_hall = #{isHall}</if>
         <if test="payStatus != null">and pay_status = #{payStatus}</if>
+        <if test="phone != null  and phone != ''">and phone = #{phone}</if>
         <if test="povinceId != null and povinceId != 0">and CAST(povince_id AS char) like concat('%', #{povinceId}, '%')</if>
         order by create_time desc
     </select>

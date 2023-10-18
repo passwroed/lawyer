@@ -52,12 +52,17 @@ public class TaskController extends BaseController {
     public TableDataInfo list(@RequestBody Task task) {
         startPage();
         task.setFastLawyerId(null);
-        task.setStatus(100);
+        task.setStatus(null);
         List<SysRole> listRole = getLoginUser().getUser().getRoles();
         for (SysRole role : listRole) {
             if (role.getRoleKey().equals("admin") || role.getRoleKey().equals("general")) {
                 task.setFastLawyerId(2l);
                 task.setStatus(null);
+            }
+            if (role.getRoleKey().equals("kefu")) {
+                task.setFastLawyerId(2l);
+                task.setStatus(null);
+                task.setPid(getUserId());
             }
         }
         List<Task> list = taskService.list(task);
