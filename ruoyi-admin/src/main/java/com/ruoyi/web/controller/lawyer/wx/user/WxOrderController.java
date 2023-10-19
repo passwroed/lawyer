@@ -59,10 +59,6 @@ public class WxOrderController extends BaseController {
             order.setGoodsName(goods.getName());
             order.setMoney(goods.getMoney());
             order.setsImage(goods.getsImage());
-            Goods goods1 = new Goods();
-            goods1.setId(goods.getId());
-            goods1.setNum(goods.getNum()+1);
-            goodsService.edit(goods1);
         }
         //获取客户
         Client client = new Client();
@@ -91,23 +87,37 @@ public class WxOrderController extends BaseController {
         if (StringUtils.isNull(order.getTask())){
             task = new Task();
         }
+        task.setCid(client.getId());
         task.setOrderNo(order.getNo());
         task.setName(goods.getName());
         task.setPhone(order.getTask().getPhone());
         task.setcName(order.getClientName());
+        task.setCid(order.getClientId());
+        task.setProfit(order.getTask().getMoney());
         task.setMoney(goods.getMoney());
-        task.setProfit(order.getTask().getProfit());
+        task.setPid(client.getPid());
+        task.setpName(client.getPname());
         task.setStatus(-1);
         if (taskService.add(task) == 0){
             return error("下单失败，请联系管理员！");
         }
         order.setTaskNo(task.getNo());
-        Map payMap = orderService.add(order,wxUserAppConfig.getAppId());
+        Map payMap = null;
+        try {
+            payMap = orderService.add(order,wxUserAppConfig.getAppId());
+        }catch (Exception e){
+            System.out.println(e);
+        }
+        try {
+            System.out.println("发送成功="+JSONObject.toJSONString(order));
+            rocketMQTemplate.syncSend("test-topic-delay", MessageBuilder.withPayload(JSONObject.toJSONString(order)).build(),100,14);
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
         if (StringUtils.isNull(payMap)){
             return error("下单失败，请联系管理员！");
         }
-        System.out.println("发送成功="+JSONObject.toJSONString(order));
-        rocketMQTemplate.syncSend("test-topic-delay", MessageBuilder.withPayload(JSONObject.toJSONString(order)).build(),3000,9);
         return success(payMap);
     }
     @PostMapping("/list")
@@ -140,7 +150,7 @@ public class WxOrderController extends BaseController {
         Map<String,Object> map = new HashMap<>();
         order = orderService.item(order.getId());
         if (StringUtils.isNull(order)){
-            return success();
+            return error("未查询到此订单信息或订单已过期");
         }
         map.put("order",order);
         //获取任务

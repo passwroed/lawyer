@@ -205,7 +205,7 @@ public class SysLoginController {
             //假如解析成功,获取token
             String token = loginService.wxUserLogin(openid, phone);
             if (StringUtils.isNull(token)){
-                return AjaxResult.error("您尚未注册成为律师，请先完成注册");
+                return AjaxResult.error("您尚未注册，请先完成注册");
             }
             AjaxResult ajax = AjaxResult.success();
             ajax.put(Constants.TOKEN, token);

@@ -108,56 +108,7 @@ public class TaskServiceImpl implements TaskService {
         if (StringUtils.isNotNull(task.getPovinceId()) && task.getPovinceId()>0){
             task.setPovince(areaMapper.iDArea(Long.valueOf(task.getPovinceId())).getName());
         }
-        if (StringUtils.isNotNull(task.getCid()) && task.getCid() >0){
-            task.setcName(clientMapper.item(task.getCid()).getName());
-        }else {
 
-            Client client = new Client();
-            Appeal appeal = new Appeal();
-            String name;
-            Area area = areaMapper.iDArea(Long.valueOf(task.getPovinceId()));
-            name = area.getName();
-            while (area.getPid() > 0){
-                area = areaMapper.pArea(Long.valueOf(area.getPid()));
-                name = area.getName()+"-"+name;
-            }
-            client.setPhone(task.getPhone());
-            List<Client> list = clientMapper.list(client);
-            if (list.size()>0){
-                client = list.get(0);
-            }else {
-                client.setCreateBy(getUsername());
-                client.setPid(getUserId());
-                client.setPname(getUsername());
-                client.setName(task.getcName());
-                client.setPhone(task.getPhone());
-                client.setAreaCode(Math.toIntExact(task.getPovinceId()));
-                client.setArea(name);
-                clientMapper.headAdd(client);
-            }
-
-            task.setCid(client.getId());
-            task.setcName(client.getName());
-            task.setPid(client.getPid());
-            task.setpName(client.getPname());
-
-            //创建述求
-            appeal.setCid(getUserId());
-            if (appealMapper.list(appeal).size()>0){
-                appeal.setStatus(0);
-            }else {
-                appeal.setStatus(1);
-                appeal.setType(task.getType());
-                appeal.setPovinceId(Long.valueOf(task.getPovinceId()));
-                appeal.setPovince(name);
-                appeal.setMoney(task.getMoney());
-                appeal.setcName(task.getcName());
-                appeal.setPhone(task.getPhone());
-                appeal.setNeed(task.getNeed());
-                appeal.setRemark(task.getRemark());
-                appealMapper.add(appeal);
-            }
-        }
         if (StringUtils.isNotNull(task.getLawyerId()) && task.getLawyerId() >0){
             Lawyer lawyer = lawyerMapper.item(task.getLawyerId());
             task.setLawyerName(lawyer.getName());

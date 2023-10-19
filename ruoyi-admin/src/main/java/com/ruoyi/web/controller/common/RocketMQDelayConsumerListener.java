@@ -30,7 +30,7 @@ public class RocketMQDelayConsumerListener implements RocketMQListener<String> {
             String no = String.valueOf(orderMap.get("no"));
             System.out.println("consumer 延时消息消费"+s);
             Order order = orderService.itemNo(no);
-            if (StringUtils.isNotNull(order)&&StringUtils.isNull(order.getStatus())&&order.getStatus()==0){
+            if (StringUtils.isNotNull(order)&&order.getStatus()==0){
                 System.out.println("更新订单  id"+order.getId());
                 Order order1 = new Order();
                 order1.setId(order.getId());

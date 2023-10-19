@@ -275,6 +275,17 @@ public class SysUserController extends BaseController {
         Client client = clientService.itemUserId(getUserId());
         if (StringUtils.isNotNull(client)) {
             if (StringUtils.isNotNull(user.getNickName())){
+                if (StringUtils.isNotNull(user.getAreaCode())) {
+                    client.setAreaCode(user.getAreaCode());
+                    String name = "";
+                    Area area = areaService.iDArea(Long.valueOf(client.getAreaCode()));
+                    name = area.getName();
+                    while (area.getPid() > 0) {
+                        area = areaService.pArea(Long.valueOf(area.getPid()));
+                        name = area.getName() + "-" + name;
+                    }
+                    client.setArea(name);
+                }
                 client.setName(user.getNickName());
                 client.setNickName(user.getNickName());
                 clientService.edit(client);

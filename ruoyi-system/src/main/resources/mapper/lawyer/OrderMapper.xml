@@ -59,7 +59,7 @@
         <if test="taskNo != null and taskNo != '' ">and task_no = #{taskNo}</if>
         <if test="clientId != null ">and client_id = #{clientId}</if>
         <if test="status != null ">and status = #{status}</if>
-        <if test="status == null ">and (status != -2 and status != 5 and status != 6 and status != 7)</if>
+        <if test="status == null ">and (status != -2 and status != -1 and status != 5 and status != 6 and status != 7)</if>
         <if test="type != null ">and type = #{type}</if>
         ORDER BY create_time DESC
     </select>

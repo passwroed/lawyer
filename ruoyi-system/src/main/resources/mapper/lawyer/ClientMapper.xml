@@ -145,6 +145,8 @@
             <if test="area != null and area != '' ">area = #{area},</if>
             <if test="areaCode != null and areaCode != '' ">area_code = #{areaCode},</if>
             <if test="areaInfo != null and areaInfo != '' ">area_info = #{areaInfo},</if>
+            <if test="pid != null">pid = #{pid},</if>
+            <if test="pname != null and pname != '' ">pname = #{pname},</if>
             <if test="userId != null and userId != ''">user_id = #{userId},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>

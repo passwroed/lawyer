@@ -45,8 +45,8 @@ public class WxBindUserController extends BaseController {
         if (StringUtils.isNull(client)){
             return error("请登录");
         }
-        if (client.getPid()!=1l){
-            return success("操作成功");
+        if (client.getPid()>1l){
+            return success("已绑定用户");
         }
         SysUser sysUser1 = iSysUserService.selectUserById(sysUser.getUserId());
         if (StringUtils.isNull(sysUser1)){
@@ -54,8 +54,8 @@ public class WxBindUserController extends BaseController {
         }
         Client client1 = new Client();
         client1.setId(client.getId());
-        client.setPid(sysUser1.getUserId());
-        client.setPname(sysUser1.getNickName());
+        client1.setPid(sysUser1.getUserId());
+        client1.setPname(sysUser1.getNickName());
         if (clientService.edit(client1) == 0){
             return error("绑定失败");
         }
