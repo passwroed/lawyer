@@ -116,6 +116,8 @@ public class TaskController extends BaseController {
     public AjaxResult add(@Validated @RequestBody Task task) {
 
         task.setCreateBy(getUsername());
+        task.setPid(getUserId());
+        task.setpName(getUsername());
         if (taskService.add(task) == 0) {
             return error("新增失败，请联系管理员！");
         }
@@ -192,7 +194,7 @@ public class TaskController extends BaseController {
         }
         Task taskGet = new Task();
         taskGet.setId(task.getId());
-        task.setUpdateBy(getUsername());
+        taskGet.setUpdateBy(getUsername());
         Lawyer lawyer = lawyerService.item(task.getLawyerId());
         if (StringUtils.isNull(lawyer)&&StringUtils.isNull(lawyer.getType())&&lawyer.getType()!=0) {
             return error("尚未是中台律师，无法领取任务，请联系管理员！");

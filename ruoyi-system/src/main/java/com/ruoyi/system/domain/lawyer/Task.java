@@ -23,6 +23,8 @@ public class Task extends BaseEntity {
     @NotBlank(message = "任务名称不能为空")
     @Excel(name = "任务名称")
     private String name;
+    @Excel(name = "微信号")
+    private String wxNum;
     @NotNull(message = "任务类型不能为空")
     private Integer type;
     @Excel(name = "状态", readConverterExp = "-3=取消订单,-2=拒绝退款,-1=失效,0=待支付,1=支付完成,2=待交付,3=跟进中,4=已完成,5=申请退款,6=退款中,7=退款完成")
@@ -294,5 +296,13 @@ public class Task extends BaseEntity {
 
     public void setProfit(Double profit) {
         this.profit = profit;
+    }
+
+    public String getWxNum() {
+        return wxNum;
+    }
+
+    public void setWxNum(String wxNum) {
+        this.wxNum = wxNum;
     }
 }

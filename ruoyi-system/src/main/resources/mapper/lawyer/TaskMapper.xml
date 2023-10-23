@@ -8,6 +8,7 @@
         <id property="id" column="id"/>
         <result property="no" column="no"/>
         <result property="name" column="name"/>
+        <result property="wxNum" column="wx_num"/>
         <result property="type" column="type"/>
         <result property="status" column="status"/>
         <result property="payStatus" column="pay_status"/>
@@ -143,6 +144,7 @@
         select id,
         `no`,
         `name`,
+        wx_num,
         `type`,
         status,
         pay_status,
@@ -251,6 +253,7 @@
         insert into lawyer_task (
         <if test="no != null and no != '' ">`no`,</if>
         <if test="name != null and name != '' ">`name`,</if>
+        <if test="wxNum != null and wxNum != '' ">wx_num,</if>
         <if test="type != null and type != '' ">`type`,</if>
         <if test="status != null and status != '' ">status,</if>
         <if test="payStatus != null and payStatus != '' ">pay_status,</if>
@@ -282,6 +285,7 @@
         )values(
         <if test="no != null and no != '' ">#{no},</if>
         <if test="name != null and name != '' ">#{name},</if>
+        <if test="wxNum != null and wxNum != '' ">#{wxNum},</if>
         <if test="type != null and type != '' ">#{type},</if>
         <if test="status != null and status != '' ">#{status},</if>
         <if test="payStatus != null and payStatus != '' ">#{payStatus},</if>

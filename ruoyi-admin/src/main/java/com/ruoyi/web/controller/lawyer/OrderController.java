@@ -238,12 +238,15 @@ public class OrderController extends BaseController {
             return error("参数错误");
         }
         //修改订单客服id
-        order.getId();
         Order order1 = orderService.item(order.getId());
-        SysUser sysUser = iSysUserService.selectUserById(order.getPid());
+        if (StringUtils.isNull(order1.getClientId())){
+            return error("未找到该客户，请联系管理员");
+        }
+        SysUser sysUser ;
         if (StringUtils.isNull(order1)){
             return error("未找到该订单，请联系管理员");
         }else {
+            sysUser = iSysUserService.selectUserById(order.getPid());
             if (StringUtils.isNull(sysUser)){
                 return error("未找到该客服，请联系管理员");
             }else {

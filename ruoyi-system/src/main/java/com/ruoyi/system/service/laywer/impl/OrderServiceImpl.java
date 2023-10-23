@@ -82,12 +82,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public int edit(Order order) {
         Order order1 = orderMapper.item(order.getId());
-        if (order.getStatus() != -1 && order.getStatus() != 0 && order.getStatus() != 1 && order.getStatus() != 2 && order.getStatus() != 5){
+        if (order1.getStatus() != -1 && order1.getStatus() != 0 && order1.getStatus() != 1 && order1.getStatus() != 2 && order1.getStatus() != 5){
             Msg msg = new Msg();
-            msg.setClientId(order.getClientId());
+            msg.setClientId(order1.getClientId());
             msg.setType(1);
             msg.setStatus(0);
-            switch (order.getStatus()){
+            switch (order1.getStatus()){
                 case -2:
                     msg.setMsg("尊敬的用户您好：您的编号为："+order1.getNo()+"的订单，"+"退款失败，"+"您可以前往我的->我的订单中查看详情进度");
                     break;

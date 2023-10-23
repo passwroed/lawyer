@@ -87,6 +87,10 @@ public class WLTaskController extends BaseController {
             return error("查询错误");
         }
         if (task.getLawyerId() != getLawyerId() && task.getFastLawyerId() != getLawyerId()){
+            //判断
+            if (StringUtils.isNotEmpty(task.getWxNum())){
+                task.setWxNum(task.getWxNum().replaceAll("(\\w{1})\\w+(\\w{1})", "$1****$2"));
+            }
             task.setPhone(task.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
         }
         return success(task);

@@ -185,6 +185,8 @@
             <if test="status != null and status != '' ">status = #{status},</if>
             <if test="taskNo != null and taskNo != '' ">task_no = #{taskNo},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="pid != null and pid != '' ">pid = #{pid},</if>
+            <if test="pName != null and pName != '' ">p_name = #{pName},</if>
             <if test="payTime != null">pay_time = #{payTime},</if>
             <if test="remark != null">remark = #{remark},</if>
             update_time = sysdate()
