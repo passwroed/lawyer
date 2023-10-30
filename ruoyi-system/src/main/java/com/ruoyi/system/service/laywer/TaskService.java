@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.laywer;
 
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.lawyer.Task;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public interface TaskService {
     public List<Task> list(Task task);
+    public TableDataInfo listToPassword(Task task);
     public List<Task> lawyer1list(Task task);
     //详情
     public Task item(Long id);

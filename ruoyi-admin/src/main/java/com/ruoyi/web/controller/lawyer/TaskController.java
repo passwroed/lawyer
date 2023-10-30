@@ -65,20 +65,7 @@ public class TaskController extends BaseController {
                 task.setPid(getUserId());
             }
         }
-        List<Task> list = taskService.list(task);
-        List<Task> returnlist = new ArrayList<>();
-        if (list.size() > 0 && StringUtils.isNull(task.getFastLawyerId())) {
-            for (Task task1 : list) {
-                if (StringUtils.isNotNull(task1.getPhone())) {
-                    task1.setPhone(task1.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
-                    returnlist.add(task1);
-                }
-
-            }
-        } else {
-            returnlist = list;
-        }
-        return getDataTable(returnlist);
+        return taskService.listToPassword(task);
     }
 
     @PostMapping("/myList")

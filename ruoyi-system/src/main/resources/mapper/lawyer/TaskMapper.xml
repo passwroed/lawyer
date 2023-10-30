@@ -333,6 +333,8 @@
             <if test="profit != null and profit != '' ">profit = #{profit},</if>
             <if test="isHall != null and isHall != '' ">is_hall = #{isHall},</if>
             <if test="entrust != null and entrust != '' ">entrust = #{entrust},</if>
+            <if test="povinceId != null and povinceId != '' ">povince_id = #{povinceId},</if>
+            <if test="povince != null and povince != '' ">povince = #{povince},</if>
             <if test="willing != null and willing != '' ">willing = #{willing},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>

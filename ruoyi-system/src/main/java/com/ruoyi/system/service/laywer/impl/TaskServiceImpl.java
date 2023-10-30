@@ -1,6 +1,9 @@
 package com.ruoyi.system.service.laywer.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.common.constant.HttpStatus;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.lawyer.*;
 import com.ruoyi.system.mapper.lawyer.*;
@@ -13,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.TimerTask;
 
 import static com.ruoyi.common.utils.SecurityUtils.*;
 
@@ -60,6 +64,47 @@ public class TaskServiceImpl implements TaskService {
             task.setPovinceId(null);
         }
         return taskMapper.list(task);
+    }
+
+    @Override
+    public TableDataInfo listToPassword(Task task) {
+        if (StringUtils.isNotNull(task.getPageNum()) && StringUtils.isNotNull(task.getPageSize())) {
+            PageHelper.startPage(task.getPageNum(), task.getPageSize());
+        }else {
+            PageHelper.startPage(1, 999);
+        }
+        if (StringUtils.isNotNull(task.getPovinceId())&&task.getPovinceId()>0){
+            String str = task.getPovinceId()+"";
+            int index = str.indexOf("00");
+
+            switch (index){
+                case 4:
+                    task.setPovinceId(task.getPovinceId()/100);
+                    break;
+                case 2:
+                    task.setPovinceId(task.getPovinceId()/10000);
+                    break;
+            }
+            System.out.println("index"+task.getPovinceId());
+        }else {
+            task.setPovinceId(null);
+        }
+        List<Task> list = taskMapper.list(task);
+        List<Task> returnlist = new ArrayList<>();
+        if (list.size() > 0) {
+            for (Task task1 : list) {
+                if (StringUtils.isNotNull(task1.getPhone())) {
+                    task1.setPhone(task1.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
+                    returnlist.add(task1);
+                }
+            }
+        } else {
+            returnlist = list;
+        }
+        TableDataInfo info = new TableDataInfo(returnlist, (int) new PageInfo(list).getTotal());
+        info.setCode(HttpStatus.SUCCESS);
+        info.setMsg("查询成功");
+        return info;
     }
 
     @Override
@@ -133,6 +178,18 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public int edit(Task task) {
+
+        if (StringUtils.isNotNull(task.getPovinceId())&&task.getPovinceId()>0){
+            String name = "";
+            Area area = new Area();
+            area = areaMapper.iDArea(Long.valueOf(task.getPovinceId()));
+            name = area.getName();
+            while (area.getPid() > 0){
+                area = areaMapper.pArea(Long.valueOf(area.getPid()));
+                name = area.getName()+"-"+name;
+            }
+            task.setPovince(name);
+        }
         return taskMapper.edit(task);
     }
 

@@ -49,32 +49,17 @@ public class WLTaskController extends BaseController {
             return errorDataTable("无权限，请使用律师账号登录");
         }
         startPage();
-        List<Task> list;
         if (getLawyerType() == 0) {
             //中台律师
             task.setFastLawyerId(null);
             task.setStatus(0);
-            list = taskService.list(task);
         } else if (getLawyerType() == 1) {
             //当地律师
             task.setStatus(5);
-            list = taskService.lawyer1list(task);
         } else {
             return errorDataTable("用户信息获取失败，请重新登陆");
         }
-        List<Task> returnlist = new ArrayList<>();
-        if (list.size() > 0 && StringUtils.isNull(task.getFastLawyerId())) {
-            for (Task task1 : list) {
-                if (StringUtils.isNotNull(task1.getPhone())) {
-                    task1.setPhone(task1.getPhone().replaceAll("(\\d{3})\\d{6}(\\d{2})", "$1****$2"));
-                    returnlist.add(task1);
-                }
-
-            }
-        } else {
-            returnlist = list;
-        }
-        return getDataTable(returnlist);
+        return taskService.listToPassword(task);
     }
 
     @PostMapping("/item")
