@@ -28,6 +28,8 @@
         <result property="idUpImg"     column="id_up_img"      />
         <result property="idDownImg"     column="id_down_img"      />
         <result property="type"     column="type"      />
+        <result property="openId"     column="open_id"      />
+        <result property="gzhOpenId"     column="gzh_open_id"      />
         <result property="userId"     column="user_id"      />
         <result property="createBy"      column="create_by"      />
         <result property="createTime"    column="create_time"    />
@@ -107,34 +109,8 @@
         <if test="name != null and name != '' ">and zb.`name` like concat('%', #{name}, '%')</if>
     </select>
     <select id="item" parameterType="Long" resultMap="LawyerResult">
-        select id,
-        `name`,
-        phone,
-        area,
-        area_code,
-        office_name,
-        merit,
-        office_id,
-        status,
-        feed_back,
-        sex,
-        license_num,
-        lincens_start_time,
-        lincens_end_time,
-        task_max,
-        head_img,
-        lincens_img,
-        id_up_img,
-        id_down_img,
-        `type`,
-        user_id,
-        create_by,
-        create_time,
-        update_by,
-        update_time,
-        remark,
-        info
-        from lawyer_lawyer
+        select l.*,u.open_id
+        from lawyer_lawyer as l  LEFT JOIN sys_user as u ON u.user_id = l.user_id
         where  id = #{id}
     </select>
     <select id="selectUserId" parameterType="Lawyer" resultMap="LawyerResult">
@@ -265,5 +241,11 @@
         delete from lawyer_lawyer where id = #{id}
     </delete>
 
-
+    <select id="typeListOpenId" parameterType="Lawyer" resultMap="LawyerResult">
+        SELECT l.*,
+        u.gzh_open_id as open_id FROM lawyer_lawyer as l  LEFT JOIN sys_user as u ON u.user_id = l.user_id
+        where l.status &gt;= 1
+        <if test="type != null ">and l.type = #{type}</if>
+        <if test="id != null ">and l.id = #{id}</if>
+    </select>
 </mapper>

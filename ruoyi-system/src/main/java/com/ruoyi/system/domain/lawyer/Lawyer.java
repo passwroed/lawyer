@@ -44,6 +44,16 @@ public class Lawyer extends BaseEntity {
     private String lincensImg;
     private String idUpImg;
     private String idDownImg;
+    private String openId;
+    private String gzhOpenId;
+
+    public String getGzhOpenId() {
+        return gzhOpenId;
+    }
+
+    public void setGzhOpenId(String gzhOpenId) {
+        this.gzhOpenId = gzhOpenId;
+    }
 
     public Long getId() {
         return id;
@@ -233,5 +243,13 @@ public class Lawyer extends BaseEntity {
         this.phone = phone;
     }
     public Lawyer() {
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

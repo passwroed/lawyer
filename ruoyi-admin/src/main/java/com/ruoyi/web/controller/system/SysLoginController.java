@@ -145,13 +145,15 @@ public class SysLoginController {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + wxLawyerAppConfig.getAppId() + "&secret=" + wxLawyerAppConfig.getAppSecret() + "&js_code=" + loginCode + "&grant_type=authorization_code";
         String res = restTemplate.getForObject(url, String.class);
         JSONObject jsonObject = JSONObject.parseObject(res);
+        System.out.println("开始openid");
         System.out.println(jsonObject.toString());
         //获取session_key和openid
         String sessionKey = jsonObject.getString("session_key");
         String openid = jsonObject.getString("openid");
+        String unionid = jsonObject.getString("unionid");
         if (StringUtils.isNull(jsonObject.getInteger("errcode"))){
             //假如解析成功,获取token
-            String token = loginService.wxLawyerLogin(openid,phone);
+            String token = loginService.wxLawyerLogin(unionid,openid,phone);
             if (StringUtils.isNull(token)){
                 return AjaxResult.error("您尚未注册成为律师，请先完成注册");
             }
@@ -199,7 +201,7 @@ public class SysLoginController {
         //获取session_key和openid
         String sessionKey = jsonObject.getString("session_key");
         String openid = jsonObject.getString("openid");
-
+        System.out.println("开始openid");
         System.out.println(jsonObject.toString());
         if (StringUtils.isNotNull(openid)){
             //假如解析成功,获取token

@@ -19,6 +19,7 @@ public interface SysUserMapper
      */
     public List<SysUser> selectUserList(SysUser sysUser);
     public List<SysUser> selectWxUserList(SysUser sysUser);
+    public SysUser selectunionid(SysUser sysUser);
 
     /**
      * 根据条件分页查询已配用户角色列表

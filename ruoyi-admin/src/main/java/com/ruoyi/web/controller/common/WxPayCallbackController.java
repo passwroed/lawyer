@@ -18,9 +18,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -43,9 +41,13 @@ public class WxPayCallbackController {
     private GoodsService goodsService;
     @Resource
     private TaskService taskService;
+
+    @Resource
+    private LawyerService lawyerService;
     @Autowired
     private MsgService msgService;
-
+    @Autowired
+    private  WxMsgSend wxMsgSend;
     @Resource
     private Verifier verifier;
 
@@ -104,13 +106,24 @@ public class WxPayCallbackController {
                         if (taskService.editStatus0(task1) == 0){
                             System.out.println("任务更新失败");
                         }
-
+                        Lawyer lawyer = new Lawyer();
+                        lawyer.setType(0);
+                        List<Lawyer> list = lawyerService.typeListOpenId(lawyer);
+                        List<String> openIds = new ArrayList<>();
+                        for (Lawyer lawyer1:list) {
+                            if (StringUtils.isNotEmpty(lawyer1.getGzhOpenId())){
+                                openIds.add(lawyer1.getGzhOpenId());
+                            }
+                        }
+                        if (openIds.size()>0)
+                        wxMsgSend.sendMsg(openIds,task,0l);
                     }
                     Msg msg = new Msg();
                     msg.setClientId(order.getClientId());
                     msg.setType(1);
                     msg.setStatus(0);
                     msg.setMsg("尊敬的用户您好：您的编号为："+orderNo+"的订单，"+"已购买成功，"+"您可以前往我的->我的订单中查看详情进度");
+
                     msgService.add(msg);
 
                 }

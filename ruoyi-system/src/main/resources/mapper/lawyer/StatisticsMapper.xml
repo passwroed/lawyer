@@ -16,7 +16,7 @@
         ) days
         LEFT JOIN
         lawyer_task AS task ON TO_DAYS(task.create_time)=TO_DAYS(days.days) AND task.fast_lawyer_id IS NOT NULL AND
-        task.lawyer_type = 0 AND task.status = 4
+        task.lawyer_id IS NULL AND task.status IN (2,3,4,5,6,10)
         <if test="lawyerId != null">and lawyer_id = #{lawyerId}</if>
         <if test="fastLawyerName != null and fastLawyerName != '' ">and `fast_lawyer_name` like concat('%',
             #{fastLawyerName}, '%')

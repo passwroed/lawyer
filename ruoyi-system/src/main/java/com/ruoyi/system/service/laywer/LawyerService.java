@@ -21,6 +21,7 @@ public interface LawyerService {
     public List<Lawyer> selectUserId(Lawyer lawyer);
     public List<Lawyer> listAndCost(Lawyer lawyer);
     public List<Lawyer> headImageList(Lawyer lawyer);
+    public List<Lawyer> typeListOpenId(Lawyer lawyer);
     //详情
     public Lawyer item(Long id);
     //新增

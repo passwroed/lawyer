@@ -91,6 +91,11 @@ public class SysUserServiceImpl implements ISysUserService
         return userMapper.selectWxUserList(user);
     }
 
+    @Override
+    public SysUser selectunionid(SysUser sysUser) {
+        return userMapper.selectunionid(sysUser);
+    }
+
     /**
      * 根据条件分页查询已分配用户角色列表
      *

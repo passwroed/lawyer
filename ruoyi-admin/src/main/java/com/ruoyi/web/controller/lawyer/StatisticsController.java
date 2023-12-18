@@ -35,7 +35,7 @@ public class StatisticsController extends BaseController {
     public AjaxResult midLawyer(@RequestBody Map<String,Object> map) {
         List<SysRole> listRole = getLoginUser().getUser().getRoles();
         for (SysRole role : listRole) {
-            if (role.getRoleKey().equals("admin") || role.getRoleKey().equals("general")) {
+            if (!role.getRoleKey().equals("admin") && !role.getRoleKey().equals("general")) {
                 Lawyer lawyer = new Lawyer();
                 lawyer.setUserId(getUserId());
                 List<Lawyer> list = lawyerService.selectUserId(lawyer);

@@ -246,7 +246,7 @@ public class SysLoginService
      * @param openId 登录凭据 只能用一次
      * @return
      */
-    public String wxLawyerLogin(String openId,String phone){
+    public String wxLawyerLogin(String unionid,String openId,String phone){
         //还可以获取其他信息
         //依据openid判别数据库中是否有该用户
         //依据openid查询用户信息
@@ -261,12 +261,14 @@ public class SysLoginService
             user.setUserType("02");
             user.setNickName("微信律师用户");// 生成16位随机用户名
             user.setPhonenumber(phone);
+            user.setUnionId(unionid);
             userMapper.insertUser(user);
         }else {
             //更新
             user = wxUser;
             user.setPhonenumber(phone);
             user.setOpenId(openId);
+            user.setUnionId(unionid);
             userMapper.updateUser(user);
         }
         //组装token信息

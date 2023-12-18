@@ -107,6 +107,11 @@ public class LawyerServiceImpl implements LawyerService {
     }
 
     @Override
+    public List<Lawyer> typeListOpenId(Lawyer lawyer) {
+        return lawyerMapper.typeListOpenId(lawyer);
+    }
+
+    @Override
     public Lawyer item(Long id) {
         return lawyerMapper.item(id);
     }

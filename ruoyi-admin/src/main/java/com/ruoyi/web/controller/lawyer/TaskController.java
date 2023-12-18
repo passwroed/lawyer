@@ -14,6 +14,7 @@ import com.ruoyi.system.service.laywer.LawyerService;
 import com.ruoyi.system.service.laywer.OrderService;
 import com.ruoyi.system.service.laywer.TaskLogService;
 import com.ruoyi.system.service.laywer.TaskService;
+import com.ruoyi.web.controller.common.WxMsgSend;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,7 +39,8 @@ public class TaskController extends BaseController {
 
     @Autowired
     private TaskService taskService;
-
+    @Autowired
+    private WxMsgSend wxMsgSend;
     @Autowired
     private LawyerService lawyerService;
     @Autowired
@@ -113,7 +115,7 @@ public class TaskController extends BaseController {
         taskLog.setStatus(0);
         taskLog.setRemark("手动创建任务");
         taskLogService.add(taskLog);
-
+        senMsg(task,0,0l);
         return success("操作成功");
     }
 
@@ -129,13 +131,18 @@ public class TaskController extends BaseController {
             return error("任务id错误或者已被领取");
         }
         Task task2 = taskService.item(task.getId());
-        if (StringUtils.isNotNull(task2.getOrderNo())){
+        if (StringUtils.isNotNull(task2.getOrderNo())) {
             Order order = new Order();
             order.setNo(task2.getOrderNo());
             order = orderService.itemNo(order.getNo());
-            if (StringUtils.isNotNull(order)){
+            if (StringUtils.isNotNull(order)) {
                 order.setStatus(2);
                 orderService.edit(order);
+                try {
+                    wxMsgSend.sendSMS(order.getClientPhone(),task1.getNo(),task1.getNeed());
+                }catch (Exception e){
+
+                }
             }
         }
 
@@ -171,6 +178,8 @@ public class TaskController extends BaseController {
         if (taskService.edit(taskGet) == 0) {
             return error("领取失败，请联系管理员！");
         }
+
+
         return success("操作成功");
     }
 
@@ -183,7 +192,7 @@ public class TaskController extends BaseController {
         taskGet.setId(task.getId());
         taskGet.setUpdateBy(getUsername());
         Lawyer lawyer = lawyerService.item(task.getLawyerId());
-        if (StringUtils.isNull(lawyer)&&StringUtils.isNull(lawyer.getType())&&lawyer.getType()!=0) {
+        if (StringUtils.isNull(lawyer) && StringUtils.isNull(lawyer.getType()) && lawyer.getType() != 0) {
             return error("尚未是中台律师，无法领取任务，请联系管理员！");
         }
         taskGet.setFastLawyerId(lawyer.getId());
@@ -230,12 +239,13 @@ public class TaskController extends BaseController {
             return error("参数错误！");
         }
         Task task2 = taskService.item(task.getId());
-        if (StringUtils.isNotNull(task2.getOrderNo())&&task.getStatus()>1){
+        if (StringUtils.isNotNull(task2.getOrderNo()) && task.getStatus() > 1) {
             Order order = new Order();
             order.setNo(task2.getOrderNo());
             order = orderService.itemNo(order.getNo());
-            if (StringUtils.isNotNull(order)){
-                switch (task.getStatus()){
+
+            if (StringUtils.isNotNull(order)) {
+                switch (task.getStatus()) {
                     case 2:
                     case 3:
                     case 4:
@@ -271,13 +281,14 @@ public class TaskController extends BaseController {
                 break;
             case 4:
                 //指定律师
+                System.out.println("指定律师");
                 if (StringUtils.isNull(task.getCost()) || task.getCost() <= 0) {
                     return error("需要指定所需积分");
                 }
                 if (StringUtils.isNull(task.getLawyerId())) {
                     return error("需要指定律师");
                 }
-                Lawyer lawyer2 =lawyerService.item(task.getLawyerId());
+                Lawyer lawyer2 = lawyerService.item(task.getLawyerId());
                 task.setPayStatus(1);
                 task.setLawyerId(lawyer2.getId());
                 task.setLawyerName(lawyer2.getName());
@@ -286,13 +297,17 @@ public class TaskController extends BaseController {
                 taskLog.setLawyerName(lawyer2.getName());
                 taskLog.setLawyerType(lawyer2.getType());
                 taskLog.setRemark("指派当地律师");
+                senMsg(task,0,lawyer2.getId());
                 break;
-            case 5://转入大厅
+            case 5:
+                //转入大厅
+                System.out.println("转入大厅");
                 if (StringUtils.isNull(task.getCost()) || task.getCost() <= 0) {
                     return error("需要指定所需积分");
                 }
                 task.setIsHall(1);
                 taskLog.setRemark("转入案源大厅");
+                senMsg(task,1,0l);
                 break;
             case 6:
                 if (StringUtils.isNull(task.getProfit())) {
@@ -339,6 +354,7 @@ public class TaskController extends BaseController {
         }
         //转入大厅
         task.setUpdateBy(getUsername());
+
         if (taskService.edit(task) == 0) {
             return error("编辑失败，请联系管理员！");
         }
@@ -382,10 +398,31 @@ public class TaskController extends BaseController {
     }
 
     @PostMapping("/export")
-    public void export(HttpServletResponse response, @RequestBody Task task)
-    {
+    public void export(HttpServletResponse response, @RequestBody Task task) {
         List<Task> list = taskService.list(task);
         ExcelUtil<Task> util = new ExcelUtil<Task>(Task.class);
         util.exportExcel(response, list, "任务数据数据");
+    }
+
+    private void senMsg(Task task,Integer type,Long id){
+        task = taskService.item(task.getId());
+        Lawyer lawyer = new Lawyer();
+        if (id >0l){
+            lawyer.setId(id);
+        }else {
+            lawyer.setType(type);
+        }
+
+
+        List<Lawyer> list = lawyerService.typeListOpenId(lawyer);
+        List<String> openIds = new ArrayList<>();
+        for (Lawyer lawyer1:list) {
+            if (StringUtils.isNotEmpty(lawyer1.getOpenId())){
+                openIds.add(lawyer1.getOpenId());
+            }
+        }
+        System.out.println("openids size = "+openIds.size());
+        if (openIds.size()>0)
+            wxMsgSend.sendMsg(openIds,task,id);
     }
 }

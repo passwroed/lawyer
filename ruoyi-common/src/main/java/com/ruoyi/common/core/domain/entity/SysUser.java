@@ -134,6 +134,7 @@ public class SysUser extends BaseEntity {
      * openId
      */
     private String openId;
+    private String gzhOpenId;
 
     private String area;
     private Integer areaCode;
@@ -353,6 +354,14 @@ public class SysUser extends BaseEntity {
 
     public void setUserType(String userType) {
         this.userType = userType;
+    }
+
+    public String getGzhOpenId() {
+        return gzhOpenId;
+    }
+
+    public void setGzhOpenId(String gzhOpenId) {
+        this.gzhOpenId = gzhOpenId;
     }
 
     @Override

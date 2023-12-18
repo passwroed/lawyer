@@ -56,6 +56,7 @@ public class WLTaskController extends BaseController {
         } else if (getLawyerType() == 1) {
             //当地律师
             task.setStatus(5);
+            task.setFastLawyerId(1l);
         } else {
             return errorDataTable("用户信息获取失败，请重新登陆");
         }
@@ -295,16 +296,23 @@ public class WLTaskController extends BaseController {
                 break;
             case 7://持续跟进
                 Task task1 = taskService.item(task.getId());
-                Lawyer lawyer = lawyerService.item(task1.getLawyerId());
+                Lawyer lawyer = null;
+                if (StringUtils.isNotNull(task1.getLawyerId())){
+                    lawyer = lawyerService.item(task1.getLawyerId());
+                    if (!lawyer.getUserId().equals(getUserId())) {
+                        return error("此任务已被其他律所领取，您无法修改");
+                    }
+                }else {
+                    lawyer = lawyerService.item(getLawyerId());
+                }
+
                 if (StringUtils.isNull(lawyer)) {
                     return error("未找到此任务");
                 }
                 if (StringUtils.isNull(lawyer.getUserId())) {
-                    return error("当前定任务，未绑定律师");
+                    return error("当前用户，未绑定律师");
                 }
-                if (!lawyer.getUserId().equals(getUserId())) {
-                    return error("此任务已被其他律所领取，您无法修改");
-                }
+
                 //扣除相应积分
                 if (StringUtils.isNull(lawyer)) {
                     return error("无法领取任务，请联系管理员！");
@@ -313,14 +321,16 @@ public class WLTaskController extends BaseController {
                     return error("非工作时间，无法领取改任务");
                 }
                 //如果是当地律师，查询积分是否够
-                CostLog costLog = costLogService.newCostLog(task1.getLawyerId());
-                if (costLog.getSum() < task.getCost()) {
+                CostLog costLog = costLogService.newCostLog(lawyer.getId());
+                System.out.println(costLog.getSum());
+                System.out.println(task1.getCost());
+                if (costLog.getSum() < task1.getCost()) {
                     //积分不够
                     return error("您的积分不够，请充值");
                 }
                 costLog = new CostLog();
                 costLog.setType(3);
-                costLog.setCost(task.getCost());
+                costLog.setCost(task1.getCost());
                 costLog.setLawyerId(getLawyerId());
                 costLog.setTaskId(task.getId());
                 if (costLogService.add(costLog) == 0) {
