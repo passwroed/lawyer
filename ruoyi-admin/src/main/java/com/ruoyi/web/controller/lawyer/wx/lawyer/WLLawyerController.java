@@ -35,7 +35,7 @@ public class WLLawyerController extends BaseController {
             return error("参数错误！");
         }
         Lawyer olawyer = lawyerService.item(getLawyerId());
-        if (olawyer.getStatus()<1){
+        if (StringUtils.isNotNull(olawyer.getStatus())&&olawyer.getStatus()<1){
             return error("无权限编辑");
         }
         Lawyer lawyer1 = new Lawyer();

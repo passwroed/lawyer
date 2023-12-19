@@ -144,20 +144,20 @@ public class LawyerServiceImpl implements LawyerService {
         }else {
             return 0;
         }
-        if (StringUtils.isNotNull(lawyer.getUserId())){
-            SysUser user = sysUserMapper.selectUserById(lawyer.getUserId());
-            SysUser user1 = new SysUser();
-            user1.setPhonenumber(lawyer.getPhone());
-            List<SysUser> list1 = sysUserMapper.selectUserList(user1);
-            if (StringUtils.isNotNull(user)&&user.getPhonenumber().equals("")&&list1.size()==0){
-                SysUser sysUser = new SysUser();
-                sysUser.setUserId(lawyer.getUserId());
-                sysUser.setPhonenumber(lawyer.getPhone());
-                sysUserMapper.updateUser(sysUser);
-            }else {
-                return -2;
-            }
-        }
+//        if (StringUtils.isNull(lawyer.getUserId())){
+//            SysUser user = sysUserMapper.selectUserById(lawyer.getUserId());
+//            SysUser user1 = new SysUser();
+//            user1.setPhonenumber(lawyer.getPhone());
+//            List<SysUser> list1 = sysUserMapper.selectUserList(user1);
+//            if (StringUtils.isNotNull(user)&&user.getPhonenumber().equals("")&&list1.size()==1){
+//                SysUser sysUser = new SysUser();
+//                sysUser.setUserId(lawyer.getUserId());
+//                sysUser.setPhonenumber(lawyer.getPhone());
+//                sysUserMapper.updateUser(sysUser);
+//            }else {
+//                return -2;
+//            }
+//        }
         return lawyerMapper.add(lawyer);
     }
 

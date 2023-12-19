@@ -59,6 +59,7 @@ public class WxLawyerController extends BaseController {
     {
         lawyer.setCreateBy(getUsername());
         lawyer.setType(1);
+        lawyer.setUserId(getUserId());
         switch (lawyerService.add(lawyer)){
             case -1:
                 return error("当前手机号已绑定！");
